@@ -1,0 +1,90 @@
+@media only screen and (min-width: 1200px) {
+    img.navi-logo {
+        width: 400px !important;
+    }    
+}
+@media (min-width: 992px) {
+  .main-area-view {
+    grid-template-columns: 1fr 1fr; /* Two equal 50% columns */
+  }
+  a.nav-list-item.mid-wide-circle {
+        width: 70px;
+        margin: -11px auto;
+   }
+   button.table-dot {
+    width: 60px;
+    height: 60px;
+    }
+    .scroll-indicator {
+        display: none !important;
+    }
+}
+@media only screen and (max-width: 992px) {
+    .floor-plan-wrapper-area {
+        background: #fff;
+        overflow: scroll;
+        padding: 20px;
+
+    }
+    .floor-plan-wrapper
+    {
+        place-self: flex-start;
+    }
+}
+@media only screen and (max-width: 480px) {
+    
+
+}
+@media only screen and (max-width: 360px) 
+{
+    .ctx-seat {
+        width: 30%;
+    }
+    .list-items.list-of-sponsors {
+        margin-bottom: 65px;
+    }
+    .title-happiness {     
+        padding: 13px;
+    }
+    a.nav-list-item.mid-wide-circle {
+        margin-top: -7px;
+        height: 65px;
+    }
+    .layer-content {
+        padding: 10px;
+    }
+    button.table-dot {
+        width: 45px !important;
+        height: 45px !important;
+    }
+    .table-row {
+        gap: 15px !important;
+        margin-bottom: 26px !important;
+    }
+    .stage-row {
+        height: 20px;
+    }
+    .table-row.row-0 {
+        margin-left: 460px;
+    }
+    .table-row.row-1 {
+        margin-left: 400px;
+    }
+    .table-row.row-2 {
+        margin-left: 390px;
+    }
+    .table-row.row-3 {
+        margin-left: 390px;
+    }
+    .table-row.row-4 {
+        margin-left: 460px;
+    }
+    .stage-row {
+        margin-bottom: 60px;
+        height: 20px;
+        width: 230%;
+    }
+    .stage-area {
+        width: 88%;
+    }
+}
