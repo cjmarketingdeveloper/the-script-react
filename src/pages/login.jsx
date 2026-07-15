@@ -1,125 +1,114 @@
-import React, { useEffect, useRef, useState } from 'react';
-
-import * as CONSTANTS from "../CONSTANTS";
-import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { login, reset } from '../reduxAuth/authSlice';
 import Spinner from '../components/global/Spinner';
 
 export default function Login() {
-   const navigate                                          = useNavigate();
-  const dispatch                                          = useDispatch();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const {user, isLoading, isError, isSuccess, message}    = useSelector((state) => state.auth);
+  // 1. Select the auth states from your Redux store
+  const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
-  const [agreePopi, setAgreePopi]                         = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const phoneNumberRef                                    = useRef();
-  const passwordRef                                       = useRef();
-
+  // 2. Handle Redux state updates cleanly
   useEffect(() => {
-      if(isError){
-          toast.error(message)
-      }
-    
-      if(isSuccess || user){
-          navigate('/');
-       }
-
-       dispatch(reset())
-  },[user, isError, isSuccess, message, navigate, dispatch])
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    console.log("1")
-      let checkTest = isValidPhoneNumber(phoneNumberRef.current.value);
-      if(checkTest){
-        console.log("2")
-          const userData = {
-              "phonenumber": phoneNumberRef.current.value,
-              "password": passwordRef.current.value
-            }        
-            console.log("3")
-            dispatch(login(userData));
-      }else {
-        console.log("4")
-          toast.error("Phone number not valid");
-      }
-  }
-
-  function isValidPhoneNumber(cell){
-    if (!cell) {
-      return false; // Handle empty input
+    if (isError) {
+      setError(message || "Invalid credentials.");
+      toast.error(message || "Invalid credentials.");
+      dispatch(reset()); // 🟢 Safely clear error flags now that we've handled them
     }
-  
-    // Remove any non-digit characters (e.g., spaces, hyphens, parentheses)
-    const cleanedPhoneNumber = cell.replace(/\D/g, '');
-    // Check if the cleaned number is exactly 10 digits
-    return /^\d{10}$/.test(cleanedPhoneNumber);
-  }
+
+    if (isSuccess || user) {
+      navigate('/');
+      dispatch(reset()); // 🟢 Safely clear success flags now that we are redirecting
+    }
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
+  // 3. Dispatch the login action to your mock database
+  const handleLoginSubmit = async () => {
+    setError('');
+    
+    if (!email || !password) {
+      setError("Please fill out all fields.");
+      return;
+    }
+
+    // Your mock slice explicitly uses: u.phonenumber === loginPayload.phonenumber
+    // When logging in, enter the raw 10 digit number (e.g., 0821111111) in the input field!
+    const userData = {
+      phonenumber: email.trim(), 
+      password: password
+    };
+
+    dispatch(login(userData));
+  };
 
   if (isLoading) {
-      return  <Spinner />
+    return <Spinner />;
   }
 
-  
   return (
-    <div className="logo-base flexlog">
-      <div className="log-start">
-          
-          <div className="main-login-data">        
-       
-              <div className="form-card ">
-                  <div className="frm-log-area">
-                      <h4 className="title-login text-center">Login</h4>
-                          <form encType="multipart/form-data">
-                              <div className="form-group frg">
-                                  <input type="tel" className="form-control ct-content wide100" ref={phoneNumberRef} maxLength={10} placeholder="Enter Phone Number" required/>
-                              </div>
-                              <div className="form-group frg">
-                                  <input type="password" className="form-control ct-content wide100"  ref={passwordRef} placeholder="Enter Password" required/>
-                              </div>
+    <div className="d-flex justify-content-center align-items-center" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundImage: "url('/assets/hero/mag1.jpg')", backgroundSize: 'cover', backgroundPosition: 'center', overflowY: 'auto' }}>
+      <div className="container">
+        <div className="row justify-content-center m-0">
+          <div className="col-12 col-sm-8 col-md-6 col-lg-4">
+            
+            <div className="p-4 p-sm-5 border rounded-3 shadow bg-white bg-opacity-95" style={{ backdropFilter: 'blur(5px)' }}>
+              <h3 className="mb-4 text-center fw-bold text-dark">Sign In</h3>
+              
+              {error && <div className="alert alert-danger p-2 small text-center">{error}</div>}
 
-                              <div className="form-group">
-                                <input
-                                    type="checkbox"
-                                    id="popiCheckbox"
-                                    checked={agreePopi}
-                                    onChange={() => setAgreePopi(!agreePopi)}
-                                    />
-                                    <label htmlFor="popiCheckbox" className="mgl10">
-                                      I agree with the terms of use <Link to={"/privacy-policy"}>POPIA</Link>
-                                    </label>
-                              </div>
-
-                              {
-                                agreePopi && (
-                                    <div className="form-group mgtop20">
-                                        <button className="btn btn-mevent btn-full" onClick={handleLogin} disabled={isLoading}>Login</button>
-                                    </div>
-                                )
-                              }
-                              
-                              <div className=" frg">
-                              </div>
-                          </form>
-                          
-                          
-                          
-                          <p className="mgtop20 txts12">
-                                <Link to="/forgot-password"  className="link-log-text">Forgot Password?</Link>
-                          </p>
-
-                          <p className="text-center smal-g mt-3">
-                            { CONSTANTS.VERSION}
-                          </p>
-                         
-                  </div>
+              <div className="mb-3">
+                <label className="form-label fw-semibold text-secondary">Phone Number</label>
+                <input 
+                  type="text" 
+                  className="form-control form-control-lg" 
+                  placeholder="e.g. 0821111111"
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)} 
+                  required 
+                />
               </div>
-          
+              
+              <div className="mb-4">
+                <label className="form-label fw-semibold text-secondary">Password</label>
+                <input 
+                  type="password" 
+                  className="form-control form-control-lg" 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)} 
+                  required 
+                />
+              </div>
+
+              <div className="mb-4 text-end">
+                <Link to="/forgot-password" className="small text-decoration-none fw-semibold text-primary">
+                  Forgot password?
+                </Link>
+              </div>
+              
+              <button 
+                type="button" 
+                onClick={handleLoginSubmit} 
+                className="btn btn-primary btn-lg w-100 shadow-sm fw-semibold mb-3"
+              >
+                Log In
+              </button>
+
+              <p className="text-center small text-muted mb-0">
+                Don't have an account? <Link to="/register" className="text-decoration-none">Register here</Link>
+              </p>
+            </div>
+
           </div>
-      </div>       
-  </div>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { listSliders } from "../../lib/fetchRequests";
+// import { listSliders } from "../../lib/fetchRequests";
+import { heroSlides } from '../../data/heroSlides'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import {  Pagination, Autoplay } from 'swiper/modules'
 
@@ -18,7 +19,7 @@ export default function HeroCarousel() {
     const fetchListOfSliders = async () => {
       try {
   
-        const response = await listSliders();              
+        const response = await heroSlides;              
         setListContent(response);
       } catch (error) {
         console.error("Error fetching sliders:", error);

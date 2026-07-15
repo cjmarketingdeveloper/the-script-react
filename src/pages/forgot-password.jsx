@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from '../supabaseClient';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -16,21 +15,21 @@ export default function ForgotPassword() {
 
     setLoading(true);
     try {
-        // 🟢 Supabase will automatically check auth.users internally.
-        // Because Enumeration Protection is OFF, it throws an error if the email isn't found!
-        const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
-        });
+        // // 🟢 Supabase will automatically check auth.users internally.
+        // // Because Enumeration Protection is OFF, it throws an error if the email isn't found!
+        // const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+        // redirectTo: `${window.location.origin}/reset-password`,
+        // });
 
-        if (resetError) {
-        // Catching the explicit "User not found" error from auth.users
-        if (resetError.message.toLowerCase().includes("user not found") || resetError.status === 400) {
-            return setError("This email address is not registered in our system.");
-        }
-        throw resetError;
-        }
-        console.log("Password reset email sent successfully to:", email);
-        setMessage("A unique password reset link has been sent to your email.");
+        // if (resetError) {
+        // // Catching the explicit "User not found" error from auth.users
+        // if (resetError.message.toLowerCase().includes("user not found") || resetError.status === 400) {
+        //     return setError("This email address is not registered in our system.");
+        // }
+        // throw resetError;
+        // }
+        // console.log("Password reset email sent successfully to:", email);
+        // setMessage("A unique password reset link has been sent to your email.");
     } catch (err) {
         setError(err.message);
     } finally {

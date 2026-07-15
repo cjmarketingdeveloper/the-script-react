@@ -17,10 +17,10 @@ export default function Footer() {
                 height={40}
               />
               <div className="footer-socials mt-3">
-                <a to="#"><i className="bi bi-instagram"></i></a>
-                <a to="#"><i className="bi bi-twitter-x"></i></a>
-                <a to="#"><i className="bi bi-facebook"></i></a>
-                <a to="#"><i className="bi bi-linkedin"></i></a>
+                <Link to="https://www.instagram.com/?hl=en"><i className="bi bi-instagram"></i></Link>
+                <Link to="https://twitter.com/?lang=en"><i className="bi bi-twitter-x"></i></Link>
+                <Link to="https://www.facebook.com/?locale=en_GB"><i className="bi bi-facebook"></i></Link>
+                <Link to="https://www.linkedin.com/in/the-script-789012345/"><i className="bi bi-linkedin"></i></Link>
               </div>
             </div>
 
@@ -37,9 +37,9 @@ export default function Footer() {
             <div className="col-md-3">
               <h6 className="footer-title">Contact Us</h6>
               <p>
-                <a to="mailto:cjdigital@cjmarketing.co">
+                <Link to="mailto:cjdigital@cjmarketing.co">
                   cjdigital@cjmarketing.co
-                </a>
+                </Link>
               </p>
             </div>
 
@@ -47,7 +47,7 @@ export default function Footer() {
             <div className="col-md-3">
               <h6 className="footer-title">Resources</h6>
               <ul className="footer-links">
-                <li><Link to="/mag-archive">Magazine Archive</Link></li>
+                <li><Link to="/magazine-archive">Magazine Archive</Link></li>
                 <li><Link to="/marketing-enquiries">Marketing Enquiries</Link></li>
                 <li><Link to="/terms-of-service">Terms of Service</Link></li>
                 <li><Link to="/support">Support</Link></li>
