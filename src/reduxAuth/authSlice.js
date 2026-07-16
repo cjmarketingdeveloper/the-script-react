@@ -12,23 +12,23 @@ const initialState = {
     isLoading: false,
     message: ''
 }
-
-//Register user and pharmacy
+//////////////////////////////////////////////////////////////////////////////////
+//Register user 
 export const register = createAsyncThunk('auth/register', async (user, thunkAPI) => {
     try{
 
+
         const response = await axios.post(CONSTANTS.API_URL + "auth/register", user);
-
         localStorage.setItem(CONSTANTS.SESSION_COOKIE, JSON.stringify(response.data));
-
         return response; 
     }catch(error){
+        console.log(error);
         //const message = (error.response && error.response.data && error.data.message) || error.message || error.toString()
         const message = error.response.data
         return thunkAPI.rejectWithValue(message)
     }
 })
-
+////////////////////////////////////////////////////////////////////////////////////////
 //Login user 
 export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
     try{
@@ -54,7 +54,7 @@ export const updateUser = createAsyncThunk('auth/updateUser',
   async (userUpdate, thunkAPI) => {
     try {
       const response = await axios.put(
-        CONSTANTS.API_URL + "users/update/rsvp/details/v1/",
+        CONSTANTS.API_URL + "users/update/content/details/v1/",
         userUpdate
       );
       // This returns the object { message: "Update done", user: content }

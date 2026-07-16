@@ -710,7 +710,20 @@ section, .container-xl, .hero-swiper, .media-surround {
     font-size: 20px;
     font-weight: 300;
 }
-
+.btn-script {
+    background: rgb(255, 132, 0);
+    border-radius: 999px !important;
+    padding: 10px 30px !important;
+    border: none ;
+   font-weight: 600 !important; 
+   color:#fff !important;
+   text-decoration: none !important;
+}
+.btn-script:hover {
+    background: rgb(228, 120, 5);
+    color: white;
+   color:#fff;
+}
 
 @media (max-width: 768px) {
   section, 

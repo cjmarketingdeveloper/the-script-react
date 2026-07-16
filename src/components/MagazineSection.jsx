@@ -14,8 +14,8 @@ export default function MagazineSection({user}) {
 
   const fetchListOfMagazines = async () => {
     try {
-      /*
-       const response = await axios.get(CONSTANTS.API_URL +"events/gala/collection/set/v1", {
+      
+       const response = await axios.get(CONSTANTS.API_URL +"settings/slider/list/v2", {
                     headers: {
                         token: "Bearer "+ user.accessToken
                     }
@@ -23,7 +23,7 @@ export default function MagazineSection({user}) {
       if (Array.isArray(response.data)) {
         setLatestMagazines(response.data)
       }
-      */
+      
     } catch (error) {
       console.error('Error fetching magazines:', error)
     }
@@ -42,7 +42,7 @@ export default function MagazineSection({user}) {
         {/* Desktop button */}
         <Link
           to="/magazines"
-          className="btn-view-more d-none d-md-inline-flex"
+          className="btn-script d-md-inline-flex"
         >
           View more issues
           <span className="arrow-circle">
@@ -63,7 +63,7 @@ export default function MagazineSection({user}) {
               footer={
                 <Link
                   to={`/magazine/${mag._id}`}
-                  className="btn-pill-sm"
+                  className="btn btn-script"
                 >
                   Read Issue
                 </Link>

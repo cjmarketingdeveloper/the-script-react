@@ -1,3 +1,5 @@
+import * as CONSTANTS from "./../CONSTANTS";
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -7,7 +9,7 @@ import 'swiper/css'
 import 'swiper/css/effect-fade'
 import 'swiper/css/pagination'
 
-export default function HeroCarousel() {
+export default function HeroCarousel({user}) {
     const [listContent, setListContent]                   =  useState([]);
     
     useEffect(() => {
@@ -16,14 +18,16 @@ export default function HeroCarousel() {
   
     const fetchListOfSliders = async () => {
       try {
-      /*
-        const response = await axios.get(CONSTANTS.API_URL +"events/gala/collection/set/v1", {
+    
+        const response = await axios.get(CONSTANTS.API_URL +"settings/slider/list/v1/", {
                     headers: {
                         token: "Bearer "+ user.accessToken
                     }
-                });          
-        setListContent(response);
-        */
+                });    
+        if(response.data.length > 0){
+           setListContent(response.data);
+        }             
+        
       } catch (error) {
         console.error("Error fetching sliders:", error);
       } 
@@ -58,7 +62,7 @@ export default function HeroCarousel() {
                     {slide.link && (
                       <Link 
                         to={slide.link}
-                        className="btn px-4 py-2 btn-pill-sm"
+                        className="btn btn-script"
                         style={{ backgroundColor: slide.linkColor }}
                       >
                         {slide.linkText || "Learn More"}

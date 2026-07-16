@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-//import BottomBar from '../Components/Widgets/BottomBar';
+import Header from '../components/global/Header';
+import Footer from '../components/global/Footer';
 import AccessIsDenied from './AccessIsDenied';
 
 function AuthScreens() {
@@ -18,12 +19,14 @@ function AuthScreens() {
     <div>
       {
          user && 
-         (user.approve === true) ? (
+         (user.active === true) ? (
             <div className="main-mobile-view">
-                <div className="main-mobile-content-view">                        
+                <div className="main-mobile-content-view"> 
+                    <Header />                       
                         <div className="main-content-arena">
                             <Outlet />
                         </div>
+                    <Footer/>
                 </div>
                 <div className="section-dash">
                     {/* <BottomBar member={user} /> */}

@@ -95,7 +95,7 @@ export default function Login() {
                               {
                                 agreePopi && (
                                     <div className="form-group mgtop20">
-                                        <button className="btn btn-mevent btn-full" onClick={handleLogin} disabled={isLoading}>Login</button>
+                                        <button className="btn btn-primary btn-full" onClick={handleLogin} disabled={isLoading}>Login</button>
                                     </div>
                                 )
                               }
@@ -106,8 +106,9 @@ export default function Login() {
                           
                           
                           
-                          <p className="mgtop20 txts12">
-                                <Link to="/forgot-password"  className="link-log-text">Forgot Password?</Link>
+                          <p className="flex mgtop20 txts12">
+                              <Link to="/forgot-password"  className="link-log-text">Forgot Password?</Link>
+                              <Link to="/register"  className="link-log-text">Register?</Link>
                           </p>
 
                           <p className="text-center smal-g mt-3">
