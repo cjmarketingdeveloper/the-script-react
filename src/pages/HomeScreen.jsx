@@ -1,4 +1,4 @@
-import HeroCarousel from '../components/home/HeroCarousel'
+import HeroCarousel from '../components/HeroCarousel'
 import MagazineSection from '../components/MagazineSection'
 import PodcastSection from '../components/PodcastSection'
 import AboutSection from '../components/AboutSection'
@@ -10,11 +10,18 @@ export default function HomeScreen() {
 return (
     <>
         <HeroCarousel />
-        <MagazineSection />
-        {/* <PodcastSection /> */}
+
         <AboutSection />
-        {/*<AnimatedMediaSection />*/}
-        <SubscribeSection />
+        {
+            /*
+            <HeroCarousel />
+            <MagazineSection />
+            {/* <PodcastSection /> * /}
+            <AboutSection />
+            {/*<AnimatedMediaSection />* /}
+            <SubscribeSection />
+            */
+        }
     </>
     )
 }

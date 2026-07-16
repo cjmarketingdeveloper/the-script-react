@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import CoverCard from './CoverCard'
 import { useEffect, useState } from 'react'
-import { collectPodcasts } from '../../lib/fetchRequests'
+import CoverCard from './CoverCard';
 
-export default function PodcastSection() {
+
+export default function PodcastSection({user}) {
+
   const [podcasts, setPodcasts] = useState([])
   const [isMobile, setIsMobile] = useState(false)
 
@@ -11,10 +12,17 @@ export default function PodcastSection() {
   useEffect(() => {
     const fetchPodcasts = async () => {
       try {
-        const response = await collectPodcasts()
-        if (Array.isArray(response)) {
+        /*
+         const response = await axios.put(CONSTANTS.API_URL +"users/activate", userActivate, {
+                  headers: {
+                      token: "Bearer "+ user.accessToken
+                  }
+              });
+            
+        if (Array.isArray(response.data)) {
           setPodcasts(response)
         }
+          */
       } catch (error) {
         console.error('Error fetching podcasts:', error)
       }

@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { listSliders } from "../../lib/fetchRequests";
 import { Swiper, SwiperSlide } from 'swiper/react'
 import {  Pagination, Autoplay } from 'swiper/modules'
 
@@ -17,14 +16,19 @@ export default function HeroCarousel() {
   
     const fetchListOfSliders = async () => {
       try {
-  
-        const response = await listSliders();              
+      /*
+        const response = await axios.get(CONSTANTS.API_URL +"events/gala/collection/set/v1", {
+                    headers: {
+                        token: "Bearer "+ user.accessToken
+                    }
+                });          
         setListContent(response);
+        */
       } catch (error) {
         console.error("Error fetching sliders:", error);
       } 
     }
-
+    
   return (
     <div className="container-xl my-5 slider-relative-container">
       {

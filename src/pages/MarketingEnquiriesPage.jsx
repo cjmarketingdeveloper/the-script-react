@@ -1,6 +1,4 @@
-'use client'
-
-import { HashLink as Link } from 'react-router-hash-link';
+import { Link } from "react-router-dom";
 
 export default function MarketingEnquiriesPage() {
   return (

@@ -15,12 +15,11 @@ import SupportPage from "./pages/SupportPage";
 import TermsOfService from "./pages/TermsOfService";
 import HomeScreen from "./pages/HomeScreen";
 import Magazines from "./pages/magazines/Magazines";
-import SingleMagazine from "./pages/magazines/SingleMagazine";
-import MagazineArchivePage from "./pages/magazines/ArchiveMagazines";
-import Podcasts from "./pages/podcasts/Podcasts";
-import SinglePodcst from "./pages/podcasts/SinglePodcst";
-import MarketingEnquiriesPage from "./pages/MarketingEnquiriesPage";
 import ArchiveMagazines from "./pages/magazines/ArchiveMagazines";
+import SingleMagazine from "./pages/magazines/SingleMagazine";
+import Podcasts from "./pages/podcasts/Podcasts";
+import SinglePodcast from "./pages/podcasts/SinglePodcast";
+import MarketingEnquiriesPage from "./pages/MarketingEnquiriesPage";
 
 
 function App() {

@@ -1,14 +1,4 @@
-import { Link } from 'react-router-dom'
-import { ReactNode } from 'react'
-
-type CoverCardProps = {
-  image: string
-  href: string
-  badge?: string
-  footer?: React.ReactNode
-  overlay?: React.ReactNode
-  cardClass?: string
-}
+import { Link } from "react-router-dom";
 
 export default function CoverCard({
   image,
@@ -16,8 +6,8 @@ export default function CoverCard({
   badge,
   footer,
   overlay,
-  cardClass = '',
-}: CoverCardProps) {
+  cardClass = "",
+}) {
   return (
     <div className="cover-card-wrapper">
       {badge && <div className="latest-badge">{badge}</div>}
@@ -32,6 +22,5 @@ export default function CoverCard({
 
       {footer && <div className="cover-footer">{footer}</div>}
     </div>
-  )
+  );
 }
-

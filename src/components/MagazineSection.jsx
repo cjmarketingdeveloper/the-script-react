@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
-import CoverCard from './CoverCard'
 import { useEffect, useState } from 'react'
-import { collectMagazines } from '../../lib/fetchRequests'
+import * as CONSTANTS from "../CONSTANTS";
+import axios from 'axios';
+import CoverCard from './CoverCard';
 
-export default function MagazineSection() {
+export default function MagazineSection({user}) {
+
   const [latestMagazines, setLatestMagazines] = useState([])
 
   useEffect(() => {
@@ -12,10 +14,16 @@ export default function MagazineSection() {
 
   const fetchListOfMagazines = async () => {
     try {
-      const response = await collectMagazines()
-      if (Array.isArray(response)) {
-        setLatestMagazines(response)
+      /*
+       const response = await axios.get(CONSTANTS.API_URL +"events/gala/collection/set/v1", {
+                    headers: {
+                        token: "Bearer "+ user.accessToken
+                    }
+                }); 
+      if (Array.isArray(response.data)) {
+        setLatestMagazines(response.data)
       }
+      */
     } catch (error) {
       console.error('Error fetching magazines:', error)
     }
@@ -47,7 +55,7 @@ export default function MagazineSection() {
       <div className="row g-4 d-none d-md-flex">
         {desktopMagazines.map((mag, index) => (
           <div key={mag._id} className="col-md-4">
-            <CoverCard
+            <CoverCard              
               image={mag.featuredImage}
               href={`/magazine/${mag._id}`}
               badge={index === 0 ? <>Latest<br />Issue</> : undefined}
@@ -65,18 +73,7 @@ export default function MagazineSection() {
         ))}
       </div>
 
-      {/* ===== MOBILE (2 items) ===== */}
-      <div className="row g-4 d-md-none">
-        {mobileMagazines.map((mag) => (
-          <div key={mag._id} className="col-6">
-            <CoverCard
-              image={mag.featuredImage}
-              href={`/magazine/${mag._id}`}
-              cardClass="cover-magazine"
-            />
-          </div>
-        ))}
-      </div>
+   
 
       {/* Mobile button */}
       <div className="d-md-none text-center mt-3">

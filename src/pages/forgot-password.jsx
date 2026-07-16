@@ -1,71 +1,145 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { supabase } from '../supabaseClient';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { register, reset } from '../reduxAuth/authSlice';
+import Spinner from '../components/global/Spinner';
+import * as CONSTANTS from "./../CONSTANTS";
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const navigate                                        = useNavigate();
+  const dispatch                                        = useDispatch();
 
-    const handleResetRequest = async () => {
-    setError('');
-    setMessage('');
+  const {user, isLoading, isError, isSuccess, message}  = useSelector((state) => state.auth);
 
-    if (!email) return setError("Please enter your email address.");
+  const nameRef                                           = useRef();
+  const surnameRef                                        = useRef();
+  const phoneNumberRef                                    = useRef();
+  const passwordRef                                       = useRef();
+  const emailRef                                          = useRef();
+  const practiceNumberRef                                 = useRef();
 
-    setLoading(true);
-    try {
-        // 🟢 Supabase will automatically check auth.users internally.
-        // Because Enumeration Protection is OFF, it throws an error if the email isn't found!
-        const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
-        });
+  useEffect(() => {
+      if(isError){
+          toast.error(message)
+      }
+    
+      if(isSuccess || user){
+        navigate('/');
+      }
 
-        if (resetError) {
-        // Catching the explicit "User not found" error from auth.users
-        if (resetError.message.toLowerCase().includes("user not found") || resetError.status === 400) {
-            return setError("This email address is not registered in our system.");
-        }
-        throw resetError;
-        }
-        console.log("Password reset email sent successfully to:", email);
-        setMessage("A unique password reset link has been sent to your email.");
-    } catch (err) {
-        setError(err.message);
-    } finally {
-        setLoading(false);
-    }
-    };
+        dispatch(reset());
+  },[user, isError, isSuccess, message, navigate, dispatch])
+
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+      try{
+
+              if(passwordRef.current.value.length > 1 && 
+                 nameRef.current.value.length > 1 && 
+                 surnameRef.current.value.length > 1 ){
+
+
+                    const userData = {
+                      "phone": phoneNumberRef.current.value,
+                      "password": passwordRef.current.value,
+                      "practiceNumber": practiceNumberRef.current.value,
+                      "name": nameRef.current.value,
+                      "surname": surnameRef.current.value,
+                      "email": emailRef.current.value,   
+                      "apptype": "web",                      
+                      "profilePic":""
+                    }        
+                    
+                    dispatch(register(userData));
+                 }else {
+                    toast.error("Please fill in required fields");
+                 }
+                
+            }catch(errorData){
+              console.log(errorData);
+            }
+      
+  }
+
+  if (isLoading) {
+      return  <Spinner />
+  }
 
   return (
-    <div className="d-flex justify-content-center align-items-center" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundImage: "url('/assets/hero/mag1.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      <div className="container">
-        <div className="row justify-content-center m-0">
-          <div className="col-12 col-sm-8 col-md-6 col-lg-4">
-            <div className="p-4 p-sm-5 border rounded-3 shadow bg-white bg-opacity-95" style={{ backdropFilter: 'blur(5px)' }}>
-              <h3 className="mb-3 text-center fw-bold text-dark">Reset Password</h3>
-              <p className="text-muted small text-center mb-4">Enter your registered email address below to receive an isolated access recovery framework connection link.</p>
-              
-              {error && <div className="alert alert-danger p-2 small text-center">{error}</div>}
-              {message && <div className="alert alert-success p-2 small text-center">{message}</div>}
-
-              <div className="mb-4">
-                <label htmlFor="resetEmail" className="form-label fw-semibold text-secondary">Email address</label>
-                <input id="resetEmail" type="email" className="form-control form-control-lg" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" />
-              </div>
-
-              <button type="button" onClick={handleResetRequest} disabled={loading} className="btn btn-primary btn-lg w-100 shadow-sm fw-semibold mb-3">
-                {loading ? "Verifying..." : "Send Reset Link"}
-              </button>
-
-              <p className="text-center small text-muted mb-0">
-                Remember your credentials? <Link to="/login" className="text-decoration-none">Back to Sign In</Link>
-              </p>
+    <div className="logo-base flexlog">
+      <div className="log-start">          
+          <div className="main-login-data">
+            <div className="reg-header ">
+                  
             </div>
+              <div className="form-card ">
+                  <div className="frm-log-area">
+                      <h4 className="title-login text-center">Register</h4>
+                          <form encType="multipart/form-data">
+                              <div className="form-group frg">
+                                  <input 
+                                    type="text" className="form-control ct-content wide100" 
+                                    ref={phoneNumberRef} 
+                                    maxLength={10} 
+                                    placeholder="Enter Phone Number*" required/>
+                              </div>
+                              <div className="form-group frg">
+                                  <input type="password" 
+                                    className="form-control ct-content wide100"  
+                                    ref={passwordRef} 
+                                    placeholder="Enter Password*" required/>
+                              </div>
+                              <div className="form-group frg">
+                                  <input type="text" 
+                                    className="form-control ct-content" 
+                                    ref={practiceNumberRef} 
+                                    placeholder="Enter Name*" required/>
+                              </div>
+                              <div className="form-group frg">
+                                  <input type="text" 
+                                    className="form-control ct-content" 
+                                    ref={nameRef} 
+                                    placeholder="Enter Name*" required/>
+                              </div>
+                              <div className="form-group frg">
+                                  <input 
+                                      type="text" 
+                                      className="form-control ct-content"  
+                                      ref={surnameRef} 
+                                      placeholder="Enter Surname*" required/>
+                              </div>
+                              <div className="form-group frg">
+                                  <input type="email" 
+                                    className="form-control ct-content"  
+                                    ref={emailRef} placeholder="Enter Email Address" required/>
+                              </div>
+                                    
+                              <div className="form-group mgtop20">
+                                  <button 
+                                      className="btn btn-mevent btn-full" 
+                                      onClick={handleRegister} 
+                                      disabled={isLoading}>Register
+                                  </button>
+                              </div>
+                              <div className=" frg">
+                              </div>
+                          </form>
+                                                    
+                          <p className="mgtop20 space-flex txts12">
+                              <Link to="/forgot-password"  className="link-log-text">Forgot Password?</Link>
+                              <Link to="/login"  className="link-log-text">Login?</Link>
+                          </p>
+                          <p className="text-center smal-g">
+                          { CONSTANTS.VERSION}
+                          </p>
+                  </div>         
+              </div>
+                
           </div>
-        </div>
-      </div>
-    </div>
+      </div>       
+  </div>
   );
 }

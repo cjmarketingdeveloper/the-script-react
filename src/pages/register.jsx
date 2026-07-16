@@ -1,121 +1,145 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { register, reset } from '../reduxAuth/authSlice';
+import Spinner from '../components/global/Spinner';
+import * as CONSTANTS from "./../CONSTANTS";
 
 export default function Register() {
-  const { registerWithEmail, loginWithGoogle } = useAuth();
-  const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [validated, setValidated] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false); // 🟢 Tracks custom modal visibility
-  const navigate = useNavigate();
+  const navigate                                        = useNavigate();
+  const dispatch                                        = useDispatch();
 
-  const handleRegisterSubmit = async () => {
-    setError('');
-    setValidated(true);
+  const {user, isLoading, isError, isSuccess, message}  = useSelector((state) => state.auth);
 
-    if (!fullName || !phone || !email || !password || !confirmPassword) {
-      return setError("All fields are required.");
-    }
+  const nameRef                                           = useRef();
+  const surnameRef                                        = useRef();
+  const phoneNumberRef                                    = useRef();
+  const passwordRef                                       = useRef();
+  const emailRef                                          = useRef();
+  const practiceNumberRef                                 = useRef();
 
-    if (password !== confirmPassword) {
-      return setError("Passwords do not match.");
-    }
-
-    try {
-      
-
-      if (existingUser) {
-        return setError("An account with this email address already exists.");
+  useEffect(() => {
+      if(isError){
+          toast.error(message)
+      }
+    
+      if(isSuccess || user){
+        navigate('/');
       }
 
-      // 2. Attempt Registration
-      await registerWithEmail(email, password, fullName, phone);
+        dispatch(reset());
+  },[user, isError, isSuccess, message, navigate, dispatch])
+
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+      try{
+
+              if(passwordRef.current.value.length > 1 && 
+                 nameRef.current.value.length > 1 && 
+                 surnameRef.current.value.length > 1 ){
+
+
+                    const userData = {
+                      "phone": phoneNumberRef.current.value,
+                      "password": passwordRef.current.value,
+                      "practiceNumber": practiceNumberRef.current.value,
+                      "name": nameRef.current.value,
+                      "surname": surnameRef.current.value,
+                      "email": emailRef.current.value,   
+                      "apptype": "web",                      
+                      "profilePic":""
+                    }        
+                    
+                    dispatch(register(userData));
+                 }else {
+                    toast.error("Please fill in required fields");
+                 }
+                
+            }catch(errorData){
+              console.log(errorData);
+            }
       
-      // 3. 🟢 Trigger custom modal popup instead of browser alert
-      setShowSuccessModal(true);
-    } catch (err) {
-      // Catch Supabase specific duplicate user strings if manual check missed it
-      if (err.message.includes("already registered") || err.message.includes("User already exists")) {
-        setError("An account with this email address already exists.");
-      } else {
-        setError(err.message);
-      }
-    }
-  };
+  }
+
+  if (isLoading) {
+      return  <Spinner />
+  }
 
   return (
-    <div className="d-flex justify-content-center align-items-center" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundImage: "url('/assets/hero/mag1.jpg')", backgroundSize: 'cover', backgroundPosition: 'center', overflowY: 'auto' }}>
-      <div className="container my-5"> 
-        <div className="row justify-content-center m-0">
-          <div className="col-12 col-sm-10 col-md-8 col-lg-5">
-            
-            <div className="p-4 p-sm-5 border rounded-3 shadow bg-white bg-opacity-95" style={{ backdropFilter: 'blur(5px)' }}>
-              <h3 className="mb-4 text-center fw-bold text-dark">Create Account</h3>
-              
-              {error && <div className="alert alert-danger p-2 small text-center">{error}</div>}
-
-              {/* Input Fields */}
-              <div className="mb-3">
-                <label htmlFor="fullNameInput" className="form-label fw-semibold text-secondary">Full Name <span className="text-danger">*</span></label>
-                <input id="fullNameInput" type="text" className={`form-control ${validated && !fullName ? 'is-invalid' : ''}`} value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="John Doe" />
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="phoneInput" className="form-label fw-semibold text-secondary">Phone Number <span className="text-danger">*</span></label>
-                <input id="phoneInput" type="tel" className={`form-control ${validated && !phone ? 'is-invalid' : ''}`} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+1 (555) 000-0000" />
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="emailInput" className="form-label fw-semibold text-secondary">Email address <span className="text-danger">*</span></label>
-                <input id="emailInput" type="email" className={`form-control ${validated && !email ? 'is-invalid' : ''}`} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" />
-              </div>
-              
-              <div className="mb-3">
-                <label htmlFor="passwordInput" className="form-label fw-semibold text-secondary">Password <span className="text-danger">*</span></label>
-                <input id="passwordInput" type="password" className={`form-control ${validated && !password ? 'is-invalid' : ''}`} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 6 characters" />
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="confirmPasswordInput" className="form-label fw-semibold text-secondary">Confirm Password <span className="text-danger">*</span></label>
-                <input id="confirmPasswordInput" type="password" className={`form-control ${validated && !confirmPassword ? 'is-invalid' : ''}`} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Retype password" />
-              </div>
-        
-              <button type="button" onClick={handleRegisterSubmit} className="btn btn-success btn-lg w-100 shadow-sm fw-semibold mb-3">Register</button>
-
-
-              <p className="text-center small text-muted mb-0">
-                Already have an account? <Link to="/login" className="text-decoration-none">Sign In</Link>
-              </p>
-            </div> 
-
-          </div>
-        </div>
-      </div>
-
-      {/* 🟢 SUCCESS MODAL OVERLAY */}
-      {showSuccessModal && (
-        <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} role="dialog">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content border-0 shadow-lg">
-              <div className="modal-body text-center p-5">
-                <div className="text-success mb-3"><i className="bi bi-check-circle-fill display-3"></i></div>
-                <h4 className="fw-bold mb-3">Account successfully registered!</h4>
-                <p className="text-muted mb-4">You can now use your credentials to log in to your dashboard panel.</p>
-                <div className="d-flex flex-column gap-2">
-                  <button type="button" className="btn btn-primary btn-lg fw-semibold" onClick={() => navigate('/login')}>Sign In</button>
-                  <button type="button" className="btn btn-link text-secondary text-decoration-none btn-sm" onClick={() => setShowSuccessModal(false)}>Close</button>
-                </div>
-              </div>
+    <div className="logo-base flexlog">
+      <div className="log-start">          
+          <div className="main-login-data">
+            <div className="reg-header ">
+                  
             </div>
+              <div className="form-card ">
+                  <div className="frm-log-area">
+                      <h4 className="title-login text-center">Register</h4>
+                          <form encType="multipart/form-data">
+                              <div className="form-group frg">
+                                  <input 
+                                    type="text" className="form-control ct-content wide100" 
+                                    ref={phoneNumberRef} 
+                                    maxLength={10} 
+                                    placeholder="Enter Phone Number*" required/>
+                              </div>
+                              <div className="form-group frg">
+                                  <input type="password" 
+                                    className="form-control ct-content wide100"  
+                                    ref={passwordRef} 
+                                    placeholder="Enter Password*" required/>
+                              </div>
+                              <div className="form-group frg">
+                                  <input type="text" 
+                                    className="form-control ct-content" 
+                                    ref={practiceNumberRef} 
+                                    placeholder="Enter Name*" required/>
+                              </div>
+                              <div className="form-group frg">
+                                  <input type="text" 
+                                    className="form-control ct-content" 
+                                    ref={nameRef} 
+                                    placeholder="Enter Name*" required/>
+                              </div>
+                              <div className="form-group frg">
+                                  <input 
+                                      type="text" 
+                                      className="form-control ct-content"  
+                                      ref={surnameRef} 
+                                      placeholder="Enter Surname*" required/>
+                              </div>
+                              <div className="form-group frg">
+                                  <input type="email" 
+                                    className="form-control ct-content"  
+                                    ref={emailRef} placeholder="Enter Email Address" required/>
+                              </div>
+                                    
+                              <div className="form-group mgtop20">
+                                  <button 
+                                      className="btn btn-mevent btn-full" 
+                                      onClick={handleRegister} 
+                                      disabled={isLoading}>Register
+                                  </button>
+                              </div>
+                              <div className=" frg">
+                              </div>
+                          </form>
+                                                    
+                          <p className="mgtop20 space-flex txts12">
+                              <Link to="/forgot-password"  className="link-log-text">Forgot Password?</Link>
+                              <Link to="/login"  className="link-log-text">Login?</Link>
+                          </p>
+                          <p className="text-center smal-g">
+                          { CONSTANTS.VERSION}
+                          </p>
+                  </div>         
+              </div>
+                
           </div>
-        </div>
-      )}
-    </div>
+      </div>       
+  </div>
   );
 }
