@@ -24,6 +24,7 @@ import MarketingEnquiriesPage from "./pages/MarketingEnquiriesPage";
 import ArchiveMagazines from "./pages/magazines/ArchiveMagazines";
 import ArchivePdodcasts from "./pages/podcasts/ArchivePodcasts";
 import { Dashboard } from "./pages/Dashboard"; // Imported dashboard
+import Games from "./pages/games/Games";
 
 function AppContent() {
   const location = useLocation();
@@ -55,6 +56,8 @@ function AppContent() {
             
             {/* 🟢 Mounted Dashboard under Auth wrapper */}
             <Route path="/dashboard" element={<Dashboard />}/> 
+
+            <Route path="/games" element={<Games />}/>
 
             <Route path="/podcasts" element={<Podcasts />}/> 
             <Route path="/podcast/:id" element={<SinglePodcast />}/> 

@@ -61,6 +61,14 @@ export default function Header() {
               Magazines
             </Nav.Link>
 
+            <Nav.Link
+              as={Link}
+              to="/games"
+              className={isActive('/games') ? 'nav-active' : ''}
+            >
+              Games
+            </Nav.Link>
+
             {/* Only render Dashboard link if user is logged in */}
             {isAuthenticated && (
               <Nav.Link
