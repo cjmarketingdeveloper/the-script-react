@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import CoverCard from './CoverCard'
+import CoverCard from './CoverCard';
 import { useEffect, useState } from 'react'
-import { collectMagazines } from '../../lib/fetchRequests'
+// import { collectMagazines } from '../../lib/fetchRequests'
+import { magazines } from '../data/magazines'
 
 export default function MagazineSection() {
   const [latestMagazines, setLatestMagazines] = useState([])
@@ -12,7 +13,7 @@ export default function MagazineSection() {
 
   const fetchListOfMagazines = async () => {
     try {
-      const response = await collectMagazines()
+      const response = await magazines
       if (Array.isArray(response)) {
         setLatestMagazines(response)
       }
@@ -46,15 +47,15 @@ export default function MagazineSection() {
       {/* ===== DESKTOP (3 items) ===== */}
       <div className="row g-4 d-none d-md-flex">
         {desktopMagazines.map((mag, index) => (
-          <div key={mag._id} className="col-md-4">
+          <div key={mag._id || mag.title} className="col-md-4">
             <CoverCard
               image={mag.featuredImage}
-              href={`/magazine/${mag._id}`}
+              href={`/magazines/${mag._id}`}
               badge={index === 0 ? <>Latest<br />Issue</> : undefined}
               cardClass="cover-magazine"
               footer={
                 <Link
-                  to={`/magazine/${mag._id}`}
+                  to={`/magazines/${mag._id}`}
                   className="btn-pill-sm"
                 >
                   Read Issue
@@ -68,10 +69,10 @@ export default function MagazineSection() {
       {/* ===== MOBILE (2 items) ===== */}
       <div className="row g-4 d-md-none">
         {mobileMagazines.map((mag) => (
-          <div key={mag._id} className="col-6">
+          <div key={mag._id || mag.title} className="col-6">
             <CoverCard
               image={mag.featuredImage}
-              href={`/magazine/${mag._id}`}
+              href={`/magazines/${mag._id}`}
               cardClass="cover-magazine"
             />
           </div>

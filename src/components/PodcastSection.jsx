@@ -1,27 +1,13 @@
 import { Link } from 'react-router-dom';
 import CoverCard from './CoverCard'
 import { useEffect, useState } from 'react'
-import { collectPodcasts } from '../../lib/fetchRequests'
+// Import the static array directly
+import { podcasts as localPodcasts } from '../data/podcasts'
 
 export default function PodcastSection() {
-  const [podcasts, setPodcasts] = useState([])
+  // 1. Initialize the state directly with the local static data
+  const [podcastsList] = useState(localPodcasts || [])
   const [isMobile, setIsMobile] = useState(false)
-
-  // Fetch podcasts (✅ renamed)
-  useEffect(() => {
-    const fetchPodcasts = async () => {
-      try {
-        const response = await collectPodcasts()
-        if (Array.isArray(response)) {
-          setPodcasts(response)
-        }
-      } catch (error) {
-        console.error('Error fetching podcasts:', error)
-      }
-    }
-
-    fetchPodcasts()
-  }, [])
 
   // Mobile detection
   useEffect(() => {
@@ -32,7 +18,7 @@ export default function PodcastSection() {
   }, [])
 
   // Sort latest first
-  const sortedPodcasts = [...podcasts].sort(
+  const sortedPodcasts = [...podcastsList].sort(
     (a, b) =>
       new Date(b.createdAt).getTime() -
       new Date(a.createdAt).getTime()
@@ -63,7 +49,7 @@ export default function PodcastSection() {
 
       <div className="row g-4">
         {podcastsToShow.map((pod) => (
-          <div key={pod._id} className="col-12 col-md-4">
+          <div key={pod._id || pod.id} className="col-12 col-md-4">
             <CoverCard
               image={pod.featuredImage}
               href={`/podcast/${pod._id}`}

@@ -1,0 +1,110 @@
+import React from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux'; // 🟢 Added useSelector
+import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { logout } from '../../reduxAuth/authSlice';
+
+export default function Header() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  // 🟢 Read the authenticated user directly from the Redux store
+  const { user } = useSelector((state) => state.auth);
+  const isAuthenticated = !!user;
+
+  const isActive = (href) => {
+    if (href === '/') return location.pathname === '/';
+    return location.pathname.startsWith(href);
+  };
+
+  const handleLogoutClick = async (e) => {
+    e.preventDefault();
+    try {
+      await dispatch(logout()).unwrap();
+      navigate('/login'); 
+    } catch (error) {
+      console.error("Error signing out:", error.message || error);
+    }
+  };
+
+  return (
+    <Navbar expand="lg" className="py-3 site-header">
+      <Container fluid="xl">
+        <Navbar.Brand as={Link} to="/">
+          <div className="footer-logo mb-3">
+            <img
+              src="/assets/logos/logo-black.png"
+              alt="The Script"
+              width={200}
+              height={50}
+            />
+          </div>
+        </Navbar.Brand>
+
+        <Navbar.Toggle />
+        <Navbar.Collapse>
+          <Nav className="ms-auto gap-3">
+            <Nav.Link
+              as={Link}
+              to="/"
+              className={isActive('/') ? 'nav-active' : ''}
+            >
+              Home
+            </Nav.Link>
+
+            <Nav.Link
+              as={Link}
+              to="/magazines"
+              className={isActive('/magazines') ? 'nav-active' : ''}
+            >
+              Magazines
+            </Nav.Link>
+
+            <Nav.Link
+              as={Link}
+              to="/games"
+              className={isActive('/games') ? 'nav-active' : ''}
+            >
+              Games
+            </Nav.Link>
+
+            {/* Only render Dashboard link if user is logged in */}
+            {isAuthenticated && (
+              <Nav.Link
+                as={Link}
+                to="/dashboard"
+                className={isActive('/dashboard') ? 'nav-active' : ''} // 🟢 Fixed active state match class string
+              >
+                Dashboard
+              </Nav.Link>
+            )}
+
+            {/* Only show the profile dropdown if user is authenticated */}
+            {isAuthenticated && (
+              <NavDropdown
+                title={<i className="bi bi-person-circle fs-5"></i>} 
+                id="profile-nav-dropdown"
+                align="end" 
+              >
+                {/* Display role context dynamically if needed */}
+                <NavDropdown.Item text="true" className="text-muted small border-bottom pb-2">
+                  Signed in as: <strong>{user.role || 'User'}</strong>
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={handleLogoutClick} className="text-danger fw-semibold mt-1">
+                  <i className="bi bi-box-arrow-right me-2"></i> Log Out
+                </NavDropdown.Item>
+              </NavDropdown>
+            )}
+
+            {!isAuthenticated && (
+              <Nav.Link as={Link} to="/login" className="btn btn-outline-primary px-3 py-1">
+                Sign In
+              </Nav.Link>
+            )}
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  );
+}
