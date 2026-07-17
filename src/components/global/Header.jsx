@@ -2,7 +2,8 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../reduxAuth/authSlice'; // Adjust path as needed
-import mainLogo from '../../assets/logoscript.png';
+
+
 
 export default function Header() {
   const location = useLocation();
@@ -27,7 +28,7 @@ export default function Header() {
         {/* Brand/Logo */}
         <Link className="navbar-brand" to="/">
           <div className="footer-logo mb-3">
-            <img src={mainLogo} alt="The Script" width={200} height={50} />
+            <img src="https://admin.thescript.co.za/assets/store/logoscript.png" alt="The Script" width={200} height={50} />
           </div>
         </Link>
 
