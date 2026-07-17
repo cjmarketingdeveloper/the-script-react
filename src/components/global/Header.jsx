@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../reduxAuth/authSlice'; // Adjust path as needed
-import mainLogo from '../../assets/logo-black.png';
+import mainLogo from '../../assets/logoscript.png';
 
 export default function Header() {
   const location = useLocation();
