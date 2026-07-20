@@ -1,35 +1,13 @@
 import { Link } from 'react-router-dom';
+import CoverCard from './CoverCard'
 import { useEffect, useState } from 'react'
-import CoverCard from './CoverCard';
+// Import the static array directly
+import { podcasts as localPodcasts } from '../data/podcasts'
 
-
-export default function PodcastSection({user}) {
-
-  const [podcasts, setPodcasts] = useState([])
+export default function PodcastSection() {
+  // 1. Initialize the state directly with the local static data
+  const [podcastsList] = useState(localPodcasts || [])
   const [isMobile, setIsMobile] = useState(false)
-
-  // Fetch podcasts (✅ renamed)
-  useEffect(() => {
-    const fetchPodcasts = async () => {
-      try {
-        /*
-         const response = await axios.put(CONSTANTS.API_URL +"users/activate", userActivate, {
-                  headers: {
-                      token: "Bearer "+ user.accessToken
-                  }
-              });
-            
-        if (Array.isArray(response.data)) {
-          setPodcasts(response)
-        }
-          */
-      } catch (error) {
-        console.error('Error fetching podcasts:', error)
-      }
-    }
-
-    fetchPodcasts()
-  }, [])
 
   // Mobile detection
   useEffect(() => {
@@ -40,7 +18,7 @@ export default function PodcastSection({user}) {
   }, [])
 
   // Sort latest first
-  const sortedPodcasts = [...podcasts].sort(
+  const sortedPodcasts = [...podcastsList].sort(
     (a, b) =>
       new Date(b.createdAt).getTime() -
       new Date(a.createdAt).getTime()
@@ -71,7 +49,7 @@ export default function PodcastSection({user}) {
 
       <div className="row g-4">
         {podcastsToShow.map((pod) => (
-          <div key={pod._id} className="col-12 col-md-4">
+          <div key={pod._id || pod.id} className="col-12 col-md-4">
             <CoverCard
               image={pod.featuredImage}
               href={`/podcast/${pod._id}`}

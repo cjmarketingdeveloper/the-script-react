@@ -1,11 +1,10 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react'
-import * as CONSTANTS from "../CONSTANTS";
-import axios from 'axios';
 import CoverCard from './CoverCard';
+import { useEffect, useState } from 'react'
+// import { collectMagazines } from '../../lib/fetchRequests'
+import { magazines } from '../data/magazines'
 
-export default function MagazineSection({user}) {
-
+export default function MagazineSection() {
   const [latestMagazines, setLatestMagazines] = useState([])
 
   useEffect(() => {
@@ -14,16 +13,10 @@ export default function MagazineSection({user}) {
 
   const fetchListOfMagazines = async () => {
     try {
-      
-       const response = await axios.get(CONSTANTS.API_URL +"settings/slider/list/v2", {
-                    headers: {
-                        token: "Bearer "+ user.accessToken
-                    }
-                }); 
-      if (Array.isArray(response.data)) {
-        setLatestMagazines(response.data)
+      const response = await magazines
+      if (Array.isArray(response)) {
+        setLatestMagazines(response)
       }
-      
     } catch (error) {
       console.error('Error fetching magazines:', error)
     }
@@ -42,7 +35,7 @@ export default function MagazineSection({user}) {
         {/* Desktop button */}
         <Link
           to="/magazines"
-          className="btn-script d-md-inline-flex"
+          className="btn-view-more d-none d-md-inline-flex"
         >
           View more issues
           <span className="arrow-circle">
@@ -54,16 +47,16 @@ export default function MagazineSection({user}) {
       {/* ===== DESKTOP (3 items) ===== */}
       <div className="row g-4 d-none d-md-flex">
         {desktopMagazines.map((mag, index) => (
-          <div key={mag._id} className="col-md-4">
-            <CoverCard              
+          <div key={mag._id || mag.title} className="col-md-4">
+            <CoverCard
               image={mag.featuredImage}
-              href={`/magazine/${mag._id}`}
+              href={`/magazines/${mag._id}`}
               badge={index === 0 ? <>Latest<br />Issue</> : undefined}
               cardClass="cover-magazine"
               footer={
                 <Link
-                  to={`/magazine/${mag._id}`}
-                  className="btn btn-script"
+                  to={`/magazines/${mag._id}`}
+                  className="btn-pill-sm"
                 >
                   Read Issue
                 </Link>
@@ -73,7 +66,18 @@ export default function MagazineSection({user}) {
         ))}
       </div>
 
-   
+      {/* ===== MOBILE (2 items) ===== */}
+      <div className="row g-4 d-md-none">
+        {mobileMagazines.map((mag) => (
+          <div key={mag._id || mag.title} className="col-6">
+            <CoverCard
+              image={mag.featuredImage}
+              href={`/magazines/${mag._id}`}
+              cardClass="cover-magazine"
+            />
+          </div>
+        ))}
+      </div>
 
       {/* Mobile button */}
       <div className="d-md-none text-center mt-3">

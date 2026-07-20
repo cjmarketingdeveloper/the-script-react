@@ -1,14 +1,17 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { logout } from '../../reduxAuth/authSlice'; // Adjust path as needed
-
-
+import { useDispatch, useSelector } from 'react-redux'; // 🟢 Added useSelector
+import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { logout } from '../../reduxAuth/authSlice';
 
 export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  
+  // 🟢 Read the authenticated user directly from the Redux store
+  const { user } = useSelector((state) => state.auth);
+  const isAuthenticated = !!user;
 
   const isActive = (href) => {
     if (href === '/') return location.pathname === '/';
@@ -17,68 +20,91 @@ export default function Header() {
 
   const handleLogoutClick = async (e) => {
     e.preventDefault();
-    // Dispatch the logout action from authSlice
-    await dispatch(logout());
-    navigate('/login');
+    try {
+      await dispatch(logout()).unwrap();
+      navigate('/login'); 
+    } catch (error) {
+      console.error("Error signing out:", error.message || error);
+    }
   };
 
   return (
-    <nav className="navbar navbar-expand-lg py-3 site-header">
-      <div className="container-xl">
-        {/* Brand/Logo */}
-        <Link className="navbar-brand" to="/">
+    <Navbar expand="lg" className="py-3 site-header">
+      <Container fluid="xl">
+        <Navbar.Brand as={Link} to="/">
           <div className="footer-logo mb-3">
-            <img src="https://admin.thescript.co.za/assets/store/logoscript.png" alt="The Script" width={200} height={50} />
+            <img
+              src="/assets/logos/logo-black.png"
+              alt="The Script"
+              width={200}
+              height={50}
+            />
           </div>
-        </Link>
+        </Navbar.Brand>
 
-        {/* Toggle button for mobile */}
-        <button 
-          className="navbar-toggler" 
-          type="button" 
-          data-bs-toggle="collapse" 
-          data-bs-target="#navbarNav"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+        <Navbar.Toggle />
+        <Navbar.Collapse>
+          <Nav className="ms-auto gap-3">
+            <Nav.Link
+              as={Link}
+              to="/"
+              className={isActive('/') ? 'nav-active' : ''}
+            >
+              Home
+            </Nav.Link>
 
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto gap-3">
-            <li className="nav-item">
-              <Link className={`nav-link ${isActive('/') ? 'nav-active' : ''}`} to="/">Home</Link>
-            </li>
-            <li className="nav-item">
-              <Link className={`nav-link ${isActive('/magazines') ? 'nav-active' : ''}`} to="/magazines">Magazines</Link>
-            </li>
-            <li className="nav-item">
-              <Link className={`nav-link ${isActive('/podcasts') ? 'nav-active' : ''}`} to="/podcasts">Podcasts</Link>
-            </li>
+            <Nav.Link
+              as={Link}
+              to="/magazines"
+              className={isActive('/magazines') ? 'nav-active' : ''}
+            >
+              Magazines
+            </Nav.Link>
 
-            {/* Profile Dropdown */}
-            <li className="nav-item dropdown">
-              <a 
-                className="nav-link dropdown-toggle" 
-                href="#" 
-                id="profileDropdown" 
-                role="button" 
-                data-bs-toggle="dropdown"
+            <Nav.Link
+              as={Link}
+              to="/games"
+              className={isActive('/games') ? 'nav-active' : ''}
+            >
+              Games
+            </Nav.Link>
+
+            {/* Only render Dashboard link if user is logged in */}
+            {isAuthenticated && (
+              <Nav.Link
+                as={Link}
+                to="/dashboard"
+                className={isActive('/dashboard') ? 'nav-active' : ''} // 🟢 Fixed active state match class string
               >
-                <i className="bi bi-person-circle fs-5"></i>
-              </a>
-              <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                <li>
-                  <button 
-                    onClick={handleLogoutClick} 
-                    className="dropdown-item text-danger fw-semibold"
-                  >
-                    <i className="bi bi-box-arrow-right me-2"></i> Log Out
-                  </button>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+                Dashboard
+              </Nav.Link>
+            )}
+
+            {/* Only show the profile dropdown if user is authenticated */}
+            {isAuthenticated && (
+              <NavDropdown
+                title={<i className="bi bi-person-circle fs-5"></i>} 
+                id="profile-nav-dropdown"
+                align="end" 
+              >
+                {/* Display role context dynamically if needed */}
+                <NavDropdown.Item text="true" className="text-muted small border-bottom pb-2">
+                  Signed in as: <strong>{user.role || 'User'}</strong>
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={handleLogoutClick} className="text-danger fw-semibold mt-1">
+                  <i className="bi bi-box-arrow-right me-2"></i> Log Out
+                </NavDropdown.Item>
+              </NavDropdown>
+            )}
+
+            {!isAuthenticated && (
+              <Nav.Link as={Link} to="/login" className="btn btn-outline-primary px-3 py-1">
+                Sign In
+              </Nav.Link>
+            )}
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 }

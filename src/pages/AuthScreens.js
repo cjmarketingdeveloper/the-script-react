@@ -1,43 +1,21 @@
-import React, { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Header from '../components/global/Header';
-import Footer from '../components/global/Footer';
-import AccessIsDenied from './AccessIsDenied';
+import Spinner from '../components/global/Spinner'; // Adjust path if necessary
 
-function AuthScreens() {
-    const navigate                              = useNavigate();
-    const {user}                                = useSelector((state) => state.auth);
+export default function AuthScreens() {
+  // 1. Grab auth state from Redux
+  const { user, isLoading } = useSelector((state) => state.auth);
 
-    useEffect(() => {
-        if(!user){
-            navigate("/login");
-        }
-    },[user, navigate])
+  // 2. If Redux is still loading the session from localStorage, show a loader
+  if (isLoading) {
+    return <Spinner />; 
+  }
 
-  return (
-    <div>
-      {
-         user && 
-         (user.active === true) ? (
-            <div className="main-mobile-view">
-                <div className="main-mobile-content-view"> 
-                    <Header />                       
-                        <div className="main-content-arena">
-                            <Outlet />
-                        </div>
-                    <Footer/>
-                </div>
-                <div className="section-dash">
-                    {/* <BottomBar member={user} /> */}
-                </div>    
-            </div>
-            )
-        :
-            <AccessIsDenied />
-        }
-    </div>
-  )
+  // 3. If there is no logged-in user in Redux, redirect to login
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // 4. If they are authenticated, render the nested routes
+  return <Outlet />;
 }
-
-export default AuthScreens

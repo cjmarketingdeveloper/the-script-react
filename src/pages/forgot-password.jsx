@@ -1,145 +1,104 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+// src/pages/ForgotPassword.jsx
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux';
-import { register, reset } from '../reduxAuth/authSlice';
-import Spinner from '../components/global/Spinner';
-import * as CONSTANTS from "./../CONSTANTS";
+import '../styles/auth.css';
 
 export default function ForgotPassword() {
-  const navigate                                        = useNavigate();
-  const dispatch                                        = useDispatch();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [practiceNumber, setPracticeNumber] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const {user, isLoading, isError, isSuccess, message}  = useSelector((state) => state.auth);
-
-  const nameRef                                           = useRef();
-  const surnameRef                                        = useRef();
-  const phoneNumberRef                                    = useRef();
-  const passwordRef                                       = useRef();
-  const emailRef                                          = useRef();
-  const practiceNumberRef                                 = useRef();
-
-  useEffect(() => {
-      if(isError){
-          toast.error(message)
-      }
-    
-      if(isSuccess || user){
-        navigate('/');
-      }
-
-        dispatch(reset());
-  },[user, isError, isSuccess, message, navigate, dispatch])
-
-
-  const handleRegister = async (e) => {
+  const handleResetSubmit = async (e) => {
     e.preventDefault();
+    if (!email || !practiceNumber) {
+      toast.error("Both parameters are mandatory for cross-validation checks.");
+      return;
+    }
 
-      try{
+    setIsSubmitting(true);
 
-              if(passwordRef.current.value.length > 1 && 
-                 nameRef.current.value.length > 1 && 
-                 surnameRef.current.value.length > 1 ){
+    // Simulate cross-referencing values inside mock backend database array mapping definitions
+    setTimeout(() => {
+      const localUsers = JSON.parse(localStorage.getItem('mock_users_db')) || [];
+      const userMatch = localUsers.find(
+        (u) => u.email?.toLowerCase() === email.trim().toLowerCase() && 
+               u.practiceNumber?.toLowerCase() === practiceNumber.trim().toLowerCase()
+      );
 
+      setIsSubmitting(false);
 
-                    const userData = {
-                      "phone": phoneNumberRef.current.value,
-                      "password": passwordRef.current.value,
-                      "practiceNumber": practiceNumberRef.current.value,
-                      "name": nameRef.current.value,
-                      "surname": surnameRef.current.value,
-                      "email": emailRef.current.value,   
-                      "apptype": "web",                      
-                      "profilePic":""
-                    }        
-                    
-                    dispatch(register(userData));
-                 }else {
-                    toast.error("Please fill in required fields");
-                 }
-                
-            }catch(errorData){
-              console.log(errorData);
-            }
-      
-  }
+      if (!userMatch) {
+        toast.error("Mismatch verified: Provided credentials do not align with any registered facility unit profile.");
+        return;
+      }
 
-  if (isLoading) {
-      return  <Spinner />
-  }
+      toast.success(`Security payload transmitted successfully to ${email}!`);
+      navigate('/login');
+    }, 1200);
+  };
 
   return (
-    <div className="logo-base flexlog">
-      <div className="log-start">          
-          <div className="main-login-data">
-            <div className="reg-header ">
-                  
+    <div className="auth-page-wrapper px-3">
+      <div className="container" style={{ maxWidth: '960px' }}>
+        <div className="card auth-split-card shadow-lg">
+          <div className="row g-0">
+            
+            {/* Visual Vector Column */}
+            <div className="col-md-6 d-none d-md-flex auth-vector-panel">
+              <img 
+                src="image_agent_tag_16513441333642314217" 
+                alt="Account Recovery Process" 
+                className="auth-vector-image" 
+              />
             </div>
-              <div className="form-card ">
-                  <div className="frm-log-area">
-                      <h4 className="title-login text-center">Register</h4>
-                          <form encType="multipart/form-data">
-                              <div className="form-group frg">
-                                  <input 
-                                    type="text" className="form-control ct-content wide100" 
-                                    ref={phoneNumberRef} 
-                                    maxLength={10} 
-                                    placeholder="Enter Phone Number*" required/>
-                              </div>
-                              <div className="form-group frg">
-                                  <input type="password" 
-                                    className="form-control ct-content wide100"  
-                                    ref={passwordRef} 
-                                    placeholder="Enter Password*" required/>
-                              </div>
-                              <div className="form-group frg">
-                                  <input type="text" 
-                                    className="form-control ct-content" 
-                                    ref={practiceNumberRef} 
-                                    placeholder="Enter Name*" required/>
-                              </div>
-                              <div className="form-group frg">
-                                  <input type="text" 
-                                    className="form-control ct-content" 
-                                    ref={nameRef} 
-                                    placeholder="Enter Name*" required/>
-                              </div>
-                              <div className="form-group frg">
-                                  <input 
-                                      type="text" 
-                                      className="form-control ct-content"  
-                                      ref={surnameRef} 
-                                      placeholder="Enter Surname*" required/>
-                              </div>
-                              <div className="form-group frg">
-                                  <input type="email" 
-                                    className="form-control ct-content"  
-                                    ref={emailRef} placeholder="Enter Email Address" required/>
-                              </div>
-                                    
-                              <div className="form-group mgtop20">
-                                  <button 
-                                      className="btn btn-mevent btn-full" 
-                                      onClick={handleRegister} 
-                                      disabled={isLoading}>Register
-                                  </button>
-                              </div>
-                              <div className=" frg">
-                              </div>
-                          </form>
-                                                    
-                          <p className="mgtop20 space-flex txts12">
-                              <Link to="/forgot-password"  className="link-log-text">Forgot Password?</Link>
-                              <Link to="/login"  className="link-log-text">Login?</Link>
-                          </p>
-                          <p className="text-center smal-g">
-                          { CONSTANTS.VERSION}
-                          </p>
-                  </div>         
+
+            {/* Form Fields Column */}
+            <div className="col-md-6 p-4 p-sm-5 d-flex flex-column justify-content-center">
+              <div className="mb-4">
+                <h3 className="auth-form-title">Account Recovery</h3>
+                <p className="text-muted small">Verify identity anchors to generate password renewal tokens.</p>
               </div>
-                
+
+              <form onSubmit={handleResetSubmit}>
+                <div className="mb-3">
+                  <label className="form-label fw-semibold text-secondary small">Email Address <span className="text-danger">*</span></label>
+                  <input 
+                    type="email" 
+                    className="form-control form-control-lg fs-6" 
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)} 
+                    placeholder="name@example.com"
+                    required 
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="form-label fw-semibold text-secondary small">Practice Number <span className="text-danger">*</span></label>
+                  <input 
+                    type="text" 
+                    className="form-control form-control-lg fs-6" 
+                    value={practiceNumber} 
+                    onChange={(e) => setPracticeNumber(e.target.value)} 
+                    placeholder="e.g. PRAC-12345"
+                    required 
+                  />
+                </div>
+
+                <button type="submit" className="btn btn-script btn-lg w-100 mb-3 shadow-sm" disabled={isSubmitting}>
+                  {isSubmitting ? 'Validating Unit Alignment...' : 'Verify & Send Reset'}
+                </button>
+
+                <Link to="/login" className="btn btn-script-outline btn-lg w-100 d-flex align-items-center justify-content-center">
+                  Back to Sign In
+                </Link>
+              </form>
+            </div>
+
           </div>
-      </div>       
-  </div>
+        </div>
+      </div>
+    </div>
   );
 }

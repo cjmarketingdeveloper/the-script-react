@@ -1,14 +1,21 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useSelector } from 'react-redux';
 
 export default function ProtectedRoute({ children }) {
-  const { isAuthenticated } = useAuth();
+  const { user, isLoading } = useSelector((state) => state.auth);
 
-  // If not logged in, redirect them to the /login page
-  if (!isAuthenticated) {
+  console.log("--- PROTECTED ROUTE DEBUG ---");
+  console.log("Loading State:", isLoading);
+  console.log("Current User Object:", user);
+  console.log("Is Authenticated:", !!user);
+
+  if (isLoading) {
+    return null; 
+  }
+
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // If logged in, let them pass through to the page
   return children;
 }
