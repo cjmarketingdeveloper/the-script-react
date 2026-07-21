@@ -71,12 +71,12 @@ export default function Register() {
 
   return (
     <div className="auth-page-wrapper p-3 py-5">
-      <div className="container" style={{ maxWidth: '1040px' }}>
-        <div className="card auth-split-card shadow-lg">
+      <div className="container" style={{ maxWidth: '640px' }}>
+        {/* <div className="card auth-split-card shadow-lg"> */}
           <div className="row g-0">
             
             {/* Form Fields Column */}
-            <div className="col-lg-6 p-4 p-sm-5 d-flex flex-column justify-content-center">
+            <div className="col-lg-12 p-4 p-sm-5 d-flex flex-column justify-content-center">
               <div className="mb-4">
                 <h3 className="auth-form-title">Create Staff Account</h3>
                 <p className="text-muted small">Enter your pharmacy workplace coordinates to self-provision validation profiles.</p>
@@ -129,16 +129,16 @@ export default function Register() {
             </div>
 
             {/* Visual Vector Column */}
-            <div className="col-lg-6 d-none d-lg-flex auth-vector-panel">
+            {/* <div className="col-lg-6 d-none d-lg-flex auth-vector-panel">
               <img 
                 src="image_agent_tag_16513441333642316184" 
                 alt="Pharmacy Staff Workspace" 
                 className="auth-vector-image" 
               />
-            </div>
+            </div> */}
 
           </div>
-        </div>
+        {/* </div> */}
       </div>
 
       {/* SUCCESS OVERLAY MODAL */}

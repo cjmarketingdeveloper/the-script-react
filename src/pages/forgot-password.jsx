@@ -41,21 +41,21 @@ export default function ForgotPassword() {
 
   return (
     <div className="auth-page-wrapper px-3">
-      <div className="container" style={{ maxWidth: '960px' }}>
-        <div className="card auth-split-card shadow-lg">
+      <div className="container" style={{ maxWidth: '660px' }}>
+        {/* <div className="card auth-split-card shadow-lg"> */}
           <div className="row g-0">
             
             {/* Visual Vector Column */}
-            <div className="col-md-6 d-none d-md-flex auth-vector-panel">
+            {/* <div className="col-md-6 d-none d-md-flex auth-vector-panel">
               <img 
                 src="image_agent_tag_16513441333642314217" 
                 alt="Account Recovery Process" 
                 className="auth-vector-image" 
               />
-            </div>
+            </div> */}
 
             {/* Form Fields Column */}
-            <div className="col-md-6 p-4 p-sm-5 d-flex flex-column justify-content-center">
+            <div className="col-md-12 p-4 p-sm-5 d-flex flex-column justify-content-center">
               <div className="mb-4">
                 <h3 className="auth-form-title">Account Recovery</h3>
                 <p className="text-muted small">Verify identity anchors to generate password renewal tokens.</p>
@@ -97,7 +97,7 @@ export default function ForgotPassword() {
             </div>
 
           </div>
-        </div>
+        {/* </div> */}
       </div>
     </div>
   );
