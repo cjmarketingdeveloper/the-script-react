@@ -53,7 +53,7 @@ export default function ArchiveMagazines() {
           {/* FILTER */}
           <div className="position-relative">
             <button
-              className="btn-pill-sm d-flex align-items-center gap-2"
+              className="btn btn-script d-flex align-items-center gap-2"
               onClick={() => setOpen(!open)}
             >
               Filter by
@@ -112,7 +112,7 @@ export default function ArchiveMagazines() {
                   footer={
                     <Link
                       to={`/magazine/${mag._id}`}
-                      className="btn-pill-sm"
+                      className="btn btn-script"
                     >
                       Read Issue
                     </Link>

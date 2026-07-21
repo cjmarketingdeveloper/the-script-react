@@ -54,7 +54,7 @@ export default function PodcastSection() {
               image={pod.featuredImage}
               href={`/podcast/${pod._id}`}
               cardClass="cover-podcast"
-              overlay={<button className="btn-pill-sm">▶ Play</button>}
+              overlay={<button className="btn btn-script">▶ Play</button>}
             />
           </div>
         ))}

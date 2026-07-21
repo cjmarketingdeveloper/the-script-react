@@ -89,7 +89,7 @@ export default function MarketingEnquiriesPage() {
               <div className="card-footer bg-white border-0">
                 <Link
                   to="/marketing-enquiries/#contact-us-form"
-                  className="btn btn-pill w-100"
+                  className="btn btn-script w-100"
                 >
                   Contact Sales
                 </Link>
@@ -117,7 +117,7 @@ export default function MarketingEnquiriesPage() {
               <div className="card-footer bg-white border-0">
                 <Link
                   to ="/marketing-enquiries/#contact-us-form"
-                  className="btn btn-pill w-100"
+                  className="btn btn-script w-100"
                 >
                   Contact Sales
                 </Link>
@@ -144,7 +144,7 @@ export default function MarketingEnquiriesPage() {
               <div className="card-footer bg-white border-0">
                 <Link
                   to="/marketing-enquiries/#contact-us-form"
-                  className="btn btn-pill w-100"
+                  className="btn btn-script w-100"
                 >
                   Contact Sales
                 </Link>
@@ -198,7 +198,7 @@ export default function MarketingEnquiriesPage() {
                     <textarea className="form-control" id="message" rows={4}></textarea>
                   </div>
 
-                  <button type="submit" className="btn btn-primary w-100">
+                  <button type="submit" className="btn btn-script w-100">
                     Submit
                   </button>
                 </form>

@@ -55,7 +55,7 @@ export default function HeroCarousel() {
                     {slide.link && (
                       <Link 
                         to={slide.link}
-                        className="btn px-4 py-2 btn-pill-sm"
+                        className="btn px-4 py-2 btn btn-script"
                         style={{ backgroundColor: slide.linkColor }}
                       >
                         {slide.linkText || "Learn More"}

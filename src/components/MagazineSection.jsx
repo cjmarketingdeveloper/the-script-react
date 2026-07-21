@@ -56,7 +56,7 @@ export default function MagazineSection() {
               footer={
                 <Link
                   to={`/magazines/${mag._id}`}
-                  className="btn-pill-sm"
+                  className="btn btn-script"
                 >
                   Read Issue
                 </Link>

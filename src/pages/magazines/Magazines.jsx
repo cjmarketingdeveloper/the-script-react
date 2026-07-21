@@ -110,7 +110,7 @@ const filteredMagazines = magazinesList
                     footer={
                       <Link
                         to={`/magazines/${mag._id}`}
-                        className="btn-pill-sm"
+                        className="btn btn-script"
                       >
                         Read Issue
                       </Link>

@@ -35,28 +35,34 @@ export default function Login() {
     }
 
     // Mock DB expects verification payloads
-    dispatch(login({ phonenumber: email.trim(), password }));
+    dispatch(login({ email: email.trim(), password }));
   };
 
   if (isLoading) return <Spinner />;
 
   return (
-    <div className="auth-page-wrapper px-3">
-      <div className="container" style={{ maxWidth: '960px' }}>
+    <div className="auth-page-wrapper px-3 d-flex align-items-center justify-content-center">
+    {/* style={{ 
+      backgroundImage: `url("assets/login.svg")`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      minHeight: '100vh'
+    }}> */}
+      <div className="container" style={{ maxWidth: '660px' }}>
         {/* <div className="card auth-split-card shadow-lg"> */}
           <div className="row g-0">
             
             {/* Visual Vector Column */}
-            <div className="col-md-6 d-none d-md-flex auth-vector-panel">
+            {/* <div className="col-md-6 d-none d-md-flex auth-vector-panel">
               <img 
-                src="image_agent_tag_16513441333642316346" 
+                src="assets/login.svg" 
                 alt="Secure Login System" 
                 className="auth-vector-image" 
               />
-            </div>
+            </div> */}
 
             {/* Form Fields Column */}
-            <div className="col-md-6 p-4 p-sm-5 d-flex flex-column justify-content-center">
+            <div className="col-md-12 p-4 p-sm-5 d-flex flex-column justify-content-center">
               <div className="mb-4 text-center text-md-start">
                 <img src="/assets/logos/logo-black.png" alt="The Script" width={160} className="mb-3" />
                 <h3 className="auth-form-title">Welcome Back</h3>

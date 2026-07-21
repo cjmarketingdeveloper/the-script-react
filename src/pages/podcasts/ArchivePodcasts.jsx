@@ -54,7 +54,7 @@ export default function ArchivePodcasts() {
           {/* FILTER */}
           <div className="position-relative">
             <button
-              className="btn-pill-sm d-flex align-items-center gap-2"
+              className="btn btn-script d-flex align-items-center gap-2"
               onClick={() => setOpen(!open)}
             >
               Filter by
@@ -116,7 +116,7 @@ export default function ArchivePodcasts() {
                     footer={
                       <Link
                         to={`/podcast/${pod._id}`}
-                        className="btn-pill-sm"
+                        className="btn btn-script"
                       >
                         Listen Now
                       </Link>

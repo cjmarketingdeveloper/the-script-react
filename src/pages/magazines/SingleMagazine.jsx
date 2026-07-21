@@ -267,11 +267,11 @@ export default function SingleMagazine() {
           </div>
 
           <div className="d-flex justify-content-between align-items-center my-3">
-            <button className="btn btn-orange" onClick={handlePrev} disabled={activeIndex === 0}>
+            <button className="btn btn-script" onClick={handlePrev} disabled={activeIndex === 0}>
               &larr; Previous
             </button>
             <span className="text-white fw-bold">Page {activeIndex + 1} / {allPages.length}</span>
-            <button className="btn btn-orange" onClick={handleNext} disabled={activeIndex === allPages.length - 1}>
+            <button className="btn btn-script" onClick={handleNext} disabled={activeIndex === allPages.length - 1}>
               Next &rarr;
             </button>
           </div>

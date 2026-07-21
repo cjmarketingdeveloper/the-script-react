@@ -75,7 +75,7 @@ export const login = createAsyncThunk('auth/login', async (loginPayload, thunkAP
         
         // Find user by phone and password match
         const foundUser = db.find(
-            (u) => u.phonenumber === loginPayload.phonenumber && u.password === loginPayload.password
+            (u) => u.email === loginPayload.email && u.password === loginPayload.password
         );
 
         if (!foundUser) {

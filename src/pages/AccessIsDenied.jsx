@@ -29,7 +29,7 @@ function AccessIsDenied() {
           
           <a 
             href="/" 
-            className="btn btn-primary btn-lg d-flex align-items-center gap-2"
+            className="btn btn-script btn-lg d-flex align-items-center gap-2"
           >
             Return Home
           </a>

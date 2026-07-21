@@ -11,12 +11,28 @@
 
 /* Base Body Layout Wrapper */
 .auth-page-wrapper {
-  background-color: var(--color-script-second);
+  position: relative;
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-script-black);
+  overflow: hidden;
+}
+
+.auth-page-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -20px; /* Slight offset prevents harsh blur edges around the viewport */
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  background-image: url('../assets/login.svg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(12px); /* Adjust pixel amount to control blur intensity */
+  z-index: 0;
+}
+
+.auth-page-wrapper > * {
+  position: relative;
+  z-index: 1; /* Keeps your login card crisp and above the blurred background */
 }
 
 /* Split-Panel Card Structure */

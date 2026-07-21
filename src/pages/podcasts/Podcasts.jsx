@@ -107,7 +107,7 @@ export default function Podcasts() {
                     footer={
                       <Link
                         to={`/podcast/${pod._id}`}
-                        className="btn-pill-sm"
+                        className="btn btn-script"
                       >
                         Listen Now
                       </Link>
