@@ -40,64 +40,69 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="auth-page-wrapper px-3">
-      <div className="container" style={{ maxWidth: '660px' }}>
-        {/* <div className="card auth-split-card shadow-lg"> */}
-          <div className="row g-0">
-            
-            {/* Visual Vector Column */}
-            {/* <div className="col-md-6 d-none d-md-flex auth-vector-panel">
-              <img 
-                src="image_agent_tag_16513441333642314217" 
-                alt="Account Recovery Process" 
-                className="auth-vector-image" 
-              />
-            </div> */}
+    <div className="auth-page-wrapper px-3 d-flex align-items-center justify-content-center">
+      <div className="container-fluid px-md-5" style={{ maxWidth: '1200px' }}>
+        <div className="row g-0 justify-content-end">
+          
+          {/* Form Fields Column snapped to the far right */}
+          <div className="col-md-6 col-lg-5 ms-auto p-4 p-sm-5 d-flex flex-column justify-content-center">
+            <div className="mb-4 text-center text-md-start">
+              <h3 className="auth-form-title">Account Recovery</h3>
+              <p className="text-muted small"></p>
+            </div>
 
-            {/* Form Fields Column */}
-            <div className="col-md-12 p-4 p-sm-5 d-flex flex-column justify-content-center">
+            <form onSubmit={handleResetSubmit}>
               <div className="mb-4">
-                <h3 className="auth-form-title">Account Recovery</h3>
-                <p className="text-muted small">Verify identity anchors to generate password renewal tokens.</p>
+                <label className="form-label fw-semibold text-secondary small">
+                  Email Address <span className="text-danger">*</span>
+                </label>
+                <input 
+                  type="email" 
+                  className="form-control form-control-lg fs-5 rounded-pill py-3 px-4" 
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)} 
+                  placeholder="name@example.com"
+                  required 
+                />
               </div>
 
-              <form onSubmit={handleResetSubmit}>
-                <div className="mb-3">
-                  <label className="form-label fw-semibold text-secondary small">Email Address <span className="text-danger">*</span></label>
-                  <input 
-                    type="email" 
-                    className="form-control form-control-lg fs-6" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
-                    placeholder="name@example.com"
-                    required 
-                  />
-                </div>
+              <div className="mb-4">
+                <label className="form-label fw-semibold text-secondary small">
+                  Practice Number <span className="text-danger">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  className="form-control form-control-lg fs-5 rounded-pill py-3 px-4" 
+                  value={practiceNumber} 
+                  onChange={(e) => setPracticeNumber(e.target.value)} 
+                  placeholder="e.g. PRAC-12345"
+                  required 
+                />
+              </div>
 
-                <div className="mb-4">
-                  <label className="form-label fw-semibold text-secondary small">Practice Number <span className="text-danger">*</span></label>
-                  <input 
-                    type="text" 
-                    className="form-control form-control-lg fs-6" 
-                    value={practiceNumber} 
-                    onChange={(e) => setPracticeNumber(e.target.value)} 
-                    placeholder="e.g. PRAC-12345"
-                    required 
-                  />
-                </div>
-
-                <button type="submit" className="btn btn-script btn-lg w-100 mb-3 shadow-sm" disabled={isSubmitting}>
+              {/* Centered Action Controls */}
+              <div className="text-center">
+                <button 
+                  type="submit" 
+                  className="btn btn-script btn-lg mb-3 shadow-sm px-5 py-2 rounded-pill w-100" 
+                  disabled={isSubmitting}
+                >
                   {isSubmitting ? 'Validating Unit Alignment...' : 'Verify & Send Reset'}
                 </button>
 
-                <Link to="/login" className="btn btn-script-outline btn-lg w-100 d-flex align-items-center justify-content-center">
-                  Back to Sign In
-                </Link>
-              </form>
-            </div>
-
+                <div>
+                  <Link 
+                    to="/login" 
+                    className="btn btn-script-outline btn-lg rounded-pill px-4 py-2 d-inline-flex align-items-center justify-content-center"
+                  >
+                    Back to Sign In
+                  </Link>
+                </div>
+              </div>
+            </form>
           </div>
-        {/* </div> */}
+
+        </div>
       </div>
     </div>
   );

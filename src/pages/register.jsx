@@ -70,75 +70,133 @@ export default function Register() {
   if (isLoading) return <Spinner />;
 
   return (
-    <div className="auth-page-wrapper p-3 py-5">
-      <div className="container" style={{ maxWidth: '640px' }}>
-        {/* <div className="card auth-split-card shadow-lg"> */}
-          <div className="row g-0">
-            
-            {/* Form Fields Column */}
-            <div className="col-lg-12 p-4 p-sm-5 d-flex flex-column justify-content-center">
-              <div className="mb-4">
-                <h3 className="auth-form-title">Create Staff Account</h3>
-                <p className="text-muted small">Enter your pharmacy workplace coordinates to self-provision validation profiles.</p>
-              </div>
-
-              <form onSubmit={handleRegisterSubmit}>
-                <div className="row g-2 mb-3">
-                  <div className="col-sm-6">
-                    <label className="form-label fw-semibold text-secondary small">Name <span className="text-danger">*</span></label>
-                    <input type="text" className={`form-control ${validated && !name ? 'is-invalid' : ''}`} value={name} onChange={(e) => setName(e.target.value)} placeholder="John" required />
-                  </div>
-                  <div className="col-sm-6">
-                    <label className="form-label fw-semibold text-secondary small">Surname <span className="text-danger">*</span></label>
-                    <input type="text" className={`form-control ${validated && !surname ? 'is-invalid' : ''}`} value={surname} onChange={(e) => setSurname(e.target.value)} placeholder="Doe" required />
-                  </div>
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label fw-semibold text-secondary small">Email Address <span className="text-danger">*</span></label>
-                  <input type="email" className={`form-control ${validated && !email ? 'is-invalid' : ''}`} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@pharmacy.com" required />
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label fw-semibold text-secondary small">Password <span className="text-danger">*</span></label>
-                  <input type="password" className={`form-control ${validated && !password ? 'is-invalid' : ''}`} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 6 characters" required />
-                </div>
-
-                <div className="row g-2 mb-4">
-                  <div className="col-sm-6">
-                    <label className="form-label fw-semibold text-secondary small">Practice Number <span className="text-danger">*</span></label>
-                    <input type="text" className={`form-control ${validated && !practiceNumber ? 'is-invalid' : ''}`} value={practiceNumber} onChange={(e) => setPracticeNumber(e.target.value)} placeholder="e.g. PRAC-12345" required />
-                  </div>
-                  <div className="col-sm-6">
-                    <label className="form-label fw-semibold text-secondary small">Phone <span className="text-danger">*</span></label>
-                    <input type="tel" className={`form-control ${validated && !phone ? 'is-invalid' : ''}`} value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={10} placeholder="10-digit number" required />
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <label className="form-label fw-semibold text-secondary small">Job Title <span className="text-muted">(Optional)</span></label>
-                  <input type="text" className="form-control" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="e.g. Clerk, Assistant, Driver" />
-                </div>
+    <div className="auth-page-wrapper register-page p-3 py-5 d-flex align-items-center justify-content-center" style = {{backgroundSize: 'contain'}}>
+      <div className="container-fluid px-md-5" style={{ maxWidth: '1200px' }}>
+        <div className="row g-0 justify-content-end">
           
-                <button type="submit" className="btn btn-script btn-lg w-100 mb-3 shadow-sm">Register Account</button>
-              </form>
-
-              <p className="text-center small text-muted mb-0">
-                Already registered? <Link to="/login" style={{ color: '#2563EB' }} className="text-decoration-none fw-semibold">Sign In</Link>
-              </p>
+          {/* Form Fields Column snapped to far right */}
+          <div className="col-lg-6 col-xl-5 ms-auto p-4 p-sm-5 d-flex flex-column justify-content-center">
+            <div className="mb-4 text-center text-md-start">
+              <h3 className="auth-form-title">Create Staff Account</h3>
+              <p className="text-muted small"></p>
             </div>
 
-            {/* Visual Vector Column */}
-            {/* <div className="col-lg-6 d-none d-lg-flex auth-vector-panel">
-              <img 
-                src="image_agent_tag_16513441333642316184" 
-                alt="Pharmacy Staff Workspace" 
-                className="auth-vector-image" 
-              />
-            </div> */}
+            <form onSubmit={handleRegisterSubmit}>
+              <div className="row g-2 mb-3">
+                <div className="col-sm-6">
+                  <label className="form-label fw-semibold text-secondary small">
+                    Name <span className="text-danger">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    className={`form-control form-control-lg fs-5 rounded-pill py-3 px-4 ${validated && !name ? 'is-invalid' : ''}`} 
+                    value={name} 
+                    onChange={(e) => setName(e.target.value)}  
+                    required 
+                  />
+                </div>
+                <div className="col-sm-6">
+                  <label className="form-label fw-semibold text-secondary small">
+                    Surname <span className="text-danger">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    className={`form-control form-control-lg fs-5 rounded-pill py-3 px-4 ${validated && !surname ? 'is-invalid' : ''}`} 
+                    value={surname} 
+                    onChange={(e) => setSurname(e.target.value)} 
+                    required 
+                  />
+                </div>
+              </div>
 
+              <div className="mb-3">
+                <label className="form-label fw-semibold text-secondary small">
+                  Email Address <span className="text-danger">*</span>
+                </label>
+                <input 
+                  type="email" 
+                  className={`form-control form-control-lg fs-5 rounded-pill py-3 px-4 ${validated && !email ? 'is-invalid' : ''}`} 
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)} 
+                  placeholder="example@pharmacy.com" 
+                  required 
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label fw-semibold text-secondary small">
+                  Password <span className="text-danger">*</span>
+                </label>
+                <input 
+                  type="password" 
+                  className={`form-control form-control-lg fs-5 rounded-pill py-3 px-4 ${validated && !password ? 'is-invalid' : ''}`} 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)} 
+                  placeholder="At least 6 characters" 
+                  required 
+                />
+              </div>
+
+              <div className="row g-2 mb-4">
+                <div className="col-sm-6">
+                  <label className="form-label fw-semibold text-secondary small">
+                    Practice Number <span className="text-danger">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    className={`form-control form-control-lg fs-5 rounded-pill py-3 px-4 ${validated && !practiceNumber ? 'is-invalid' : ''}`} 
+                    value={practiceNumber} 
+                    onChange={(e) => setPracticeNumber(e.target.value)} 
+                    placeholder="e.g. PRAC-12345" 
+                    required 
+                  />
+                </div>
+                <div className="col-sm-6">
+                  <label className="form-label fw-semibold text-secondary small">
+                    Phone <span className="text-danger">*</span>
+                  </label>
+                  <input 
+                    type="tel" 
+                    className={`form-control form-control-lg fs-5 rounded-pill py-3 px-4 ${validated && !phone ? 'is-invalid' : ''}`} 
+                    value={phone} 
+                    onChange={(e) => setPhone(e.target.value)} 
+                    maxLength={10} 
+                    placeholder="10-digit number" 
+                    required 
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="form-label fw-semibold text-secondary small">
+                  Job Title <span className="text-muted">(Optional)</span>
+                </label>
+                <input 
+                  type="text" 
+                  className="form-control form-control-lg fs-5 rounded-pill py-3 px-4" 
+                  value={jobTitle} 
+                  onChange={(e) => setJobTitle(e.target.value)} 
+                  placeholder="e.g. Clerk, Assistant, Driver" 
+                />
+              </div>
+        
+              {/* Centered Full-Width Action Button */}
+              <div className="text-center">
+                <button 
+                  type="submit" 
+                  className="btn btn-script btn-lg mb-3 shadow-sm px-5 py-2 rounded-pill w-100"
+                >
+                  Register
+                </button>
+              </div>
+            </form>
+
+            <p className="text-center small text-muted mb-0">
+              Already registered? <Link to="/login" style={{ color: '#2db8eb' }} className="text-decoration-none fw-semibold">Sign In</Link>
+            </p>
           </div>
-        {/* </div> */}
+
+        </div>
       </div>
 
       {/* SUCCESS OVERLAY MODAL */}
@@ -147,10 +205,16 @@ export default function Register() {
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content border-0 shadow-lg p-4">
               <div className="modal-body text-center p-4">
-                <div className="mb-3" style={{ color: 'var(--color-script-main)' }}><i className="bi bi-check-circle-fill display-4"></i></div>
+                <div className="mb-3" style={{ color: 'var(--color-script-main)' }}>
+                  <i className="bi bi-check-circle-fill display-4"></i>
+                </div>
                 <h4 className="fw-bold mb-2">Registration Complete</h4>
-                <p className="text-muted small mb-4">Your staff profile is bound under practice key unit tracking parameters.</p>
-                <button type="button" className="btn btn-script w-100" onClick={() => navigate('/login')}>Proceed to Sign In</button>
+                <p className="text-muted small mb-4">
+                  Your staff profile is bound under practice key unit tracking parameters.
+                </p>
+                <button type="button" className="btn btn-script w-100" onClick={() => navigate('/login')}>
+                  Proceed to Sign In
+                </button>
               </div>
             </div>
           </div>

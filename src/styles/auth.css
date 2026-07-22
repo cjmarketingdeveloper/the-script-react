@@ -3,7 +3,7 @@
 /* Core Theme Configuration overrides */
 :root {
   --color-script-main: #ff8400;     /* Orange */
-  --color-script-accent: #2563EB;   /* Blue */
+  --color-script-accent: #2db8eb;   /* Blue */
   --color-script-second: #f8f8f8;   /* Gray Background */
   --color-script-black: #000000;
   --color-script-white: #ffffff;
@@ -19,16 +19,33 @@
 .auth-page-wrapper::before {
   content: '';
   position: absolute;
-  top: -20px; /* Slight offset prevents harsh blur edges around the viewport */
+  top: -20px; 
   left: -20px;
   right: -20px;
   bottom: -20px;
   background-image: url('../assets/login.svg');
   background-size: cover;
   background-position: center;
-  filter: blur(12px); /* Adjust pixel amount to control blur intensity */
+  /* filter: blur(12px);  */
   z-index: 0;
 }
+
+@media screen and (max-width: 767px) {
+  .auth-page-wrapper::before {
+    background-image: url('../assets/mobile-login.svg');
+    /* background-size: fill; */
+    background-position: top;
+  }
+  /* Specific override for the register screen */
+.auth-page-wrapper.register-page::before {
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+  .container-fluid{
+    margin-top: 200px;
+  }
+}
+
 
 .auth-page-wrapper > * {
   position: relative;
@@ -86,8 +103,8 @@
 
 .btn-script-outline:hover {
   background-color: rgba(37, 99, 235, 0.08) !important;
-  color: #1d4ed8 !important;
-  border-color: #1d4ed8 !important;
+  color: #2db8eb !important;
+  border-color: #2db8eb !important;
 }
 
 /* Form Layout Elements */
@@ -99,4 +116,9 @@
 .form-control:focus {
   border-color: var(--color-script-accent);
   box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.15);
+}
+.input-box{
+  border: 1px solid var(--color-script-main) !important;
+  font-weight: 600;
+  transition: all 0.25s ease-in-out;
 }
