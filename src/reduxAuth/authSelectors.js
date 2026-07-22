@@ -1,5 +1,5 @@
 // src/store/authSelectors.js
-import { ROLE_PERMISSIONS } from '../constants/permissions';
+import { ROLE_PERMISSIONS } from '../data/permissions';
 
 // Points to your actual state key "user"
 export const selectCurrentUser = (state) => state.auth.user;

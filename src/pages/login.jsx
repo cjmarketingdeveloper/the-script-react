@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { login, reset } from '../reduxAuth/authSlice';
 import Spinner from '../components/global/Spinner';
-import '../styles/auth.css';
 
 export default function Login() {
   const navigate = useNavigate();

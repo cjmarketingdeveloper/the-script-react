@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import '../styles/auth.css';
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -90,16 +89,19 @@ export default function ForgotPassword() {
                   {isSubmitting ? 'Validating Unit Alignment...' : 'Verify & Send Reset'}
                 </button>
 
-                <div>
+                {/* <div>
                   <Link 
                     to="/login" 
                     className="btn btn-script-outline btn-lg rounded-pill px-4 py-2 d-inline-flex align-items-center justify-content-center"
                   >
                     Back to Sign In
                   </Link>
-                </div>
+                </div> */}
               </div>
             </form>
+            <p className="text-center small text-muted mb-0">
+              Remember your credentials? <Link to="/login" style={{ color: '#2db8eb' }} className="text-decoration-none fw-semibold">Sign In</Link>
+            </p>
           </div>
 
         </div>

@@ -31,6 +31,23 @@
         place-self: flex-start;
     }
 }
+
+@media screen and (max-width: 767px) {
+  .auth-page-wrapper::before {
+    background-image: url('assets/mobile-login.svg');
+    /* background-size: fill; */
+    background-position: top;
+  }
+  /* Specific override for the register screen */
+  .auth-page-wrapper.register-page::before {
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  .container-fluid{
+    margin-top: 200px;
+  }
+}
+
 @media only screen and (max-width: 480px) {
     
 

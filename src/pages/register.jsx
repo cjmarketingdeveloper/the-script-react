@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { register, reset } from '../reduxAuth/authSlice';
 import Spinner from '../components/global/Spinner';
-import '../styles/auth.css';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -136,8 +135,38 @@ export default function Register() {
                   required 
                 />
               </div>
+              
+              <div className="mb-3">
+                <label className="form-label fw-semibold text-secondary small">
+                  Phone <span className="text-danger">*</span>
+                </label>
+                <input 
+                  type="tel" 
+                  className={`form-control form-control-lg fs-5 rounded-pill py-3 px-4 ${validated && !phone ? 'is-invalid' : ''}`} 
+                  value={phone} 
+                  onChange={(e) => setPhone(e.target.value)} 
+                  maxLength={10} 
+                  placeholder="10-digit number" 
+                  required 
+                />
+              </div>
 
-              <div className="row g-2 mb-4">
+              <div className="mb-3">
+                <label className="form-label fw-semibold text-secondary small">
+                  Practice Number <span className="text-danger">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  className={`form-control form-control-lg fs-5 rounded-pill py-3 px-4 ${validated && !practiceNumber ? 'is-invalid' : ''}`} 
+                  value={practiceNumber} 
+                  onChange={(e) => setPracticeNumber(e.target.value)} 
+                  placeholder="e.g. PRAC-12345" 
+                  required 
+                />
+              </div>
+
+
+              {/* <div className="row g-2 mb-4">
                 <div className="col-sm-6">
                   <label className="form-label fw-semibold text-secondary small">
                     Practice Number <span className="text-danger">*</span>
@@ -165,7 +194,7 @@ export default function Register() {
                     required 
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className="mb-4">
                 <label className="form-label fw-semibold text-secondary small">
