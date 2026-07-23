@@ -46,7 +46,7 @@ export default function Login() {
           {/* Form Fields Column snapped to far right */}
           <div className="col-md-6 col-lg-5 ms-auto p-4 p-sm-5 d-flex flex-column justify-content-center">
             <div className="mb-4 text-center text-md-start">
-              <img src="/assets/logos/logo-black.png" alt="The Script" width={160} className="mb-3" />
+              <img src="/assets/logos/logo-black.svg" alt="The Script" width={160} className="mb-3" />
               <h3 className="auth-form-title">Welcome Back</h3>
               <p className="text-muted small"></p>
             </div>

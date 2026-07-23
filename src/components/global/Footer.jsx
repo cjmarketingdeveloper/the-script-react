@@ -11,7 +11,7 @@ export default function Footer() {
             {/* COLUMN 1 */}
             <div className="col-md-3">
               <img
-                src="/assets/logos/logo-white.png"
+                src="/assets/logos/logo-white.svg"
                 alt="The Script"
                 width={140}
                 height={40}

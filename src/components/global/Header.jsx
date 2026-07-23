@@ -34,7 +34,7 @@ export default function Header() {
         <Navbar.Brand as={Link} to="/">
           <div className="footer-logo mb-3">
             <img
-              src="/assets/logos/logo-black.png"
+              src="/assets/logos/logo-black.svg"
               alt="The Script"
               width={200}
               height={50}
