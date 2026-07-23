@@ -76,6 +76,7 @@ export default function Register() {
           {/* Form Fields Column snapped to far right */}
           <div className="col-lg-6 col-xl-5 ms-auto p-4 p-sm-5 d-flex flex-column justify-content-center">
             <div className="mb-4 text-center text-md-start">
+              <img src="/assets/logos/logo-black.png" alt="The Script" width={160} className="mb-3" />
               <h3 className="auth-form-title">Create Staff Account</h3>
               <p className="text-muted small"></p>
             </div>
