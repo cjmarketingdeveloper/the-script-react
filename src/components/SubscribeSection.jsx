@@ -2,10 +2,7 @@ export default function SubscribeSection() {
   return (
     <section
     className="subscribe-section"
-    style={{ backgroundImage: "url('/assets/sub/subscribeimage.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center"
-    }}
+   
     >
       <h3>
         Want to stay updated with the pharmacy industry trends?

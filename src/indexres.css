@@ -46,11 +46,58 @@
   .container-fluid{
     margin-top: 200px;
   }
+
 }
 
 @media only screen and (max-width: 480px) {
-    
+    .info-slide-sect {
+        width: 80%;
+    }
+    .arrow-circle {
+        display: none;
+    }
+    .txt-mega1 {
+        font-size: 32px;
+        line-height: 30px;
+    }
+    .txt-mega2 {
+        font-size: 25px;
+    }
+    .relative.layer-slide-item {
+        padding: 20px !important;
+    }
+    .layer-slide-item {
+        height: 450px;
+    }
+    .subscribe-section {
+        margin: 40px 16px;
+        padding: 32px 16px;
+        border-radius: 16px;
+    }
 
+    .subscribe-form {
+        display: grid;
+        gap: 8px;          /* smaller gap between input and button */
+        flex-wrap: nowrap;  /* keep them side by side */
+        justify-content: center;
+    }
+
+    .subscribe-form input {
+        flex: 1;            /* input takes remaining space */
+        padding: 10px 12px; /* slightly smaller padding */
+    }
+
+    .subscribe-form button {
+        padding: 10px 16px; /* smaller button */
+        font-size: 14px;    /* smaller font */
+        border-radius: 999px;
+    }
+    .btn-script {
+        padding: 11px 20px !important;
+        position: relative;
+        font-size: 12px;
+        min-width: 150px;
+    }
 }
 @media only screen and (max-width: 360px) 
 {

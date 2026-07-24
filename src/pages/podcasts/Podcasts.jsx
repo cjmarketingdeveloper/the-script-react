@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import CoverCard from '../../components/CoverCard'
-import HeroCarousel from '../../components/home/HeroCarousel'
+import HeroCarousel from '../../components/HeroCarousel'
 
 // 1. Import your offline podcast data directly
 import { podcasts as localPodcasts } from '../../data/podcasts'

@@ -8,6 +8,12 @@ import ReactGA from "react-ga4";
 import { magazines as localMagazines } from '../../data/magazines';
 import { podcasts as localPodcasts } from '../../data/podcasts';
 import { games as localGames } from '../../data/games';
+import Spinner from '../../components/global/Spinner';
+
+import axios from 'axios';
+import * as CONSTANTS from '../../CONSTANTS'
+import { useSelector } from 'react-redux';
+
 
 import PageImageTemp from "../../components/PageImageTemp";
 
@@ -180,6 +186,11 @@ export default function SingleMagazine() {
   }
 
   const currentPage = allPages[activeIndex];
+
+  
+    if(isProcessing){
+      return <Spinner />
+    }
 
   return (
     <div

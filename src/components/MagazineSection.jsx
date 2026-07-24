@@ -3,8 +3,10 @@ import CoverCard from './CoverCard';
 import { useEffect, useState } from 'react'
 // import { collectMagazines } from '../../lib/fetchRequests'
 import { magazines } from '../data/magazines'
+import axios from 'axios';
+import * as CONSTANTS from './../CONSTANTS'
 
-export default function MagazineSection() {
+export default function MagazineSection({user}) {
   const [latestMagazines, setLatestMagazines] = useState([])
 
   useEffect(() => {
@@ -13,9 +15,15 @@ export default function MagazineSection() {
 
   const fetchListOfMagazines = async () => {
     try {
-      const response = await magazines
-      if (Array.isArray(response)) {
-        setLatestMagazines(response)
+      const response = await axios.get(CONSTANTS.API_URL + 'magazines/collect/list/v1/', {
+        headers: {
+          token: "Bearer " + user.accessToken
+        }
+      });
+
+      console.log(response.data);
+      if (Array.isArray(response.data)) {
+        setLatestMagazines(response.data)
       }
     } catch (error) {
       console.error('Error fetching magazines:', error)
@@ -27,7 +35,7 @@ export default function MagazineSection() {
   const mobileMagazines = latestMagazines.slice(0, 2)
 
   return (
-    <div className="container-xl my-5">
+    <div className="container-xl section-space">
       {/* Section header */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="section-title">The Script Magazine</h2>
@@ -35,7 +43,7 @@ export default function MagazineSection() {
         {/* Desktop button */}
         <Link
           to="/magazines"
-          className="btn-view-more d-none d-md-inline-flex"
+          className="btn btn-script"
         >
           View more issues
           <span className="arrow-circle">
