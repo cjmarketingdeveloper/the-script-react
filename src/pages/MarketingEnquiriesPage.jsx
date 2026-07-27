@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { HashLink as Link } from 'react-router-hash-link';
 
 export default function MarketingEnquiriesPage() {
   return (
@@ -19,11 +19,11 @@ export default function MarketingEnquiriesPage() {
             </p>
 
             <div className="d-flex gap-3">
-                <Link to="/marketing-enquiries/#marketing-solutions" className="btn btn-light">
+                <Link to="/marketing-enquiries/#marketing-solutions" className="btn btn-script">
                 Our Services
                 </Link>
 
-                <Link to="/marketing-enquiries/#contact-us-form" className="btn btn-outline-light">
+                <Link to="/marketing-enquiries/#contact-us-form" className="btn btn-script-outline">
                 Contact Us
                 </Link>
             </div>
@@ -164,8 +164,8 @@ export default function MarketingEnquiriesPage() {
           backgroundPosition: 'center',
         }}
       >
-        <div className="container-xl">
-          <div className="row">
+        <div id='contact-us-form' className="container-xl py-5">
+          <div className="row py-5">
             {/* Left Text */}
             <div className="col-md-6 text-white mb-4 mb-md-0">
               <h2>Enquiry Form</h2>
@@ -175,27 +175,27 @@ export default function MarketingEnquiriesPage() {
             </div>
 
             {/* Right Form */}
-            <div id='contact-us-form' className="col-md-6">
+            <div className="col-md-6">
               <div className="p-4 bg-white rounded-0">
                 <form>
                   <div className="mb-3">
                     <label htmlFor="name" className="form-label">Name & Surname *</label>
-                    <input type="text" className="form-control" id="name" required />
+                    <input type="text" className="form-control form-control-lg fs-5 rounded-pill py-3 px-4" id="name" required />
                   </div>
 
                   <div className="mb-3">
                     <label htmlFor="company" className="form-label">Company Name *</label>
-                    <input type="text" className="form-control" id="company" required />
+                    <input type="text" className="form-control form-control-lg fs-5 rounded-pill py-3 px-4" id="company" required />
                   </div>
 
                   <div className="mb-3">
                     <label htmlFor="phone" className="form-label">Phone Number *</label>
-                    <input type="tel" className="form-control" id="phone" required />
+                    <input type="tel" className="form-control form-control-lg fs-5 rounded-pill py-3 px-4" id="phone" required />
                   </div>
 
                   <div className="mb-3">
                     <label htmlFor="message" className="form-label">Message</label>
-                    <textarea className="form-control" id="message" rows={4}></textarea>
+                    <textarea className="form-control form-control-lg fs-5 rounded-pill py-3 px-4" id="message" rows={4}></textarea>
                   </div>
 
                   <button type="submit" className="btn btn-script w-100">

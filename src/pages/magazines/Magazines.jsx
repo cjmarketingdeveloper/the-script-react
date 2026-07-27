@@ -52,7 +52,7 @@ export default function Magazines() {
             }
              
       }catch(err){
-         console.error('Error fetching magazines:', error)
+         console.error('Error fetching magazines:', err)
       }
     }
 
@@ -173,7 +173,7 @@ export default function Magazines() {
                       cardClass="cover-magazine"
                       footer={
                         <Link
-                          to={`/magazines/${mag._id}`}
+                          to={`pages/find/idandpage/v1/${mag._id}`}
                           className="btn btn-script"
                         >
                           Read Issue

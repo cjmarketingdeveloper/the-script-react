@@ -90,22 +90,8 @@ body {
   background-color: var(--color-script-main) !important;
   color: var(--color-script-white) !important;
   border-radius: 999px;
-  padding: 6px 16px ;
+  padding: 10px 10px ;
   font-weight: 600 !important ;
-}
-
-.btn-pill {
-  background-color: var(--color-script-main);
-  color: var(--color-script-white);
-  border-radius: 999px;
-  padding: 8px 20px;
-  font-weight: 600;
-  border: none;
-}
-
-.btn-pill:hover {
-  background-color: var(--color-script-main);
-  color: var(--color-script-white);
 }
 
 .latest-badge {
@@ -158,24 +144,6 @@ body {
   margin-top: -20px;
   display: block;
   position: relative;
-}
-
-
-/* ===== SMALL PILL BUTTON ===== */
-.btn-pill-sm {
-  background-color: rgb(255, 115, 0);
-  color: var(--color-script-white);
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-weight: 600;
-  font-size: 14px;
-  border: none;
-  display: inline-block;
-}
-
-.btn-pill-sm:hover {
-  background-color: rgb(255, 115, 0);
-  color: var(--color-script-white);
 }
 
 /* MAGAZINE CARD CONTAINER (image + button together) */
@@ -461,10 +429,6 @@ body {
   text-decoration: none;
 }
 
-.btn-pill,
-.btn-pill-sm {
-  text-decoration: none !important;
-}
 
 .hero-slide {
   min-height: 420px;
@@ -844,10 +808,12 @@ section, .container-xl, .hero-swiper, .media-surround {
 /* Universal Script Outline Button Class */
 .btn-script-outline {
   background-color: transparent !important;
-  color: var(--color-script-accent) !important;
-  border: 1px solid var(--color-script-accent) !important;
+  color: var(--color-script-white) !important;
+  border: 1px solid var(--color-script-white) !important;
   font-weight: 600;
   transition: all 0.25s ease-in-out;
+  border-radius: 999px !important;
+  padding: 10px 40px !important;
 }
 
 .btn-script-outline:hover {

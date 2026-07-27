@@ -3,18 +3,11 @@ import { Link } from 'react-router-dom'
 export default function SupportPage() {
   return (
     <>
-      <div className="row g-5 align-items-stretch">
+      <div className="row g-5 justify-content-center">
         {/* ================= LEFT COLUMN (2/3) ================= */}
-        <div className="col-md-8">
+        <div className="col-12 p-4 p-sm-5 justify-content-center">
           {/* Back / Home button */}
           <div className="container-xl my-5">
-            <Link
-              to="/"
-              className="btn btn-outline-orange mb-4 d-inline-flex align-items-center gap-2"
-            >
-              <i className="bi bi-arrow-left" />
-              Home
-            </Link>
             
             {/* Heading + Icon */}
             <div className="d-flex align-items-center gap-3 mb-3">
@@ -39,7 +32,7 @@ export default function SupportPage() {
                   id="name"
                   name="name"
                   type="text"
-                  className="form-control"
+                  className="form-control form-control-lg fs-5 rounded-pill py-3 px-4"
                   required
                 />
               </div>
@@ -52,7 +45,7 @@ export default function SupportPage() {
                   id="company"
                   name="company"
                   type="text"
-                  className="form-control"
+                  className="form-control form-control-lg fs-5 rounded-pill py-3 px-4"
                   required
                 />
               </div>
@@ -65,7 +58,7 @@ export default function SupportPage() {
                   id="phone"
                   name="phone"
                   type="tel"
-                  className="form-control"
+                  className="form-control form-control-lg fs-5 rounded-pill py-3 px-4"
                   required
                 />
               </div>
@@ -78,7 +71,7 @@ export default function SupportPage() {
                   id="enquiry"
                   name="enquiry"
                   type="text"
-                  className="form-control"
+                  className="form-control form-control-lg fs-5 rounded-pill py-3 px-4"
                   required
                 />
               </div>
@@ -90,29 +83,16 @@ export default function SupportPage() {
                 <textarea
                   id="message"
                   name="message"
-                  className="form-control"
+                  className="form-control form-control-lg fs-5 rounded-pill py-3 px-4"
                   rows="4"
                 />
               </div>
 
-              <button type="submit" className="btn btn-dark px-5">
+              <button type="submit" className="btn btn-script btn-lg mb-3 shadow-sm px-5 py-2 rounded-pill w-100">
                 Submit
               </button>
             </form>
           </div>
-        </div>
-
-        {/* ================= RIGHT COLUMN (1/3) ================= */}
-        <div className="col-md-4">
-          <div
-            className="h-100 w-100"
-            style={{
-              backgroundImage: "url('/assets/support/image.png')",
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              minHeight: '420px',
-            }}
-          />
         </div>
       </div>
     </>
