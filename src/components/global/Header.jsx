@@ -89,7 +89,9 @@ export default function Header() {
               >
                 {/* Display role context dynamically if needed */}
                 <NavDropdown.Item text="true" className="text-muted small border-bottom pb-2">
-                  Signed in as: <strong>{user.role || 'User'}</strong>
+                  Signed in as:<br/>
+                   <strong>{user.name + ' ' + user.surname}</strong>
+                   <div>{user.roles || 'User'}</div>
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={handleLogoutClick} className="text-danger fw-semibold mt-1">
                   <i className="bi bi-box-arrow-right me-2"></i> Log Out
