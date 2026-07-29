@@ -16,12 +16,12 @@ export default function Footer() {
                 width={140}
                 height={40}
               />
-              <div className="footer-socials mt-3">
+              {/* <div className="footer-socials mt-3">
                 <Link to="https://www.instagram.com/?hl=en"><i className="bi bi-instagram"></i></Link>
                 <Link to="https://twitter.com/?lang=en"><i className="bi bi-twitter-x"></i></Link>
                 <Link to="https://www.facebook.com/?locale=en_GB"><i className="bi bi-facebook"></i></Link>
                 <Link to="https://www.linkedin.com/in/the-script-789012345/"><i className="bi bi-linkedin"></i></Link>
-              </div>
+              </div> */}
             </div>
 
             {/* COLUMN 2 */}
