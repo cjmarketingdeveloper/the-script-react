@@ -15,11 +15,24 @@ export default function AboutSection() {
           <div className="col-md-7">
             <div className="about-content">
               <h2>About The Script</h2>
-              <p>
-                The Script is a magazine and podcast focused on storytelling,
-                creativity, and behind-the-scenes insights across the pharmacy
-                and media space.
+              <h5 className="text-secondary">Pharmacy Expertise and Wellness Insights</h5>
+              <p className="w-100 mw-100">
+                The Script is a magazine and hub designed to support both consumers and local independent pharmacies. From practical wellness guides to deep dives into emerging health tech, The Script helps readers make informed decisions while empowering pharmacies with up-to-date knowledge, patient-ready resources, and content they can share directly with their communities. The Script is your trusted source for pharmacy news and insights brought to you by CJ Distribution
               </p>
+              <ul className="list-unstyled mt-3">
+                <li className="d-flex align-items-start mb-2">
+                  <i className="bi bi-capsule me-2 mt-1" style={{ color: 'var(--color-script-main)' }}></i>
+                  <span><strong style={{ color: 'var(--color-script-main)' }}>124+ </strong> Issues Published</span>
+                </li>
+                <li className="d-flex align-items-start mb-2">
+                  <i className="bi bi-capsule me-2 mt-1" style={{ color: 'var(--color-script-main)' }}></i>
+                  <span><strong style={{ color: 'var(--color-script-main)' }}>Expert-Led Content:</strong> Pharmacy professionals, health specialists, and industry innovators sharing trusted knowledge.</span>
+                </li>
+                <li className="d-flex align-items-start mb-2">
+                  <i className="bi bi-capsule me-2 mt-1" style={{ color: 'var(--color-script-main)' }}></i>
+                  <span><strong style={{ color: 'var(--color-script-main)' }}>Supporting Local Pharmacies:</strong> Content, tools, and resources created to strengthen independent pharmacy businesses and patient relationships.</span>
+                </li>
+              </ul>
             </div>
           </div>
 

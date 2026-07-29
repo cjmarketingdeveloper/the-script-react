@@ -59,13 +59,16 @@ export default function MagazineSection({user}) {
             <CoverCard
               image={mag.featuredImage}
               href={`/magazines/${mag._id}`}
-              badge={index === 0 ? <>Latest<br />Issue</> : undefined}
+              badge={
+                index === 0 ? (
+                  <span className="pulse-badge">
+                    Latest<br />Issue
+                  </span>
+                ) : undefined
+              }
               cardClass="cover-magazine"
               footer={
-                <Link
-                  to={`/magazines/${mag._id}`}
-                  className="btn btn-script"
-                >
+                <Link to={`/magazines/${mag._id}`} className="btn btn-script">
                   Read Issue
                 </Link>
               }

@@ -1,8 +1,8 @@
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import * as CONSTANTS from "../CONSTANTS";
 import axios from "axios";
 
-//Get user from localStorage
+// Get user from localStorage
 const user = JSON.parse(localStorage.getItem(CONSTANTS.SESSION_COOKIE))
 
 const initialState = {
@@ -13,43 +13,38 @@ const initialState = {
     message: ''
 }
 
-//Register user and pharmacy
+// Register user
 export const register = createAsyncThunk('auth/register', async (user, thunkAPI) => {
-    try{
-
+    try {
         const response = await axios.post(CONSTANTS.API_URL + "auth/register", user);
-
         localStorage.setItem(CONSTANTS.SESSION_COOKIE, JSON.stringify(response.data));
 
-        return response; 
-    }catch(error){
-        //const message = (error.response && error.response.data && error.data.message) || error.message || error.toString()
-        const message = error.response.data
+        return response.data; // 👈 Fixed: Return response.data to avoid serializable warning
+    } catch (error) {
+        const message = error.response?.data || error.message;
         return thunkAPI.rejectWithValue(message)
     }
 })
 
-//Login user 
+// Login user 
 export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
-    try{
-
+    try {
         const response = await axios.post(CONSTANTS.API_URL + "auth/login", user);    
         localStorage.setItem(CONSTANTS.SESSION_COOKIE, JSON.stringify(response.data));
 
-        return response; 
-    }catch(error){
+        return response.data; 
+    } catch (error) {
         console.log(error);
-       // const message = (error.response && error.response.data && error.data.message) || error.message || error.toString()
-       const message = error.response.data 
+        const message = error.response?.data || error.message; 
         return thunkAPI.rejectWithValue(message)
     }
 })
 
-//Logout user 
+// Logout user 
 export const logout = createAsyncThunk('auth/logout', async () => {
-        //console.log("LOGOUT ------------->");
-        localStorage.removeItem(CONSTANTS.SESSION_COOKIE);
+    localStorage.removeItem(CONSTANTS.SESSION_COOKIE);
 })
+
 export const updateUser = createAsyncThunk('auth/updateUser',
   async (userUpdate, thunkAPI) => {
     try {
@@ -57,7 +52,6 @@ export const updateUser = createAsyncThunk('auth/updateUser',
         CONSTANTS.API_URL + "users/update/rsvp/details/v1/",
         userUpdate
       );
-      // This returns the object { message: "Update done", user: content }
       return response.data; 
     } catch (error) {
       const message = error.response?.data?.message || error.message;
@@ -77,22 +71,20 @@ export const authSlice = createSlice({
             state.message = ''
         },
         updateUserLocal: (state, action) => {
-            const updatedUser = action.payload; // This is the 'user' object from result.data.user
+            const updatedUser = action.payload;
 
             if (state.user) {
-                // 1. Update State
                 state.user = {
                     ...state.user,
                     ...updatedUser,
-                    token: state.user.token // Explicitly keep original token
+                    token: state.user.token
                 };
 
-                // 2. Update LocalStorage
                 const currentSession = JSON.parse(localStorage.getItem(CONSTANTS.SESSION_COOKIE)) || {};
                 const newSession = {
                     ...currentSession,
                     ...updatedUser,
-                    token: currentSession.token // Keep original token in storage
+                    token: currentSession.token
                 };
                 localStorage.setItem(CONSTANTS.SESSION_COOKIE, JSON.stringify(newSession));
             }
@@ -106,7 +98,6 @@ export const authSlice = createSlice({
             .addCase(register.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                //state.user = action.payload
                 state.message = action.payload
                 state.user = null
             })
@@ -125,7 +116,7 @@ export const authSlice = createSlice({
             .addCase(login.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.user = action.payload.data
+                state.user = action.payload // 👈 FIX: Use action.payload directly!
             })
             .addCase(login.rejected, (state, action) => {
                 state.isLoading = false
@@ -155,5 +146,5 @@ export const authSlice = createSlice({
     }
 })
 
-export const { reset , updateUserLocal} = authSlice.actions
+export const { reset, updateUserLocal } = authSlice.actions
 export default authSlice.reducer

@@ -155,34 +155,38 @@ export default function Magazines() {
 
           {/* Magazine Grid */}
           {/* Magazine Grid */}
+          {/* Magazine Grid */}
           {noMagazines ? (
             <p className="text-muted">No magazines found for {selectedYear}.</p>
           ) : (
-            <div className="row g-4"> {/* <--- THIS wrapper is crucial for side-by-side layout */}
+            <div className="row g-4">
               {magazinesList.length > 0 &&
-               magazinesList.map((mag) => {
-                // Check if this specific item is the absolute newest one in the database
-                const isLatest = absoluteLatestIssue && (mag._id === absoluteLatestIssue._id);
+                magazinesList.map((mag, index) => { {/* Added index parameter */}
+                  // Check if this specific item is the absolute newest one
+                  const isLatest = absoluteLatestIssue && (mag._id === absoluteLatestIssue._id);
 
-                return (
-                  <div key={mag._id || mag.id || mag.title} className="col-6 col-md-4">
+                  return (
+                    <div key={mag._id || mag.id || mag.title} className="col-6 col-md-4">
                     <CoverCard
                       image={mag.featuredImage}
                       href={`/magazines/${mag._id}`}
-                      badge={isLatest ? 'Latest Issue' : undefined}
+                      badge={
+                        isLatest ? (
+                          <div className="pulse-badge">
+                            Latest<br />Issue
+                          </div>
+                        ) : undefined
+                      }
                       cardClass="cover-magazine"
                       footer={
-                        <Link
-                          to={`pages/find/idandpage/v1/${mag._id}`}
-                          className="btn btn-script"
-                        >
+                        <Link to={`/magazines/${mag._id}`} className="btn btn-script">
                           Read Issue
                         </Link>
                       }
                     />
-                  </div>
-                );
-              })}
+                    </div>
+                  );
+                })}
             </div>
           )}
 

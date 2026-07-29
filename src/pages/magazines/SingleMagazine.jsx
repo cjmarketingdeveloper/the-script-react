@@ -3,17 +3,11 @@
 import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import React, { useEffect, useRef, useState } from "react";
 import ReactGA from "react-ga4";
-
-// 1. Import your offline local databases directly
-import { magazines as localMagazines } from '../../data/magazines';
-import { podcasts as localPodcasts } from '../../data/podcasts';
-import { games as localGames } from '../../data/games';
 import Spinner from '../../components/global/Spinner';
 
 import axios from 'axios';
-import * as CONSTANTS from '../../CONSTANTS'
+import * as CONSTANTS from '../../CONSTANTS';
 import { useSelector } from 'react-redux';
-
 
 import PageImageTemp from "../../components/PageImageTemp";
 
@@ -24,14 +18,18 @@ export default function SingleMagazine() {
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location.pathname;
-  const [searchParams] = useSearchParams(); 
+  const [searchParams] = useSearchParams();
+
+  // Retrieve user token safely from Redux auth state
+  const user = useSelector((state) => state.auth?.user);
 
   const [magazine, setMagazine] = useState(null);
-  const [allPages, setAllPages] = useState([]);
+  const [currentPageData, setCurrentPageData] = useState(null);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  const pageParam = searchParams?.get("page");
-  const activeIndex = pageParam ? Math.max(0, parseInt(pageParam, 10) - 1) : 0;
+  const pageParam = searchParams?.get("page") || "1";
+  const activeIndex = Math.max(0, parseInt(pageParam, 10) - 1);
 
   const [podcastData, setPodcastData] = useState(null);
   const [gameData, setGameData] = useState(null);
@@ -49,85 +47,87 @@ export default function SingleMagazine() {
     navigate(`${pathname}?${current.toString()}`, { replace: true });
   };
 
-  // --- 1. LOCAL DATA PRELOADER ---
+  // --- 1. FETCH MAGAZINE PAGE DATA AND METADATA FROM API ---
   useEffect(() => {
     if (!id) return;
 
-    setLoading(true);
-    
-    // Find the current magazine from your local static data array
-    const foundMag = localMagazines.find(
-      (m) => m._id === id || m.id?.toString() === id
-    );
+    const token = user?.accessToken || user?.token;
 
-    if (foundMag) {
-      setMagazine(foundMag);
-      setAllPages(foundMag.pages || []);
-    } else {
-      setMagazine(null);
-      setAllPages([]);
-    }
-    
-    setLoading(false);
-  }, [id]);
-
-  // --- 2. LOCAL ASSET LOADER (RUNS WHEN PAGE TURNS) ---
-  useEffect(() => {
-    const currentPage = allPages[activeIndex];
-    if (!currentPage) {
-      setPodcastData(null);
-      setGameData(null);
+    if (!token) {
+      console.warn("No authentication token found in user state.");
+      setLoading(false);
       return;
     }
 
-    const pageId = currentPage._id || currentPage.id;
+    const fetchMagazinePage = async () => {
+      setLoading(true);
+      try {
+        const currentPageNumber = activeIndex + 1;
+        
+        // Fetch current page content
+        const pagePromise = axios.get(
+          `${CONSTANTS.API_URL}pages/find/idandpage/v1/${id}?page=${currentPageNumber}`,
+          { headers: { token: `Bearer ${token}` } }
+        );
 
-    // Search local offline database files for matches 
-    const matchedPodcast = localPodcasts.find(
-      (p) => 
-        (p._id && p._id === pageId) || 
-        (p.id && p.id?.toString() === pageId) || 
-        (currentPage.formatType?.podcastId && p._id === currentPage.formatType.podcastId) ||
-        (currentPage.formatType?.podcastId && p.id?.toString() === currentPage.formatType.podcastId)
-    );
-    
-    const matchedGame = localGames.find(
-      (g) => 
-        (g._id && g._id === pageId) || 
-        (g.id && g.id?.toString() === pageId) || 
-        (currentPage.formatType?.gameId && g._id === currentPage.formatType.gameId) ||
-        (currentPage.formatType?.gameId && g.id?.toString() === currentPage.formatType.gameId)
-    );
+        // Fetch overall magazine metadata
+        const magazinePromise = axios.get(
+          `${CONSTANTS.API_URL}magazines/find/${id}`,
+          { headers: { token: `Bearer ${token}` } }
+        );
 
-    setPodcastData(matchedPodcast || null);
-    setGameData(matchedGame || null);
-    
-    // Reset audio state on page change
-    setIsPlaying(false);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-  }, [activeIndex, allPages]);
+        const [pageResponse, magazineResponse] = await Promise.all([pagePromise, magazinePromise]);
 
-  // --- 3. GOOGLE ANALYTICS TRACKING ENGINE ---
+        const pageData = pageResponse.data;
+        let magData = magazineResponse.data;
+
+        // ✅ FIX: Find the specific magazine that matches the 'id' parameter from the URL
+        if (Array.isArray(magData)) {
+          magData = magData.find((m) => m._id === id) || magData[0];
+        }
+
+        if (pageData) {
+          setCurrentPageData(pageData);
+          setPodcastData(pageData.podcast || pageData.formatType?.podcastId || null);
+          setGameData(pageData.game || pageData.formatType?.gameId || null);
+        }
+
+        if (magData) {
+          setMagazine(magData);
+          // Extract totalPages safely
+          const count = magData.totalPages || magData.pages?.length || magData.pageCount;
+          console.log("Total Pages value:", magData.totalPages);
+          console.log("Final Total Pages:", count);
+          setTotalPages(count || 1);
+        }
+      } catch (error) {
+        console.error('Error fetching magazine page:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMagazinePage();
+  }, [id, activeIndex, user]);
+
+  // --- 2. GOOGLE ANALYTICS TRACKING ENGINE ---
   useEffect(() => {
-    if (!magazine || allPages.length === 0) return;
+    if (!magazine || !currentPageData) return;
 
     const pageNumber = activeIndex + 1;
     const startTime = performance.now();
 
     ReactGA.event("magazine_page_view", {
       magazine_id: id,
-      magazine_title: magazine.title,
+      magazine_title: magazine?.title || "Magazine",
       page_number: pageNumber,
-      total_pages: allPages.length,
+      total_pages: totalPages,
     });
 
-    if (pageNumber === allPages.length) {
+    if (pageNumber === totalPages) {
       ReactGA.event("magazine_completed", {
         magazine_id: id,
-        magazine_title: magazine.title,
+        magazine_title: magazine?.title || "Magazine",
       });
     }
 
@@ -138,17 +138,17 @@ export default function SingleMagazine() {
       if (dwellTimeSeconds >= 1) {
         ReactGA.event("magazine_page_dwell", {
           magazine_id: id,
-          magazine_title: magazine.title,
+          magazine_title: magazine?.title || "Magazine",
           page_number: pageNumber,
           dwell_time_seconds: dwellTimeSeconds,
         });
       }
     };
-  }, [activeIndex, allPages, magazine, id]);
+  }, [activeIndex, currentPageData, magazine, id, totalPages]);
 
   // --- HANDLERS ---
   const handleNext = () => {
-    if (activeIndex < allPages.length - 1) {
+    if (activeIndex < totalPages - 1) {
       updatePageUrl(activeIndex + 1);
     }
   };
@@ -176,21 +176,14 @@ export default function SingleMagazine() {
   if (loading) {
     return (
       <div className="container p-5 d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
-        <h2 className="text-white">Loading issue...</h2>
+        <Spinner />
       </div>
     );
   }
 
-  if (!magazine || allPages.length === 0) {
+  if (!magazine || !currentPageData) {
     return <div className="container p-5 text-white">Magazine content not found.</div>;
   }
-
-  const currentPage = allPages[activeIndex];
-
-  
-    if(isProcessing){
-      return <Spinner />
-    }
 
   return (
     <div
@@ -203,7 +196,9 @@ export default function SingleMagazine() {
       }}
     >
       <div className="content-area my-5 container-xl">
-        <h1 className="mb-4 text-black">{magazine.title} - Issue {magazine.issue}</h1>
+        <h1 className="mb-4 text-black">
+          {magazine.title || "Magazine"} {magazine.issue ? `- Issue ${magazine.issue}` : ''}
+        </h1>
 
         {/* Podcast Modal */}
         {showPodcastModal && podcastData && (
@@ -216,7 +211,7 @@ export default function SingleMagazine() {
                     <button type="button" className="btn-close" onClick={() => setShowPodcastModal(false)}></button>
                   </div>
                   <div className="modal-body text-center">
-                    <span className="badge bg-secondary mb-2">{podcastData.guest}</span>
+                    {podcastData.guest && <span className="badge bg-secondary mb-2">{podcastData.guest}</span>}
                     <h4 className="mb-4">{podcastData.title}</h4>
                     <audio
                       ref={audioRef}
@@ -255,7 +250,7 @@ export default function SingleMagazine() {
                     <button type="button" className="btn-close" onClick={() => setShowGameModal(false)}></button>
                   </div>
                   <div className="modal-body text-center">
-                    <iframe src={gameData.urlFrame} style={{ width: "100%", height: "500px", border: "none" }} />
+                    <iframe src={gameData.urlFrame} style={{ width: "100%", height: "500px", border: "none" }} title={gameData.title || "Game"} />
                   </div>
                 </div>
               </div>
@@ -281,16 +276,16 @@ export default function SingleMagazine() {
             <button className="btn btn-script" onClick={handlePrev} disabled={activeIndex === 0}>
               &larr; Previous
             </button>
-            <span className="text-white fw-bold">Page {activeIndex + 1} / {allPages.length}</span>
-            <button className="btn btn-script" onClick={handleNext} disabled={activeIndex === allPages.length - 1}>
+            <span className="text-white fw-bold">Page {activeIndex + 1} / {totalPages}</span>
+            <button className="btn btn-script" onClick={handleNext} disabled={activeIndex >= totalPages - 1}>
               Next &rarr;
             </button>
           </div>
 
-          {currentPage && currentPage.archetype === "image" && (
-            <div className="magazine-page-image mx-auto my-3" key={currentPage._id}>
+          {currentPageData && (
+            <div className="magazine-page-image mx-auto my-3" key={currentPageData._id || activeIndex}>
               <PageImageTemp
-                page={currentPage}
+                page={currentPageData}
                 style={{ width: "100%", height: "auto", maxWidth: "800px" }}
               />
             </div>

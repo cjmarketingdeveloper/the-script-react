@@ -47,6 +47,7 @@ body {
 
 /* ===== MAGAZINE COVER (tall, full height visible) ===== */
 .cover-magazine {
+  overflow: visible;
   position: relative;
   aspect-ratio: 456 / 620;
   max-height: 500px;       /* limit vertical growth */
@@ -100,7 +101,7 @@ body {
   right: -18px;
   width: 70px;
   height: 70px;
-  background-color: var(--color-script-second);
+  background-color: var(--color-script-accent);
   color: rgb(0, 0, 0);
   border-radius: 50%;
   display: flex;
@@ -836,4 +837,31 @@ section, .container-xl, .hero-swiper, .media-surround {
   border: 1px solid var(--color-script-main) !important;
   font-weight: 600;
   transition: all 0.25s ease-in-out;
+}
+.pulse-badge {
+  display: inline-block;
+  /* background-color: var(--color-script-accent); */
+  color: #ffffff;
+  /* padding: 6px 12px; */
+  /* border-radius: 4px; */
+  text-align: center;
+  font-weight: bold;
+  
+  /* Animation */
+  animation: minor-pulse 2.5s ease-in-out infinite;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.latest-badge{
+  animation: minor-pulse 2.5s ease-in-out infinite; 
+}
+
+@keyframes minor-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
 }
