@@ -21,7 +21,6 @@ export default function MagazineSection({user}) {
         }
       });
 
-      console.log(response.data);
       if (Array.isArray(response.data)) {
         setLatestMagazines(response.data)
       }
