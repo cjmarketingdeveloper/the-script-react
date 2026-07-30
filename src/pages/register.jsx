@@ -1,16 +1,17 @@
 // src/pages/Register.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { register, reset } from '../reduxAuth/authSlice';
+// 1. Added 'login' import here
+import { register, login, reset } from '../reduxAuth/authSlice'; 
 import Spinner from '../components/global/Spinner';
 
 export default function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
+  const { isLoading } = useSelector((state) => state.auth);
 
   // Specified Field Parameters
   const [name, setName] = useState('');
@@ -23,20 +24,9 @@ export default function Register() {
   
   const [validated, setValidated] = useState(false);
 
-  useEffect(() => {
-    if (isError) {
-      toast.error(message || "Registration failed. Please try again.");
-      dispatch(reset());
-    }
+  // 2. Removed the useEffect block so it won't force navigation mid-process
 
-    if (isSuccess || user) {
-      toast.success(message || "Account registered successfully!");
-      navigate('/'); // Change to navigate('/login') if registration doesn't auto-login
-      dispatch(reset());
-    }
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
-
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setValidated(true);
 
@@ -56,14 +46,30 @@ export default function Register() {
       firstName: name,
       lastName: surname,
       phonenumber: cleanedPhone,
-      email,
+      email: email.trim(),
       password,
       practiceNumber: practiceNumber.trim(),
       jobTitle: jobTitle.trim(),
       role: 'Staff'
     };
 
-    dispatch(register(userData));
+    try {
+      // Step A: Register the user
+      await dispatch(register(userData)).unwrap();
+      
+      // Step B: Immediately log them in
+      await dispatch(login({ email: email.trim(), password })).unwrap();
+      
+      toast.success("Account created and logged in successfully!");
+      
+      // Step C: Navigate to main dashboard/home
+      navigate('/'); 
+
+    } catch (err) {
+      toast.error(err || "Something went wrong during registration.");
+    } finally {
+      dispatch(reset());
+    }
   };
 
   if (isLoading) return <Spinner />;
