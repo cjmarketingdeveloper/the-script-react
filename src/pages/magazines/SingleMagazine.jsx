@@ -96,8 +96,6 @@ export default function SingleMagazine() {
           setMagazine(magData);
           // Extract totalPages safely
           const count = magData.totalPages || magData.pages?.length || magData.pageCount;
-          console.log("Total Pages value:", magData.totalPages);
-          console.log("Final Total Pages:", count);
           setTotalPages(count || 1);
         }
       } catch (error) {

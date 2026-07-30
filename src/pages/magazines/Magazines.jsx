@@ -47,7 +47,6 @@ export default function Magazines() {
 
             if(response.data.length > 0){
               setYears(response.data);
-              console.log(response.data[0])
               setSelectedYear(response.data[0])
             }
              
@@ -64,7 +63,6 @@ export default function Magazines() {
             }
           });
     
-          console.log("ListOfMagazines")
          
           if (Array.isArray(response.data)) {
             setMagazineList(response.data);
