@@ -1,6 +1,7 @@
 html,
 body {
   overflow-x: hidden;
+  font-family: "Outfit", sans-serif; 
 }
 
 
@@ -223,7 +224,6 @@ body {
 .about-full {
   width: 100%;
   padding: 0px;
-  background: var(--color-script-gray);
 }
 
 .media-section {
@@ -327,6 +327,11 @@ body {
   background-position: center;
 }
 
+.about-content {
+  width: 85%;
+  font-size: 14px;
+}
+
 .about-content h2 {
   font-weight: 700;
   margin-bottom: 16px;
@@ -335,7 +340,7 @@ body {
 .about-content p {
   padding-right: 20px;
   /* font-family: 'Inter', regular; */
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.7;
   color: #444;
   max-width: 520px;

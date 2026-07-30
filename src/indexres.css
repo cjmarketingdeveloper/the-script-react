@@ -98,7 +98,23 @@
         font-size: 12px;
         min-width: 150px;
     }
+    .about-content {
+        width: 100%;
+    }
 }
+@media only screen and (max-width: 390px) {
+  .btn-script {
+    font-weight: 400 !important;
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+    
+    /* Override Bootstrap defaults forcing width */
+    white-space: normal !important;
+    width: auto !important;
+    min-width: 0 !important; 
+  }
+}
+
 @media only screen and (max-width: 360px) 
 {
     .ctx-seat {

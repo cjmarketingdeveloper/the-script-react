@@ -20,10 +20,6 @@ export default function AboutSection() {
                 The Script is a magazine and hub designed to support both consumers and local independent pharmacies. From practical wellness guides to deep dives into emerging health tech, The Script helps readers make informed decisions while empowering pharmacies with up-to-date knowledge, patient-ready resources, and content they can share directly with their communities. The Script is your trusted source for pharmacy news and insights brought to you by CJ Distribution
               </p>
               <ul className="list-unstyled mt-3">
-                {/* <li className="d-flex align-items-start mb-2">
-                  <i className="bi bi-capsule me-2 mt-1 font-weight-light" style={{ color: 'var(--color-script-main)' }}></i>
-                  <span><strong style={{ color: 'var(--color-script-main)' }}>124+ </strong> Issues Published</span>
-                </li> */}
                 <li className="d-flex align-items-start mb-2">
                   <i className="bi bi-capsule me-2 mt-1 font-weight-light" style={{ color: 'var(--color-script-main)' }}></i>
                   <span><strong style={{ color: 'var(--color-script-main)' }}>Expert-Led Content:</strong> Pharmacy professionals, health specialists, and industry innovators sharing trusted knowledge.</span>

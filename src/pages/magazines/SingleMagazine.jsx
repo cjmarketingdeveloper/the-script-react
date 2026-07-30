@@ -284,7 +284,7 @@ export default function SingleMagazine() {
             <div className="magazine-page-image mx-auto my-3" key={currentPageData._id || activeIndex}>
               <PageImageTemp
                 page={currentPageData}
-                style={{ width: "100%", height: "auto", maxWidth: "800px" }}
+                style={{ width: "100%", height: "auto", maxWidth: "800px", boxShadow: "3px 4px 13px rgba(0, 0, 0, 0.4)" }}
               />
             </div>
           )}
