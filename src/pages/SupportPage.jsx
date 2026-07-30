@@ -3,6 +3,35 @@ import { Link } from 'react-router-dom'
 export default function SupportPage() {
   return (
     <>
+
+          {/* ================= HERO ================= */}
+      <div className="container-xl my-5 slider-relative-container">
+        <div
+            className="hero-slide position-relative d-flex align-items-center"
+            style={{
+            backgroundImage: "url('/assets/marketing/hero1.jpg')",
+            minHeight: '420px',
+            }}
+        >
+            <div className="container-xl text-white">
+            <h1 className="mb-3">Reach the Heart of South Africa's Pharmacy Industry</h1>
+            <p className="mb-4 col-md-6">
+                Connect with thousands of pharmacists, healthcare professionals, and decision-makers through our multi-channel platform
+            </p>
+
+            <div className="d-flex gap-3">
+                <Link to="/marketing-enquiries/#marketing-solutions" className="btn btn-script">
+                Our Services
+                </Link>
+
+                {/* <Link to="/marketing-enquiries/#contact-us-form" className="btn btn-script-outline">
+                Contact Us
+                </Link> */}
+            </div>
+            </div>
+        </div>
+      </div>
+
       <div className="row g-5 justify-content-center">
         {/* ================= LEFT COLUMN (2/3) ================= */}
         <div className="col-12 p-4 p-sm-5 justify-content-center">
@@ -83,12 +112,12 @@ export default function SupportPage() {
                 <textarea
                   id="message"
                   name="message"
-                  className="form-control form-control-lg fs-5 rounded-pill py-3 px-4"
+                  className="form-control form-control-lg fs-5 rounded-5 py-3 px-4"
                   rows="4"
                 />
               </div>
 
-              <button type="submit" className="btn btn-script btn-lg mb-3 shadow-sm px-5 py-2 rounded-pill w-100">
+              <button type="submit" className="btn btn-script btn-lg mb-3 shadow-sm px-5 py-2 rounded-pill">
                 Submit
               </button>
             </form>

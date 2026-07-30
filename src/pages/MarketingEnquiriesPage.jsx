@@ -196,7 +196,7 @@ export default function MarketingEnquiriesPage() {
 
                   <div className="mb-3">
                     <label htmlFor="message" className="form-label">Message</label>
-                    <textarea className="form-control form-control-lg fs-5 rounded-pill py-3 px-4" id="message" rows={4}></textarea>
+                    <textarea className="form-control form-control-lg fs-5 rounded-5 py-3 px-4" id="message" rows={4}></textarea>
                   </div>
 
                   <button type="submit" className="btn btn-script w-100">

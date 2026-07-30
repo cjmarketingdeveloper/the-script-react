@@ -10,7 +10,7 @@ export default function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
+  const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
   // Specified Field Parameters
   const [name, setName] = useState('');
@@ -22,18 +22,19 @@ export default function Register() {
   const [jobTitle, setJobTitle] = useState('');
   
   const [validated, setValidated] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false); 
 
   useEffect(() => {
     if (isError) {
       toast.error(message || "Registration failed. Please try again.");
       dispatch(reset());
     }
-    if (isSuccess) {
-      setShowSuccessModal(true);
+
+    if (isSuccess || user) {
+      toast.success(message || "Account registered successfully!");
+      navigate('/'); // Change to navigate('/login') if registration doesn't auto-login
       dispatch(reset());
     }
-  }, [isError, isSuccess, message, dispatch]);
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const handleRegisterSubmit = (e) => {
     e.preventDefault();
@@ -50,7 +51,6 @@ export default function Register() {
       return;
     }
 
-    // Bind fields to payload enforcing Staff rules anchored via Pharmacy Unit
     const userData = {
       fullName: `${name} ${surname}`.trim(),
       firstName: name,
@@ -60,7 +60,7 @@ export default function Register() {
       password,
       practiceNumber: practiceNumber.trim(),
       jobTitle: jobTitle.trim(),
-      role: 'Staff' // Enforced constraint
+      role: 'Staff'
     };
 
     dispatch(register(userData));
@@ -69,11 +69,11 @@ export default function Register() {
   if (isLoading) return <Spinner />;
 
   return (
-    <div className="auth-page-wrapper register-page p-3 py-5 d-flex align-items-center justify-content-center" style = {{backgroundSize: 'contain'}}>
+    <div className="auth-page-wrapper register-page p-3 py-5 d-flex align-items-center justify-content-center" style={{ backgroundSize: 'contain' }}>
       <div className="container-fluid px-md-5" style={{ maxWidth: '1200px' }}>
         <div className="row g-0 justify-content-end">
           
-          {/* Form Fields Column snapped to far right */}
+          {/* Form Fields Column */}
           <div className="col-lg-6 col-xl-5 ms-auto p-4 p-sm-5 d-flex flex-column justify-content-center">
             <div className="mb-4 text-center text-md-start">
               <img src="/assets/logos/logo-black.svg" alt="The Script" width={160} className="mb-3" />
@@ -166,37 +166,6 @@ export default function Register() {
                 />
               </div>
 
-
-              {/* <div className="row g-2 mb-4">
-                <div className="col-sm-6">
-                  <label className="form-label fw-semibold text-secondary small">
-                    Practice Number <span className="text-danger">*</span>
-                  </label>
-                  <input 
-                    type="text" 
-                    className={`form-control form-control-lg fs-5 rounded-pill py-3 px-4 ${validated && !practiceNumber ? 'is-invalid' : ''}`} 
-                    value={practiceNumber} 
-                    onChange={(e) => setPracticeNumber(e.target.value)} 
-                    placeholder="e.g. PRAC-12345" 
-                    required 
-                  />
-                </div>
-                <div className="col-sm-6">
-                  <label className="form-label fw-semibold text-secondary small">
-                    Phone <span className="text-danger">*</span>
-                  </label>
-                  <input 
-                    type="tel" 
-                    className={`form-control form-control-lg fs-5 rounded-pill py-3 px-4 ${validated && !phone ? 'is-invalid' : ''}`} 
-                    value={phone} 
-                    onChange={(e) => setPhone(e.target.value)} 
-                    maxLength={10} 
-                    placeholder="10-digit number" 
-                    required 
-                  />
-                </div>
-              </div> */}
-
               <div className="mb-4">
                 <label className="form-label fw-semibold text-secondary small">
                   Job Title <span className="text-muted">(Optional)</span>
@@ -210,7 +179,6 @@ export default function Register() {
                 />
               </div>
         
-              {/* Centered Full-Width Action Button */}
               <div className="text-center">
                 <button 
                   type="submit" 
@@ -228,28 +196,6 @@ export default function Register() {
 
         </div>
       </div>
-
-      {/* SUCCESS OVERLAY MODAL */}
-      {showSuccessModal && (
-        <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }} role="dialog">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content border-0 shadow-lg p-4">
-              <div className="modal-body text-center p-4">
-                <div className="mb-3" style={{ color: 'var(--color-script-main)' }}>
-                  <i className="bi bi-check-circle-fill display-4"></i>
-                </div>
-                <h4 className="fw-bold mb-2">Registration Complete</h4>
-                <p className="text-muted small mb-4">
-                  Your staff profile is bound under practice key unit tracking parameters.
-                </p>
-                <button type="button" className="btn btn-script w-100" onClick={() => navigate('/login')}>
-                  Proceed to Sign In
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
