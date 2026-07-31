@@ -816,8 +816,8 @@ section, .container-xl, .hero-swiper, .media-surround {
 /* Universal Script Outline Button Class */
 .btn-script-outline {
   background-color: transparent !important;
-  color: var(--color-script-white) !important;
-  border: 1px solid var(--color-script-white) !important;
+  color: var(--color-script-main) !important;
+  border: 1px solid var(--color-script-main) !important;
   font-weight: 600;
   transition: all 0.25s ease-in-out;
   border-radius: 999px !important;
