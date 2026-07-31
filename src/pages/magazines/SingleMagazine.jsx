@@ -47,6 +47,20 @@ export default function SingleMagazine() {
     navigate(`${pathname}?${current.toString()}`, { replace: true });
   };
 
+  // Safe Close Handler for Podcast Modal
+  const handleClosePodcastModal = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setShowPodcastModal(false);
+  };
+
+  // --- 1. FETCH MAGAZINE PAGE DATA AND METADATA FROM API ---
+  // Inside SingleMagazine component:
+
   // --- 1. FETCH MAGAZINE PAGE DATA AND METADATA FROM API ---
   useEffect(() => {
     if (!id) return;
@@ -64,37 +78,71 @@ export default function SingleMagazine() {
       try {
         const currentPageNumber = activeIndex + 1;
         
-        // Fetch current page content
-        const pagePromise = axios.get(
-          `${CONSTANTS.API_URL}pages/find/idandpage/v1/${id}?page=${currentPageNumber}`,
-          { headers: { token: `Bearer ${token}` } }
-        );
-
-        // Fetch overall magazine metadata
-        const magazinePromise = axios.get(
-          `${CONSTANTS.API_URL}magazines/find/${id}`,
-          { headers: { token: `Bearer ${token}` } }
-        );
-
-        const [pageResponse, magazineResponse] = await Promise.all([pagePromise, magazinePromise]);
+        // Fetch current page content and magazine metadata
+        const [pageResponse, magazineResponse] = await Promise.all([
+          axios.get(
+            `${CONSTANTS.API_URL}pages/find/idandpage/v1/${id}?page=${currentPageNumber}`,
+            { headers: { token: `Bearer ${token}` } }
+          ),
+          axios.get(
+            `${CONSTANTS.API_URL}magazines/find/${id}`,
+            { headers: { token: `Bearer ${token}` } }
+          )
+        ]);
 
         const pageData = pageResponse.data;
         let magData = magazineResponse.data;
 
-        // ✅ FIX: Find the specific magazine that matches the 'id' parameter from the URL
         if (Array.isArray(magData)) {
           magData = magData.find((m) => m._id === id) || magData[0];
         }
 
         if (pageData) {
           setCurrentPageData(pageData);
-          setPodcastData(pageData.podcast || pageData.formatType?.podcastId || null);
-          setGameData(pageData.game || pageData.formatType?.gameId || null);
+
+          // Check if podcast is an ID string or object
+          const podcast = pageData.podcast || pageData.formatType?.podcastId;
+
+          if (typeof podcast === 'string' && podcast.trim() !== '') {
+            try {
+              // Hitting your exact endpoint matching Angular's getPodcastById
+              const podcastRes = await axios.get(
+                `${CONSTANTS.API_URL}settings/podcast/find-item/v1/${podcast}`,
+                { headers: { token: `Bearer ${token}` } }
+              );
+              setPodcastData(podcastRes.data);
+            } catch (err) {
+              console.error('Error fetching podcast details:', err);
+              setPodcastData(null);
+            }
+          } else if (typeof podcast === 'object' && podcast !== null) {
+            setPodcastData(podcast);
+          } else {
+            setPodcastData(null);
+          }
+
+          // Handle Game data
+          const game = pageData.game || pageData.formatType?.gameId;
+          if (typeof game === 'string' && game.trim() !== '') {
+            try {
+              const gameRes = await axios.get(
+                `${CONSTANTS.API_URL}games/find/${game}`,
+                { headers: { token: `Bearer ${token}` } }
+              );
+              setGameData(gameRes.data);
+            } catch (err) {
+              console.error('Error fetching game details:', err);
+              setGameData(null);
+            }
+          } else if (typeof game === 'object' && game !== null) {
+            setGameData(game);
+          } else {
+            setGameData(null);
+          }
         }
 
         if (magData) {
           setMagazine(magData);
-          // Extract totalPages safely
           const count = magData.totalPages || magData.pages?.length || magData.pageCount;
           setTotalPages(count || 1);
         }
@@ -107,6 +155,15 @@ export default function SingleMagazine() {
 
     fetchMagazinePage();
   }, [id, activeIndex, user]);
+  // Cleanup audio when switching pages or closing modal
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      setIsPlaying(false);
+    };
+  }, [activeIndex, showPodcastModal]);
 
   // --- 2. GOOGLE ANALYTICS TRACKING ENGINE ---
   useEffect(() => {
@@ -157,15 +214,27 @@ export default function SingleMagazine() {
     }
   };
 
-  const togglePlayPause = () => {
-    if (audioRef.current) {
-      if (isPlaying) audioRef.current.pause();
-      else audioRef.current.play();
-      setIsPlaying(!isPlaying);
+  const togglePlayPause = async () => {
+    if (!audioRef.current) return;
+
+    try {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        // Await play promise to prevent AbortError
+        await audioRef.current.play();
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("Audio playback error:", error);
+      }
     }
   };
 
   const formatTime = (s) => {
+    if (isNaN(s) || !s) return "0:00";
     const mins = Math.floor(s / 60);
     const secs = Math.floor(s % 60);
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
@@ -182,6 +251,12 @@ export default function SingleMagazine() {
   if (!magazine || !currentPageData) {
     return <div className="container p-5 text-white">Magazine content not found.</div>;
   }
+
+  // Extract podcast properties safely with fallbacks
+  const podcastTitle = podcastData?.title || podcastData?.name || "Podcast Episode";
+  const podcastImg = podcastData?.featuredImage || podcastData?.imageUrl || podcastData?.image || podcastData?.coverImage;
+  const podcastAudio = podcastData?.audioUrl || podcastData?.audio || podcastData?.fileUrl;
+  const podcastGuests = podcastData?.guest || podcastData?.guests;
 
   return (
     <div
@@ -200,36 +275,90 @@ export default function SingleMagazine() {
 
         {/* Podcast Modal */}
         {showPodcastModal && podcastData && (
-          <div className="modal-backdrop fade show" onClick={() => setShowPodcastModal(false)}>
-            <div className="modal fade show d-block" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Listen to Podcast</h5>
-                    <button type="button" className="btn-close" onClick={() => setShowPodcastModal(false)}></button>
-                  </div>
-                  <div className="modal-body text-center">
-                    {podcastData.guest && <span className="badge bg-secondary mb-2">{podcastData.guest}</span>}
-                    <h4 className="mb-4">{podcastData.title}</h4>
-                    <audio
-                      ref={audioRef}
-                      src={podcastData.audioUrl}
-                      onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-                      onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-                      onEnded={() => setIsPlaying(false)}
+          <div 
+            className="modal fade show d-block" 
+            tabIndex="-1"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }} 
+            onClick={handleClosePodcastModal}
+          >
+            <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Listen to Podcast</h5>
+                  <button 
+                    type="button" 
+                    className="btn-close" 
+                    onClick={handleClosePodcastModal}
+                  ></button>
+                </div>
+                
+                <div className="modal-body text-center">
+                  {/* Featured Image */}
+                  {podcastImg && (
+                    <img 
+                      src={podcastImg} 
+                      alt={podcastTitle} 
+                      className="img-fluid rounded mb-3 shadow-sm"
+                      style={{ maxHeight: "220px", width: "100%", objectFit: "cover" }}
                     />
-                    <button className="btn btn-primary rounded-circle mb-3 shadow" style={{ width: "64px", height: "64px" }} onClick={togglePlayPause}>
-                      {isPlaying ? <i className="bi bi-pause-fill fs-2"></i> : <i className="bi bi-play-fill fs-2"></i>}
-                    </button>
-                    <input type="range" className="form-range" min={0} max={duration || 0} value={currentTime} onChange={(e) => {
-                        const time = Number(e.target.value);
-                        if (audioRef.current) audioRef.current.currentTime = time;
-                        setCurrentTime(time);
-                    }} />
-                    <div className="d-flex justify-content-between mt-2 small text-muted">
-                      <span>{formatTime(currentTime)}</span>
-                      <span>{formatTime(duration)}</span>
+                  )}
+
+                  {/* Guests Badge — Only renders if guests exist and aren't empty */}
+                  {Boolean(
+                    podcastGuests && 
+                    (Array.isArray(podcastGuests) ? podcastGuests.length > 0 : String(podcastGuests).trim().length > 0)
+                  ) && (
+                    <div className="mb-2">
+                      <span className="badge bg-secondary">
+                        Guest: {Array.isArray(podcastGuests) ? podcastGuests.join(", ") : podcastGuests}
+                      </span>
                     </div>
+                  )}
+
+                  {/* Title */}
+                  <h4 className="mb-3">{podcastTitle}</h4>
+
+                  {/* Audio Element */}
+                  <audio
+                    ref={audioRef}
+                    src={podcastAudio}
+                    onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+                    onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+                    onEnded={() => setIsPlaying(false)}
+                  />
+
+                  {/* Play/Pause Button */}
+                  <button 
+                    type="button"
+                    className="btn btn-primary rounded-circle mb-3 shadow" 
+                    style={{ width: "64px", height: "64px" }} 
+                    onClick={togglePlayPause}
+                  >
+                    {isPlaying ? (
+                      <i className="bi bi-pause-fill fs-2"></i>
+                    ) : (
+                      <i className="bi bi-play-fill fs-2"></i>
+                    )}
+                  </button>
+
+                  {/* Progress Slider */}
+                  <input 
+                    type="range" 
+                    className="form-range" 
+                    min={0} 
+                    max={duration || 0} 
+                    value={currentTime} 
+                    onChange={(e) => {
+                      const time = Number(e.target.value);
+                      if (audioRef.current) audioRef.current.currentTime = time;
+                      setCurrentTime(time);
+                    }} 
+                  />
+
+                  {/* Time Display */}
+                  <div className="d-flex justify-content-between mt-2 small text-muted">
+                    <span>{formatTime(currentTime)}</span>
+                    <span>{formatTime(duration)}</span>
                   </div>
                 </div>
               </div>
