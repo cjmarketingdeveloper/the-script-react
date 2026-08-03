@@ -839,6 +839,11 @@ section, .container-xl, .hero-swiper, .media-surround {
   border-color: var(--color-script-accent) !important;
 }
 
+.btn-script-outline.btn-script-accent:hover {
+  color: var(--color-script-white) !important;
+  background-color: var(--color-script-accent) !important;
+}
+
 /* Form Layout Elements */
 .auth-form-title {
   font-weight: 700;
