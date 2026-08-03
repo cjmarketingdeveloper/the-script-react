@@ -105,13 +105,11 @@
 @media only screen and (max-width: 390px) {
   .btn-script {
     font-weight: 400 !important;
-    padding: 6px 10px !important;
     font-size: 12px !important;
+    padding: 6px 8px !important;
     
-    /* Override Bootstrap defaults forcing width */
-    white-space: normal !important;
-    width: auto !important;
-    min-width: 0 !important; 
+    /* Slightly smaller equal width on tiny mobile screens */
+    min-width: 85px !important;
   }
 }
 

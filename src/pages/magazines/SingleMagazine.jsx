@@ -274,6 +274,7 @@ export default function SingleMagazine() {
         </h1>
 
         {/* Podcast Modal */}
+        {/* Podcast Modal */}
         {showPodcastModal && podcastData && (
           <div 
             className="modal fade show d-block" 
@@ -303,7 +304,7 @@ export default function SingleMagazine() {
                     />
                   )}
 
-                  {/* Guests Badge — Only renders if guests exist and aren't empty */}
+                  {/* Guests Badge */}
                   {Boolean(
                     podcastGuests && 
                     (Array.isArray(podcastGuests) ? podcastGuests.length > 0 : String(podcastGuests).trim().length > 0)
@@ -327,11 +328,15 @@ export default function SingleMagazine() {
                     onEnded={() => setIsPlaying(false)}
                   />
 
-                  {/* Play/Pause Button */}
+                  {/* Play/Pause Button with --color-script-main */}
                   <button 
                     type="button"
-                    className="btn btn-primary rounded-circle mb-3 shadow" 
-                    style={{ width: "64px", height: "64px" }} 
+                    className="btn text-white rounded-circle mb-3 shadow border-0" 
+                    style={{ 
+                      width: "64px", 
+                      height: "64px", 
+                      backgroundColor: "var(--color-script-main)" 
+                    }} 
                     onClick={togglePlayPause}
                   >
                     {isPlaying ? (
@@ -341,10 +346,10 @@ export default function SingleMagazine() {
                     )}
                   </button>
 
-                  {/* Progress Slider */}
+                  {/* Progress Slider with --color-script-main custom class */}
                   <input 
                     type="range" 
-                    className="form-range" 
+                    className="form-range podcast-range" 
                     min={0} 
                     max={duration || 0} 
                     value={currentTime} 
@@ -388,7 +393,7 @@ export default function SingleMagazine() {
         <div className="page-content-area position-relative text-center my-4">
           <div className="d-flex justify-content-center gap-3">
             {podcastData && (
-              <button className="btn pd-cast1 ogreen-fade mb-3" onClick={() => setShowPodcastModal(true)}>
+              <button className="btn btn-script-outline btn-script-accent mb-3" onClick={() => setShowPodcastModal(true)}>
                 Podcast <i className="bi bi-mic-fill"></i>
               </button>
             )}
@@ -399,14 +404,25 @@ export default function SingleMagazine() {
             )}
           </div>
 
-          <div className="d-flex justify-content-between align-items-center my-3">
-            <button className="btn btn-script" onClick={handlePrev} disabled={activeIndex === 0}>
-              &larr; Previous
-            </button>
-            <span className="text-white fw-bold">Page {activeIndex + 1} / {totalPages}</span>
-            <button className="btn btn-script" onClick={handleNext} disabled={activeIndex >= totalPages - 1}>
-              Next &rarr;
-            </button>
+          <div className="d-flex align-items-center my-3 w-100">
+            {/* Left container (flex: 1) aligns button to the left edge */}
+            <div className="d-flex justify-content-start flex-grow-1 flex-shrink-1 flex-basis-0">
+              <button className="btn btn-script" onClick={handlePrev} disabled={activeIndex === 0}>
+                &larr; Previous
+              </button>
+            </div>
+
+            {/* Center text remains locked in the true center */}
+            <span className="fw-bold px-2 text-center" style={{ color: 'var(--color-script-accent)', whiteSpace: 'nowrap' }}>
+              Page {activeIndex + 1} / {totalPages}
+            </span>
+
+            {/* Right container (flex: 1) aligns button to the right edge */}
+            <div className="d-flex justify-content-end flex-grow-1 flex-shrink-1 flex-basis-0">
+              <button className="btn btn-script" onClick={handleNext} disabled={activeIndex >= totalPages - 1}>
+                Next &rarr;
+              </button>
+            </div>
           </div>
 
           {currentPageData && (

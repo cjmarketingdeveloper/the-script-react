@@ -796,13 +796,16 @@ section, .container-xl, .hero-swiper, .media-surround {
 .btn-script {
   background-color: var(--color-script-main) !important;
   color: var(--color-script-white) !important;
-  border: 1px solid var(--color-script-main) !important;
   font-weight: 600;
   transition: all 0.25s ease-in-out;
   border-radius: 999px !important;
-  padding: 10px 40px !important;
-  border: none ;
+  border: none !important;
   position: relative;
+  
+  /* Lock both buttons to the exact same compact width */
+  min-width: 115px !important;
+  text-align: center !important;
+  padding: 8px 12px !important;
 }
 
 
@@ -828,6 +831,12 @@ section, .container-xl, .hero-swiper, .media-surround {
   background-color: rgba(37, 99, 235, 0.08) !important;
   color: #2db8eb !important;
   border-color: #2db8eb !important;
+}
+
+/* Modifier class for accent-colored outline buttons */
+.btn-script-outline.btn-script-accent {
+  color: var(--color-script-accent) !important;
+  border-color: var(--color-script-accent) !important;
 }
 
 /* Form Layout Elements */
@@ -862,6 +871,19 @@ section, .container-xl, .hero-swiper, .media-surround {
 
 .latest-badge{
   animation: minor-pulse 2.5s ease-in-out infinite; 
+}
+
+/* Custom color for range slider thumb/dot */
+.podcast-range::-webkit-slider-thumb {
+  background-color: var(--color-script-main) !important;
+}
+
+.podcast-range::-moz-range-thumb {
+  background-color: var(--color-script-main) !important;
+}
+
+.podcast-range:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.25rem rgba(var(--color-script-main), 0.25) !important;
 }
 
 @keyframes minor-pulse {
