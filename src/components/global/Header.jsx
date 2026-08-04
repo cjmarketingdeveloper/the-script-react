@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux'; // 🟢 Added useSelector
+import { useDispatch, useSelector } from 'react-redux';
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { logout } from '../../reduxAuth/authSlice';
 
@@ -9,7 +9,7 @@ export default function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
-  // 🟢 Read the authenticated user directly from the Redux store
+  // Read the authenticated user directly from the Redux store
   const { user } = useSelector((state) => state.auth);
   const isAuthenticated = !!user;
 
@@ -66,26 +66,40 @@ export default function Header() {
               <Nav.Link
                 as={Link}
                 to="/dashboard"
-                className={isActive('/dashboard') ? 'nav-active' : ''} // 🟢 Fixed active state match class string
+                className={isActive('/dashboard') ? 'nav-active' : ''}
               >
                 Dashboard
               </Nav.Link>
             )}
 
-            {/* Only show the profile dropdown if user is authenticated */}
+            {/* Profile dropdown */}
             {isAuthenticated && (
               <NavDropdown
                 title={<i className="bi bi-person-circle fs-5"></i>} 
                 id="profile-nav-dropdown"
                 align="end" 
               >
-                {/* Display role context dynamically if needed */}
+                {/* User Header Info */}
                 <NavDropdown.Item text="true" className="text-muted small border-bottom pb-2">
                   Signed in as:<br/>
-                   <strong>{user.name + ' ' + user.surname}</strong>
-                   <div>{user.roles || 'User'}</div>
+                  <strong>{user?.name ? `${user.name} ${user.surname || ''}` : 'User'}</strong>
+                  <div>{user?.isAdmin ? 'Admin' : (user?.role || user?.roles || 'User')}</div>
                 </NavDropdown.Item>
-                <NavDropdown.Item onClick={handleLogoutClick} className="text-danger fw-semibold mt-1">
+
+                {/* 🟢 Added My Profile link */}
+                <NavDropdown.Item
+                  as={Link}
+                  to="/profile"
+                  style={{color: 'var(--color-script-accent)'}}
+                  className={isActive('/profile') ? 'fw-bold' : ''}
+                >
+                  <i className="bi bi-person me-2"></i> My Profile
+                </NavDropdown.Item>
+
+                <NavDropdown.Divider />
+
+                {/* Log Out Button */}
+                <NavDropdown.Item onClick={handleLogoutClick} className="text-danger fw-semibold">
                   <i className="bi bi-box-arrow-right me-2"></i> Log Out
                 </NavDropdown.Item>
               </NavDropdown>

@@ -25,6 +25,7 @@ import ArchiveMagazines from "./pages/magazines/ArchiveMagazines";
 import ArchivePdodcasts from "./pages/podcasts/ArchivePodcasts";
 import { Dashboard } from "./pages/Dashboard"; // Imported dashboard
 import Games from "./pages/games/Games";
+import UserProfilePage from "./pages/profile";
 
 function AppContent() {
   const location = useLocation();
@@ -46,10 +47,12 @@ function AppContent() {
           <Route path="/forgot-password" element={<ForgotPassword />}/> 
           <Route path="/support" element={<SupportPage />}/>  
           <Route path="/terms-of-service" element={<TermsOfService />} />
-          
           {/* Protected Routes (Authorized Users Only) */}
           <Route element={<AuthScreens />}>                       
             <Route path="/" element={<HomeScreen />}/> 
+            <Route path="/profile" element={<UserProfilePage />}/> 
+
+
             <Route path="/magazines" element={<Magazines />}/> 
             <Route path="/magazines/:id" element={<SingleMagazine />}/> 
             <Route path="/magazine-archive" element={<ArchiveMagazines />}/> 

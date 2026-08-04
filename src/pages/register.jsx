@@ -43,13 +43,13 @@ export default function Register() {
 
     const userData = {
       fullName: `${name} ${surname}`.trim(),
-      firstName: name,
-      lastName: surname,
-      phonenumber: cleanedPhone,
+      name: name,
+      surname: surname,
+      phone: cleanedPhone,
       email: email.trim(),
       password,
       practiceNumber: practiceNumber.trim(),
-      jobTitle: jobTitle.trim(),
+      job: jobTitle.trim(),
       role: 'Staff'
     };
 
