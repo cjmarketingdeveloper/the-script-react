@@ -101,12 +101,12 @@ export default function Podcasts() {
                 <div key={pod._id} className="col-12 col-md-4">
                   <CoverCard
                     image={pod.featuredImage}
-                    href={`/podcast/${pod._id}`}
+                    href={`/podcasts/${pod._id}`}
                     badge={isLatest ? 'Latest Episode' : undefined}
                     cardClass="cover-podcast"
                     footer={
                       <Link
-                        to={`/podcast/${pod._id}`}
+                        to={`/podcasts/${pod._id}`}
                         className="btn btn-script"
                       >
                         Listen Now

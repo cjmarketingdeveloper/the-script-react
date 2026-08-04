@@ -31,12 +31,18 @@ export default function SingleMagazine() {
   const pageParam = searchParams?.get("page") || "1";
   const activeIndex = Math.max(0, parseInt(pageParam, 10) - 1);
 
+  // Modal & Media States
   const [podcastData, setPodcastData] = useState(null);
   const [gameData, setGameData] = useState(null);
+  const [videoData, setVideoData] = useState(null);
+
   const [showPodcastModal, setShowPodcastModal] = useState(false);
   const [showGameModal, setShowGameModal] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
 
+  // Audio Player States
   const audioRef = useRef(null);
+  const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -58,8 +64,14 @@ export default function SingleMagazine() {
     setShowPodcastModal(false);
   };
 
-  // --- 1. FETCH MAGAZINE PAGE DATA AND METADATA FROM API ---
-  // Inside SingleMagazine component:
+  // Safe Close Handler for Video Modal
+  const handleCloseVideoModal = () => {
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+    setShowVideoModal(false);
+  };
 
   // --- 1. FETCH MAGAZINE PAGE DATA AND METADATA FROM API ---
   useEffect(() => {
@@ -100,12 +112,10 @@ export default function SingleMagazine() {
         if (pageData) {
           setCurrentPageData(pageData);
 
-          // Check if podcast is an ID string or object
+          // 1. Handle Podcast Data
           const podcast = pageData.podcast || pageData.formatType?.podcastId;
-
           if (typeof podcast === 'string' && podcast.trim() !== '') {
             try {
-              // Hitting your exact endpoint matching Angular's getPodcastById
               const podcastRes = await axios.get(
                 `${CONSTANTS.API_URL}settings/podcast/find-item/v1/${podcast}`,
                 { headers: { token: `Bearer ${token}` } }
@@ -121,7 +131,30 @@ export default function SingleMagazine() {
             setPodcastData(null);
           }
 
-          // Handle Game data
+          // 2. Handle Video Data
+          const video = pageData.video || pageData.videoId || pageData.formatType?.videoId;
+
+          if (typeof video === 'string' && video.trim() !== '') {
+            try {
+              // Matched to existing backend endpoint: /video/single/v1/:id
+              const videoRes = await axios.get(
+                `${CONSTANTS.API_URL}settings/video/single/v1/${video}`
+              );
+
+              // Safely handle extracted data payload
+              const payload = videoRes.data?.data || (Array.isArray(videoRes.data) ? videoRes.data[0] : videoRes.data);
+              setVideoData(payload || null);
+            } catch (err) {
+              console.error('Error fetching video details:', err);
+              setVideoData(null);
+            }
+          } else if (typeof video === 'object' && video !== null) {
+            setVideoData(video);
+          } else {
+            setVideoData(null);
+          }
+
+          // 3. Handle Game Data
           const game = pageData.game || pageData.formatType?.gameId;
           if (typeof game === 'string' && game.trim() !== '') {
             try {
@@ -155,15 +188,19 @@ export default function SingleMagazine() {
 
     fetchMagazinePage();
   }, [id, activeIndex, user]);
-  // Cleanup audio when switching pages or closing modal
+
+  // Cleanup media when switching pages or closing modals
   useEffect(() => {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
       }
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
       setIsPlaying(false);
     };
-  }, [activeIndex, showPodcastModal]);
+  }, [activeIndex, showPodcastModal, showVideoModal]);
 
   // --- 2. GOOGLE ANALYTICS TRACKING ENGINE ---
   useEffect(() => {
@@ -222,7 +259,6 @@ export default function SingleMagazine() {
         audioRef.current.pause();
         setIsPlaying(false);
       } else {
-        // Await play promise to prevent AbortError
         await audioRef.current.play();
         setIsPlaying(true);
       }
@@ -258,6 +294,13 @@ export default function SingleMagazine() {
   const podcastAudio = podcastData?.audioUrl || podcastData?.audio || podcastData?.fileUrl;
   const podcastGuests = podcastData?.guest || podcastData?.guests;
 
+  // Extract video properties safely with fallbacks
+  const videoTitle = videoData?.title || videoData?.name || "Watch Video";
+  const videoUrl = videoData?.videoUrl || videoData?.urlFrame || videoData?.url || videoData?.fileUrl;
+  const videoGuests = videoData?.guest || videoData?.guests;
+
+
+
   return (
     <div
       className="page-body"
@@ -273,7 +316,6 @@ export default function SingleMagazine() {
           {magazine.title || "Magazine"} {magazine.issue ? `- Issue ${magazine.issue}` : ''}
         </h1>
 
-        {/* Podcast Modal */}
         {/* Podcast Modal */}
         {showPodcastModal && podcastData && (
           <div 
@@ -346,7 +388,7 @@ export default function SingleMagazine() {
                     )}
                   </button>
 
-                  {/* Progress Slider with --color-script-main custom class */}
+                  {/* Progress Slider */}
                   <input 
                     type="range" 
                     className="form-range podcast-range" 
@@ -364,6 +406,67 @@ export default function SingleMagazine() {
                   <div className="d-flex justify-content-between mt-2 small text-muted">
                     <span>{formatTime(currentTime)}</span>
                     <span>{formatTime(duration)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Video Modal */}
+        {showVideoModal && videoData && (
+          <div 
+            className="modal fade show d-block" 
+            tabIndex="-1"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }} 
+            onClick={handleCloseVideoModal}
+          >
+            <div className="modal-dialog modal-dialog-centered modal-lg" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">{videoTitle}</h5>
+                  <button 
+                    type="button" 
+                    className="btn-close" 
+                    onClick={handleCloseVideoModal}
+                  ></button>
+                </div>
+                
+                <div className="modal-body text-center p-0">
+                  {/* Guests Badge (if present) */}
+                  {Boolean(
+                    videoGuests && 
+                    (Array.isArray(videoGuests) ? videoGuests.length > 0 : String(videoGuests).trim().length > 0)
+                  ) && (
+                    <div className="pt-3 px-3">
+                      <span className="badge bg-secondary">
+                        Guest: {Array.isArray(videoGuests) ? videoGuests.join(", ") : videoGuests}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Video Player Render (Handles direct files or iframe embeds) */}
+                  <div className="p-3">
+                    {videoUrl?.includes("iframe") || videoUrl?.includes("youtube") || videoUrl?.includes("vimeo") ? (
+                      <iframe 
+                        src={videoUrl} 
+                        style={{ width: "100%", height: "420px", border: "none" }} 
+                        title={videoTitle}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video 
+                        ref={videoRef}
+                        controls 
+                        autoPlay 
+                        className="w-100 rounded shadow-sm"
+                        style={{ maxHeight: "450px" }}
+                        src={videoUrl}
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    )}
                   </div>
                 </div>
               </div>
@@ -391,10 +494,16 @@ export default function SingleMagazine() {
         )}
 
         <div className="page-content-area position-relative text-center my-4">
+          {/* Media Trigger Buttons */}
           <div className="d-flex justify-content-center gap-3">
             {podcastData && (
-              <button className="btn btn-script-outline btn-script-accent mb-3" onClick={() => setShowPodcastModal(true)}>
+              <button className="btn btn-script btn-script-accent mb-3" onClick={() => setShowPodcastModal(true)}>
                 Podcast <i className="bi bi-mic-fill"></i>
+              </button>
+            )}
+            {videoData && (
+              <button className="btn btn-script btn-script-accent mb-3" onClick={() => setShowVideoModal(true)}>
+                Watch Video <i className="bi bi-camera-video-fill"></i>
               </button>
             )}
             {gameData && (
@@ -405,19 +514,19 @@ export default function SingleMagazine() {
           </div>
 
           <div className="d-flex align-items-center my-3 w-100">
-            {/* Left container (flex: 1) aligns button to the left edge */}
+            {/* Left container */}
             <div className="d-flex justify-content-start flex-grow-1 flex-shrink-1 flex-basis-0">
               <button className="btn btn-script" onClick={handlePrev} disabled={activeIndex === 0}>
                 &larr; Previous
               </button>
             </div>
 
-            {/* Center text remains locked in the true center */}
+            {/* Center text */}
             <span className="fw-bold px-2 text-center" style={{ color: 'var(--color-script-accent)', whiteSpace: 'nowrap' }}>
               Page {activeIndex + 1} / {totalPages}
             </span>
 
-            {/* Right container (flex: 1) aligns button to the right edge */}
+            {/* Right container */}
             <div className="d-flex justify-content-end flex-grow-1 flex-shrink-1 flex-basis-0">
               <button className="btn btn-script" onClick={handleNext} disabled={activeIndex >= totalPages - 1}>
                 Next &rarr;

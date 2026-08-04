@@ -60,7 +60,7 @@ function AppContent() {
             <Route path="/games" element={<Games />}/>
 
             <Route path="/podcasts" element={<Podcasts />}/> 
-            <Route path="/podcast/:id" element={<SinglePodcast />}/> 
+            <Route path="/podcasts/:id" element={<SinglePodcast />}/> 
             <Route path="/podcast-archive" element={<ArchivePdodcasts />}/>
             <Route path="/marketing-enquiries" element={<MarketingEnquiriesPage />}/> 
           </Route>

@@ -834,14 +834,17 @@ section, .container-xl, .hero-swiper, .media-surround {
 }
 
 /* Modifier class for accent-colored outline buttons */
-.btn-script-outline.btn-script-accent {
-  color: var(--color-script-accent) !important;
-  border-color: var(--color-script-accent) !important;
-}
-
-.btn-script-outline.btn-script-accent:hover {
+.btn-script.btn-script-accent {
   color: var(--color-script-white) !important;
   background-color: var(--color-script-accent) !important;
+}
+
+.btn-script.btn-script-accent:hover {
+  /* Brightens the original accent color slightly to simulate a light overlay */
+  filter: brightness(1.15); 
+  
+  /* Fixed box-shadow syntax (requires offset values like 0 4px 12px) */
+  box-shadow: 0 4px 12px rgba(45, 184, 235, 0.2);
 }
 
 /* Form Layout Elements */

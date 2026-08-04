@@ -52,7 +52,7 @@ export default function PodcastSection() {
           <div key={pod._id || pod.id} className="col-12 col-md-4">
             <CoverCard
               image={pod.featuredImage}
-              href={`/podcast/${pod._id}`}
+              href={`/podcasts/${pod._id}`}
               cardClass="cover-podcast"
               overlay={<button className="btn btn-script">▶ Play</button>}
             />
