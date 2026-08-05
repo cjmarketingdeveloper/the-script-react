@@ -94,7 +94,7 @@ export default function UserProfilePage() {
     <div className="container-xl my-5">
       <div className="row justify-content-center">
         <div className="col-lg-8">
-          <div className="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+          <div className="card border-2 shadow-sm rounded-4 p-4 p-md-5" style={{ borderColor: "var(--color-script-accent)" }}>
             {/* Header */}
             <div className="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
               <div>
