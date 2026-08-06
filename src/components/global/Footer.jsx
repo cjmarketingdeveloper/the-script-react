@@ -30,6 +30,7 @@ export default function Footer() {
               <ul className="footer-links">
                 <li><Link to="/podcasts">Podcasts</Link></li>
                 <li><Link to="/magazines">Magazines</Link></li>
+                <li><Link to="/games">Games</Link></li>
               </ul>
             </div>
 
