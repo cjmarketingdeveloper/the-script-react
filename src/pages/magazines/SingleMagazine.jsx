@@ -4,7 +4,6 @@ import { useParams, useNavigate, useSearchParams, useLocation } from 'react-rout
 import React, { useEffect, useRef, useState } from "react";
 import ReactGA from "react-ga4";
 import Spinner from '../../components/global/Spinner';
-import GamesModal from '../../components/modals/games-modal';
 import axios from 'axios';
 import * as CONSTANTS from '../../CONSTANTS';
 import { useSelector } from 'react-redux';
