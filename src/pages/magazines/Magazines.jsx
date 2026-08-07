@@ -10,9 +10,7 @@ import { useSelector } from 'react-redux';
 const ITEMS_PER_PAGE = 6;
 
 export default function Magazines() {
-   const {user}                                    = useSelector((state) => state.auth);
-
-   
+    const {user} = useSelector((state) => state.auth);
     // ----- YEAR LOGIC -----
     //const currentYear = new Date().getFullYear(); // Dynamic current year (e.g., 2026)
     //const years = [currentYear, currentYear - 1, currentYear - 2];

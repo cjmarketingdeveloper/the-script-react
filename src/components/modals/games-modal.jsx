@@ -6,27 +6,18 @@ import SudokuComponent from '../../games/sudokuComponent/SudokuComponent';
 import MemoryMatchComponent from '../../games/memoryMatch/MemoryMatchComponent';
 import MedSolution from '../../games/medSolution/MedSolution';
 
-export default function Games({ user }) {
-  const [showGameModal, setShowGameModal] = useState(false);
+export default function GamesModal({ user }){
+  const [showGameModal, setShowGameModal] = useState(true);
   //WO112SEAR - wordsearch
   //MA5e4erAL - Maize
   //SODC25eku - Sudoku 
   //MACH3589F - Match Card
   //MEDS3589N - Medical Solutions
 
-  const gameType = "WO112SEAR"; 
+  const gameType = "WO112SEAR";
 
   return (
     <div>
-      <div className="container">
-        <h1>Games</h1>
-        <button 
-          className="btn btn-script mb-3"
-          onClick={ () => setShowGameModal(true)}>
-          Play Game
-        </button>
-      </div>
-        
     {/* Game Modal */}
     {showGameModal && (
         <div className="modal-backdrop fade show" onClick={() => setShowGameModal(false)}>
@@ -69,7 +60,7 @@ export default function Games({ user }) {
           </div>
         </div>
       )
-  }
+    }
     </div>
-  )
+  );
 }

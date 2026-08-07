@@ -4,10 +4,17 @@ import { useParams, useNavigate, useSearchParams, useLocation } from 'react-rout
 import React, { useEffect, useRef, useState } from "react";
 import ReactGA from "react-ga4";
 import Spinner from '../../components/global/Spinner';
-
+import GamesModal from '../../components/modals/games-modal';
 import axios from 'axios';
 import * as CONSTANTS from '../../CONSTANTS';
 import { useSelector } from 'react-redux';
+
+// Import your game components
+import MaizeGameComponent from '../../games/maize/MaizeGameComponent';
+import WordSearchComponent from '../../games/wordsearch/WordSearchComponent';
+import SudokuComponent from '../../games/sudokuComponent/SudokuComponent';
+import MemoryMatchComponent from '../../games/memoryMatch/MemoryMatchComponent';
+import MedSolution from '../../games/medSolution/MedSolution';
 
 import PageImageTemp from "../../components/PageImageTemp";
 
@@ -46,6 +53,8 @@ export default function SingleMagazine() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  const gameType = "WO112SEAR";
 
   const updatePageUrl = (newIndex) => {
     const current = new URLSearchParams(Array.from(searchParams?.entries() || []));
@@ -474,23 +483,44 @@ export default function SingleMagazine() {
           </div>
         )}
 
-        {/* Game Modal */}
-        {showGameModal && gameData && (
-          <div className="modal-backdrop fade show" onClick={() => setShowGameModal(false)}>
-            <div className="modal fade show d-block modal-game-full" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-dialog modal-dialog-centered">
+        {showGameModal && (
+          <>
+            {/* Dark overlay background */}
+            <div 
+              className="modal-backdrop fade show" 
+              onClick={() => setShowGameModal(false)} 
+            />
+
+            {/* Modal container */}
+            <div 
+              className="modal fade show d-block modal-game-full" 
+              tabIndex="-1"
+              onClick={() => setShowGameModal(false)}
+            >
+              <div 
+                className="modal-dialog modal-dialog-centered" 
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className="modal-content">
                   <div className="modal-header">
-                    <h5 className="modal-title">Play Game: {gameData.title}</h5>
-                    <button type="button" className="btn-close" onClick={() => setShowGameModal(false)}></button>
+                    <h5 className="modal-title">Play Game:</h5>
+                    <button 
+                      type="button" 
+                      className="btn-close" 
+                      onClick={() => setShowGameModal(false)}
+                    ></button>
                   </div>
-                  <div className="modal-body text-center">
-                    <iframe src={gameData.urlFrame} style={{ width: "100%", height: "500px", border: "none" }} title={gameData.title || "Game"} />
+                  <div className="modal-body">
+                    {gameType === "MA5e4erAL" && <MaizeGameComponent user={user} />}
+                    {gameType === "WO112SEAR" && <WordSearchComponent user={user} />}
+                    {gameType === "SODC25eku" && <SudokuComponent user={user} />}
+                    {gameType === "MACH3589F" && <MemoryMatchComponent user={user} />}
+                    {gameType === "MEDS3589N" && <MedSolution user={user} />}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </>
         )}
 
         <div className="page-content-area position-relative text-center my-4">
@@ -506,8 +536,9 @@ export default function SingleMagazine() {
                 Watch Video <i className="bi bi-camera-video-fill"></i>
               </button>
             )}
-            {gameData && (
-              <button className="btn game-btn1 oblue-fade mb-3" onClick={() => setShowGameModal(true)}>
+            {/* {gameData && ( */}
+            {(
+              <button className="btn btn-script btn-script-accent mb-3" onClick={() => setShowGameModal(true)}>
                 Play Game <i className="bi bi-controller"></i>
               </button>
             )}
