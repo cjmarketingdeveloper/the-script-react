@@ -1,21 +1,19 @@
 "use client";
 
 import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
 import Spinner from '../../components/global/Spinner';
 import axios from 'axios';
 import * as CONSTANTS from '../../CONSTANTS';
 import { useSelector } from 'react-redux';
 
-// Import your game components
-import MaizeGameComponent from '../../games/maize/MaizeGameComponent';
-import WordSearchComponent from '../../games/wordsearch/WordSearchComponent';
-import SudokuComponent from '../../games/sudokuComponent/SudokuComponent';
-import MemoryMatchComponent from '../../games/memoryMatch/MemoryMatchComponent';
-import MedSolution from '../../games/medSolution/MedSolution';
-
 import PageImageTemp from "../../components/PageImageTemp";
+
+// Import extracted modals
+import PodcastModal from '../../components/modals/PodcastModal';
+import VideoModal from '../../components/modals/VideoModal';
+import GameModal from '../../components/modals/GameModal';
 
 export default function SingleMagazine() {
   const params = useParams();
@@ -46,13 +44,6 @@ export default function SingleMagazine() {
   const [showGameModal, setShowGameModal] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
 
-  // Audio Player States
-  const audioRef = useRef(null);
-  const videoRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-
   const gameType = "WO112SEAR";
 
   const updatePageUrl = (newIndex) => {
@@ -61,27 +52,7 @@ export default function SingleMagazine() {
     navigate(`${pathname}?${current.toString()}`, { replace: true });
   };
 
-  // Safe Close Handler for Podcast Modal
-  const handleClosePodcastModal = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-    setIsPlaying(false);
-    setCurrentTime(0);
-    setShowPodcastModal(false);
-  };
-
-  // Safe Close Handler for Video Modal
-  const handleCloseVideoModal = () => {
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
-    setShowVideoModal(false);
-  };
-
-  // --- 1. FETCH MAGAZINE PAGE DATA AND METADATA FROM API ---
+  // --- FETCH MAGAZINE PAGE DATA AND METADATA FROM API ---
   useEffect(() => {
     if (!id) return;
 
@@ -144,12 +115,10 @@ export default function SingleMagazine() {
 
           if (typeof video === 'string' && video.trim() !== '') {
             try {
-              // Matched to existing backend endpoint: /video/single/v1/:id
               const videoRes = await axios.get(
                 `${CONSTANTS.API_URL}settings/video/single/v1/${video}`
               );
 
-              // Safely handle extracted data payload
               const payload = videoRes.data?.data || (Array.isArray(videoRes.data) ? videoRes.data[0] : videoRes.data);
               setVideoData(payload || null);
             } catch (err) {
@@ -197,20 +166,7 @@ export default function SingleMagazine() {
     fetchMagazinePage();
   }, [id, activeIndex, user]);
 
-  // Cleanup media when switching pages or closing modals
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-      if (videoRef.current) {
-        videoRef.current.pause();
-      }
-      setIsPlaying(false);
-    };
-  }, [activeIndex, showPodcastModal, showVideoModal]);
-
-  // --- 2. GOOGLE ANALYTICS TRACKING ENGINE ---
+  // --- GOOGLE ANALYTICS TRACKING ENGINE ---
   useEffect(() => {
     if (!magazine || !currentPageData) return;
 
@@ -259,31 +215,6 @@ export default function SingleMagazine() {
     }
   };
 
-  const togglePlayPause = async () => {
-    if (!audioRef.current) return;
-
-    try {
-      if (isPlaying) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        await audioRef.current.play();
-        setIsPlaying(true);
-      }
-    } catch (error) {
-      if (error.name !== "AbortError") {
-        console.error("Audio playback error:", error);
-      }
-    }
-  };
-
-  const formatTime = (s) => {
-    if (isNaN(s) || !s) return "0:00";
-    const mins = Math.floor(s / 60);
-    const secs = Math.floor(s % 60);
-    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-  };
-
   if (loading) {
     return (
       <div className="container p-5 d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
@@ -295,19 +226,6 @@ export default function SingleMagazine() {
   if (!magazine || !currentPageData) {
     return <div className="container p-5 text-white">Magazine content not found.</div>;
   }
-
-  // Extract podcast properties safely with fallbacks
-  const podcastTitle = podcastData?.title || podcastData?.name || "Podcast Episode";
-  const podcastImg = podcastData?.featuredImage || podcastData?.imageUrl || podcastData?.image || podcastData?.coverImage;
-  const podcastAudio = podcastData?.audioUrl || podcastData?.audio || podcastData?.fileUrl;
-  const podcastGuests = podcastData?.guest || podcastData?.guests;
-
-  // Extract video properties safely with fallbacks
-  const videoTitle = videoData?.title || videoData?.name || "Watch Video";
-  const videoUrl = videoData?.videoUrl || videoData?.urlFrame || videoData?.url || videoData?.fileUrl;
-  const videoGuests = videoData?.guest || videoData?.guests;
-
-
 
   return (
     <div
@@ -324,203 +242,25 @@ export default function SingleMagazine() {
           {magazine.title || "Magazine"} {magazine.issue ? `- Issue ${magazine.issue}` : ''}
         </h1>
 
-        {/* Podcast Modal */}
-        {showPodcastModal && podcastData && (
-          <div 
-            className="modal fade show d-block" 
-            tabIndex="-1"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }} 
-            onClick={handleClosePodcastModal}
-          >
-            <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Listen to Podcast</h5>
-                  <button 
-                    type="button" 
-                    className="btn-close" 
-                    onClick={handleClosePodcastModal}
-                  ></button>
-                </div>
-                
-                <div className="modal-body text-center">
-                  {/* Featured Image */}
-                  {podcastImg && (
-                    <img 
-                      src={podcastImg} 
-                      alt={podcastTitle} 
-                      className="img-fluid rounded mb-3 shadow-sm"
-                      style={{ maxHeight: "220px", width: "100%", objectFit: "cover" }}
-                    />
-                  )}
+        {/* Modular Modals */}
+        <PodcastModal 
+          show={showPodcastModal} 
+          onClose={() => setShowPodcastModal(false)} 
+          podcastData={podcastData} 
+        />
 
-                  {/* Guests Badge */}
-                  {Boolean(
-                    podcastGuests && 
-                    (Array.isArray(podcastGuests) ? podcastGuests.length > 0 : String(podcastGuests).trim().length > 0)
-                  ) && (
-                    <div className="mb-2">
-                      <span className="badge bg-secondary">
-                        Guest: {Array.isArray(podcastGuests) ? podcastGuests.join(", ") : podcastGuests}
-                      </span>
-                    </div>
-                  )}
+        <VideoModal 
+          show={showVideoModal} 
+          onClose={() => setShowVideoModal(false)} 
+          videoData={videoData} 
+        />
 
-                  {/* Title */}
-                  <h4 className="mb-3">{podcastTitle}</h4>
-
-                  {/* Audio Element */}
-                  <audio
-                    ref={audioRef}
-                    src={podcastAudio}
-                    onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-                    onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-                    onEnded={() => setIsPlaying(false)}
-                  />
-
-                  {/* Play/Pause Button with --color-script-main */}
-                  <button 
-                    type="button"
-                    className="btn text-white rounded-circle mb-3 shadow border-0" 
-                    style={{ 
-                      width: "64px", 
-                      height: "64px", 
-                      backgroundColor: "var(--color-script-main)" 
-                    }} 
-                    onClick={togglePlayPause}
-                  >
-                    {isPlaying ? (
-                      <i className="bi bi-pause-fill fs-2"></i>
-                    ) : (
-                      <i className="bi bi-play-fill fs-2"></i>
-                    )}
-                  </button>
-
-                  {/* Progress Slider */}
-                  <input 
-                    type="range" 
-                    className="form-range podcast-range" 
-                    min={0} 
-                    max={duration || 0} 
-                    value={currentTime} 
-                    onChange={(e) => {
-                      const time = Number(e.target.value);
-                      if (audioRef.current) audioRef.current.currentTime = time;
-                      setCurrentTime(time);
-                    }} 
-                  />
-
-                  {/* Time Display */}
-                  <div className="d-flex justify-content-between mt-2 small text-muted">
-                    <span>{formatTime(currentTime)}</span>
-                    <span>{formatTime(duration)}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Video Modal */}
-        {showVideoModal && videoData && (
-          <div 
-            className="modal fade show d-block" 
-            tabIndex="-1"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }} 
-            onClick={handleCloseVideoModal}
-          >
-            <div className="modal-dialog modal-dialog-centered modal-lg" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">{videoTitle}</h5>
-                  <button 
-                    type="button" 
-                    className="btn-close" 
-                    onClick={handleCloseVideoModal}
-                  ></button>
-                </div>
-                
-                <div className="modal-body text-center p-0">
-                  {/* Guests Badge (if present) */}
-                  {Boolean(
-                    videoGuests && 
-                    (Array.isArray(videoGuests) ? videoGuests.length > 0 : String(videoGuests).trim().length > 0)
-                  ) && (
-                    <div className="pt-3 px-3">
-                      <span className="badge bg-secondary">
-                        Guest: {Array.isArray(videoGuests) ? videoGuests.join(", ") : videoGuests}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Video Player Render (Handles direct files or iframe embeds) */}
-                  <div className="p-3">
-                    {videoUrl?.includes("iframe") || videoUrl?.includes("youtube") || videoUrl?.includes("vimeo") ? (
-                      <iframe 
-                        src={videoUrl} 
-                        style={{ width: "100%", height: "420px", border: "none" }} 
-                        title={videoTitle}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    ) : (
-                      <video 
-                        ref={videoRef}
-                        controls 
-                        autoPlay 
-                        className="w-100 rounded shadow-sm"
-                        style={{ maxHeight: "450px" }}
-                        src={videoUrl}
-                      >
-                        Your browser does not support the video tag.
-                      </video>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showGameModal && (
-          <>
-            {/* Dark overlay background */}
-            <div 
-              className="modal-backdrop fade show" 
-              onClick={() => setShowGameModal(false)} 
-            />
-
-            {/* Modal container */}
-            <div 
-              className="modal fade show d-block modal-game-full" 
-              tabIndex="-1"
-              onClick={() => setShowGameModal(false)}
-            >
-              <div 
-                className="modal-dialog modal-dialog-centered" 
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Play Game:</h5>
-                    <button 
-                      type="button" 
-                      className="btn-close" 
-                      onClick={() => setShowGameModal(false)}
-                    ></button>
-                  </div>
-                  <div className="modal-body">
-                    {gameType === "MA5e4erAL" && <MaizeGameComponent user={user} />}
-                    {gameType === "WO112SEAR" && <WordSearchComponent user={user} />}
-                    {gameType === "SODC25eku" && <SudokuComponent user={user} />}
-                    {gameType === "MACH3589F" && <MemoryMatchComponent user={user} />}
-                    {gameType === "MEDS3589N" && <MedSolution user={user} />}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+        <GameModal 
+          show={showGameModal} 
+          onClose={() => setShowGameModal(false)} 
+          gameType={gameType} 
+          user={user} 
+        />
 
         <div className="page-content-area position-relative text-center my-4">
           {/* Media Trigger Buttons */}
@@ -535,12 +275,9 @@ export default function SingleMagazine() {
                 Watch Video <i className="bi bi-camera-video-fill"></i>
               </button>
             )}
-            {/* {gameData && ( */}
-            {(
-              <button className="btn btn-script btn-script-accent mb-3" onClick={() => setShowGameModal(true)}>
-                Play Game <i className="bi bi-controller"></i>
-              </button>
-            )}
+            <button className="btn btn-script btn-script-accent mb-3" onClick={() => setShowGameModal(true)}>
+              Play Game <i className="bi bi-controller"></i>
+            </button>
           </div>
 
           <div className="d-flex align-items-center my-3 w-100">
