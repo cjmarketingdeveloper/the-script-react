@@ -1,48 +1,77 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import CoverCard from '../../components/CoverCard';
+import Spinner from '../../components/global/Spinner';
 
-import CoverCard from '../../components/CoverCard'
-import HeroCarousel from '../../components/HeroCarousel'
+import axios from 'axios';
+import * as CONSTANTS from '../../CONSTANTS';
+import { useSelector } from 'react-redux';
 
-// 1. Import your offline podcast data directly
-import { podcasts as localPodcasts } from '../../data/podcasts'
-
-const ITEMS_PER_PAGE = 6
+const ITEMS_PER_PAGE = 6;
 
 export default function Podcasts() {
-  // ----- YEAR LOGIC -----
-  const currentYear = new Date().getFullYear()
-  const years = [currentYear, currentYear - 1, currentYear - 2]
-  const [selectedYear, setSelectedYear] = useState(currentYear)
-  const [page, setPage] = useState(1)
+  const { user } = useSelector((state) => state.auth);
 
-  // 2. Initialize your state directly with your local data array
-  const [podcastsList] = useState(localPodcasts || [])
+  const [page, setPage] = useState(1);
+  const [podcastsList, setPodcastsList] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [noPodcasts, setNoPodcasts] = useState(false);
 
-  // 3. Find the absolute latest episode across ALL years for the badge
-  const absoluteLatestEpisode = [...podcastsList].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  )[0]
+  // Fetch all podcasts on mount
+  useEffect(() => {
+    listOfPodcasts();
+  }, []);
 
-  // ----- FILTER + SORT -----
-  const filteredPodcasts = podcastsList
-    .filter((pod) => {
-      if (!pod.createdAt) return false
-      const year = new Date(pod.createdAt).getFullYear()
-      return year === selectedYear
-    })
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() -
-        new Date(a.createdAt).getTime()
-    )
+  const listOfPodcasts = async () => {
+    setIsProcessing(true);
+    try {
+      const response = await axios.get(
+        `${CONSTANTS.API_URL}settings/podcast/collect/list/v1/`,
+        {
+          headers: {
+            token: 'Bearer ' + user?.accessToken,
+          },
+        }
+      );
 
-  // ----- PAGINATION -----
-  const startIndex = (page - 1) * ITEMS_PER_PAGE
-  const visiblePodcasts = filteredPodcasts.slice(
+      // Extract array safely whether response is directly an array or wrapped
+      const podcastData = Array.isArray(response.data)
+        ? response.data
+        : response.data?.podcasts || response.data?.data || [];
+
+      if (Array.isArray(podcastData) && podcastData.length > 0) {
+        // Sort newest first by creation date
+        const sortedData = [...podcastData].sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setPodcastsList(sortedData);
+        setNoPodcasts(false);
+      } else {
+        setPodcastsList([]);
+        setNoPodcasts(true);
+      }
+    } catch (error) {
+      console.error('Error fetching podcasts:', error);
+      setPodcastsList([]);
+      setNoPodcasts(true);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // The first item in the sorted list is the latest episode
+  const absoluteLatestEpisode = podcastsList[0];
+
+  // Pagination calculation
+  const startIndex = (page - 1) * ITEMS_PER_PAGE;
+  const visiblePodcasts = podcastsList.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
-  )
+  );
+
+  if (isProcessing) {
+    return <Spinner />;
+  }
 
   return (
     <>
@@ -56,7 +85,9 @@ export default function Podcasts() {
           }}
         >
           <div className="container-xl text-white">
-            <h1 className="mb-3">Reach the Heart of South Africa's Pharmacy Industry</h1>
+            <h1 className="mb-3">
+              Reach the Heart of South Africa's Pharmacy Industry
+            </h1>
             <p className="mb-4 col-md-6">
               Connect with thousands of pharmacists, healthcare professionals, and decision-makers through our multi-channel platform
             </p>
@@ -64,45 +95,31 @@ export default function Podcasts() {
         </div>
       </div>
 
-      {/* ========== EPISODES BY YEAR ========== */}
+      {/* ========== ALL EPISODES ========== */}
       <div className="container-xl my-5">
-        <h2 className="mb-3">Episodes by Year</h2>
-
-        {/* Year Selector */}
-        <div className="d-flex gap-3 mb-4">
-          {years.map((year) => (
-            <button
-              key={year}
-              className={`btn ${
-                year === selectedYear
-                  ? 'btn-dark'
-                  : 'btn-outline-dark'
-              }`}
-              onClick={() => {
-                setSelectedYear(year)
-                setPage(1)
-              }}
-            >
-              {year}
-            </button>
-          ))}
-        </div>
+        <h2 className="mb-3">All Episodes</h2>
 
         {/* Podcast Grid */}
-        {visiblePodcasts.length === 0 ? (
-          <p className="text-muted">No podcasts found for {selectedYear}.</p>
+        {noPodcasts || visiblePodcasts.length === 0 ? (
+          <p className="text-muted">No podcasts found.</p>
         ) : (
           <div className="row g-4">
-            {visiblePodcasts.map((pod) => {
-              // Check if this specific item is the absolute latest episode
-              const isLatest = absoluteLatestEpisode && pod._id === absoluteLatestEpisode._id
+            {visiblePodcasts.map((pod, index) => {
+              const isLatest =
+                absoluteLatestEpisode && pod._id === absoluteLatestEpisode._id;
 
               return (
-                <div key={pod._id} className="col-12 col-md-4">
+                <div key={pod._id || `pod-${index}`} className="col-12 col-md-4">
                   <CoverCard
                     image={pod.featuredImage}
                     href={`/podcasts/${pod._id}`}
-                    badge={isLatest ? 'Latest Episode' : undefined}
+                    badge={
+                      isLatest ? (
+                        <div className="pulse-badge">
+                          Latest<br />Episode
+                        </div>
+                      ) : undefined
+                    }
                     cardClass="cover-podcast"
                     footer={
                       <Link
@@ -114,13 +131,13 @@ export default function Podcasts() {
                     }
                   />
                 </div>
-              )
+              );
             })}
           </div>
         )}
 
         {/* Pagination */}
-        {filteredPodcasts.length > ITEMS_PER_PAGE && (
+        {podcastsList.length > ITEMS_PER_PAGE && (
           <div className="d-flex gap-3 mt-4">
             <button
               className="btn btn-outline-dark"
@@ -132,10 +149,7 @@ export default function Podcasts() {
 
             <button
               className="btn btn-outline-dark"
-              disabled={
-                startIndex + ITEMS_PER_PAGE >=
-                filteredPodcasts.length
-              }
+              disabled={startIndex + ITEMS_PER_PAGE >= podcastsList.length}
               onClick={() => setPage(page + 1)}
             >
               Next
@@ -144,5 +158,5 @@ export default function Podcasts() {
         )}
       </div>
     </>
-  )
+  );
 }

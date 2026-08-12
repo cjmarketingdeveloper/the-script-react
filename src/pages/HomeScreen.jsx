@@ -13,6 +13,7 @@ export default function HomeScreen() {
         <>
             <HeroCarousel user={user}/>
             <MagazineSection user={user}/>
+            <PodcastSection user={user}/>
             <AboutSection />
             <SubscribeSection />
         {

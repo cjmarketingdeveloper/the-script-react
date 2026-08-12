@@ -61,6 +61,14 @@ export default function Header() {
               Magazines
             </Nav.Link>
 
+            <Nav.Link
+              as={Link}
+              to="/podcasts"
+              className={isActive('/podcasts') ? 'nav-active' : ''}
+            >
+              Podcasts
+            </Nav.Link>
+
             {/* Only render Dashboard link if user is logged in */}
             {isAuthenticated && (
               <Nav.Link

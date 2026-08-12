@@ -42,12 +42,12 @@ export default function MagazineSection({user}) {
         {/* Desktop button */}
         <Link
           to="/magazines"
-          className="btn btn-script"
+          className="d-none d-md-flex btn btn-script"
         >
           View more issues
-          <span className="arrow-circle">
+          {/* <span className="arrow-circle">
             <i className="bi bi-arrow-right"></i>
-          </span>
+          </span> */}
         </Link>
       </div>
 
@@ -91,7 +91,7 @@ export default function MagazineSection({user}) {
 
       {/* Mobile button */}
       <div className="d-md-none text-center mt-3">
-        <Link to="/magazines" className="btn-view-more">
+        <Link to="/magazines" className="btn btn-script" style={{ backgroundColor: 'var(--color-script-black) !important' }}>
           View more issues
           <span className="arrow-circle">
             <i className="bi bi-arrow-right"></i>

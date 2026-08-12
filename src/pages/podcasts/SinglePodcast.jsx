@@ -1,129 +1,195 @@
-import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import React, { useEffect, useRef, useState } from "react";
+"use client";
 
-// 1. Import your offline local databases directly
-import { magazines as localMagazines } from '../../data/magazines';
-import { podcasts as localPodcasts } from '../../data/podcasts';
-import { games as localGames } from '../../data/games'; // Imported from your data files
-import PageImageTemp from "../../components/PageImageTemp";
+import React, { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import ReactGA from "react-ga4";
+import Spinner from "../../components/global/Spinner";
+import axios from "axios";
+import * as CONSTANTS from "../../CONSTANTS";
+import { useSelector } from "react-redux";
 
 export default function SinglePodcast() {
   const params = useParams();
   const id = params?.id;
-
   const navigate = useNavigate();
-  const location = useLocation();
-  const pathname = location.pathname;
-  const [searchParams] = useSearchParams();
 
-  // --- STATE MANAGEMENT ---
-  const [magazine, setMagazine] = useState(null);
-  const [allPages, setAllPages] = useState([]);
+  // Retrieve user authentication state safely from Redux
+  const user = useSelector((state) => state.auth?.user);
+
+  const [podcast, setPodcast] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const pageParam = searchParams?.get("page");
-  const activeIndex = pageParam ? Math.max(0, parseInt(pageParam, 10) - 1) : 0;
-
-  // Asset states
-  const [podcastData, setPodcastData] = useState(null);
-  const [gameData, setGameData] = useState(null);
-  const [showPodcastModal, setShowPodcastModal] = useState(false);
-  const [showGameModal, setShowGameModal] = useState(false);
-
-  // Audio refs
+  // Audio Player States
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  const updatePageUrl = (newIndex) => {
-    const current = new URLSearchParams(Array.from(searchParams?.entries() || []));
-    current.set("page", (newIndex + 1).toString());
-    navigate(`${pathname}?${current.toString()}`, { replace: true });
-  };
+  // Volume States (range 0 to 1)
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+  const [prevVolume, setPrevVolume] = useState(1);
 
-  // --- 1. LOCAL DATA PRELOADER ---
+  // --- FETCH SINGLE PODCAST DATA ---
   useEffect(() => {
     if (!id) return;
 
-    setLoading(true);
-    // Find the current magazine from your local static array
-    const foundMag = localMagazines.find((m) => m._id === id || m.id.toString() === id);
+    const token = user?.accessToken || user?.token;
 
-    if (foundMag) {
-      setMagazine(foundMag);
-      setAllPages(foundMag.pages || []);
-    } else {
-      setMagazine(null);
-      setAllPages([]);
-    }
-    setLoading(false);
-  }, [id]);
+    const fetchPodcast = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${CONSTANTS.API_URL}settings/podcast/find-item/v1/${id}`,
+          {
+            headers: token ? { token: `Bearer ${token}` } : {},
+          }
+        );
 
-  // --- 2. LOCAL ASSET LOADER (RUNS WHEN PAGE TURNS) ---
+        // Extract payload safely
+        const data = response.data?.data || response.data;
+        if (data) {
+          setPodcast(data);
+        } else {
+          setPodcast(null);
+        }
+      } catch (error) {
+        console.error("Error fetching single podcast details:", error);
+        setPodcast(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPodcast();
+  }, [id, user]);
+
+  // --- AUDIO CONTROL HANDLERS ---
   useEffect(() => {
-    const currentPage = allPages[activeIndex];
-    if (!currentPage) return;
-
-    // Search your actual imported local files for matching page ID or references
-    const matchedPodcast = localPodcasts.find((p) => p._id === currentPage._id || p.id === currentPage._id);
-    const matchedGame = localGames.find((g) => g._id === currentPage._id || g.id === currentPage._id);
-
-    setPodcastData(matchedPodcast || null);
-    setGameData(matchedGame || null);
-
-    // Reset Audio on page turn
-    setIsPlaying(false);
     if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+      audioRef.current.volume = isMuted ? 0 : volume;
     }
-  }, [activeIndex, allPages]);
+  }, [volume, isMuted]);
 
-  // --- HANDLERS ---
-  const handleNext = () => {
-    if (activeIndex < allPages.length - 1) {
-      updatePageUrl(activeIndex + 1);
-    }
-  };
+  const togglePlayPause = async () => {
+    if (!audioRef.current) return;
 
-  const handlePrev = () => {
-    if (activeIndex > 0) {
-      updatePageUrl(activeIndex - 1);
-    }
-  };
-
-  const togglePlayPause = () => {
-    if (audioRef.current) {
+    try {
       if (isPlaying) {
         audioRef.current.pause();
+        setIsPlaying(false);
       } else {
-        audioRef.current.play();
+        await audioRef.current.play();
+        setIsPlaying(true);
       }
-      setIsPlaying(!isPlaying);
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("Audio playback error:", error);
+      }
     }
+  };
+
+  const handleVolumeChange = (e) => {
+    const newVol = parseFloat(e.target.value);
+    setVolume(newVol);
+
+    if (audioRef.current) {
+      audioRef.current.volume = newVol;
+    }
+
+    if (newVol === 0) {
+      setIsMuted(true);
+    } else if (isMuted) {
+      setIsMuted(false);
+    }
+  };
+
+  const toggleMute = () => {
+    if (isMuted) {
+      const restoreVol = prevVolume > 0 ? prevVolume : 1;
+      setVolume(restoreVol);
+      if (audioRef.current) audioRef.current.volume = restoreVol;
+      setIsMuted(false);
+    } else {
+      setPrevVolume(volume);
+      setVolume(0);
+      if (audioRef.current) audioRef.current.volume = 0;
+      setIsMuted(true);
+    }
+  };
+
+  const getVolumeIcon = () => {
+    if (isMuted || volume === 0) return "bi-volume-mute-fill";
+    if (volume < 0.5) return "bi-volume-down-fill";
+    return "bi-volume-up-fill";
   };
 
   const formatTime = (s) => {
+    if (isNaN(s) || !s) return "0:00";
     const mins = Math.floor(s / 60);
     const secs = Math.floor(s % 60);
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-  // --- RENDER LOGIC ---
+  // --- GOOGLE ANALYTICS TRACKING ---
+  useEffect(() => {
+    if (!podcast) return;
+
+    const startTime = performance.now();
+    const podcastTitle = podcast?.title || podcast?.name || "Podcast Episode";
+
+    ReactGA.event("podcast_view", {
+      podcast_id: id,
+      podcast_title: podcastTitle,
+    });
+
+    return () => {
+      const endTime = performance.now();
+      const dwellTimeSeconds = Math.round((endTime - startTime) / 1000);
+
+      if (dwellTimeSeconds >= 1) {
+        ReactGA.event("podcast_dwell", {
+          podcast_id: id,
+          podcast_title: podcastTitle,
+          dwell_time_seconds: dwellTimeSeconds,
+        });
+      }
+    };
+  }, [id, podcast]);
+
   if (loading) {
     return (
-      <div className="container p-5 d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
-        <h2 className="text-white">Loading issue...</h2>
+      <div
+        className="container p-5 d-flex justify-content-center align-items-center"
+        style={{ minHeight: "50vh" }}
+      >
+        <Spinner />
       </div>
     );
   }
 
-  if (!magazine || allPages.length === 0) {
-    return <div className="container p-5 text-white">Magazine content not found.</div>;
+  if (!podcast) {
+    return (
+      <div className="container p-5 text-center my-5">
+        <h3 className="mb-3">Podcast episode not found.</h3>
+        <button className="btn btn-script" onClick={() => navigate("/podcasts")}>
+          &larr; Back to All Podcasts
+        </button>
+      </div>
+    );
   }
 
-  const currentPage = allPages[activeIndex];
+  const title = podcast?.title || podcast?.name || "Podcast Episode";
+  const image =
+    podcast?.featuredImage ||
+    podcast?.imageUrl ||
+    podcast?.image ||
+    podcast?.coverImage;
+  const audioSrc =
+    podcast?.audioUrl || podcast?.audio || podcast?.fileUrl;
+  const description = podcast?.description || podcast?.summary || "";
+  const guests = podcast?.guest || podcast?.guests;
+  const formattedGuests = Array.isArray(guests) ? guests.join(", ") : guests;
 
   return (
     <div
@@ -135,99 +201,156 @@ export default function SinglePodcast() {
         minHeight: "100vh",
       }}
     >
-      <div className="content-area my-5 container-xl">
-        <h1 className="mb-4 text-black">{magazine.title} - Issue {magazine.issue}</h1>
+      {/* Styles for range sliders */}
+      <style>{`
+        .volume-range::-webkit-slider-thumb {
+          background-color: var(--color-script-accent, #2db8eb) !important;
+        }
+        .volume-range::-moz-range-thumb {
+          background-color: var(--color-script-accent, #2db8eb) !important;
+        }
+      `}</style>
 
-        {/* Podcast Modal */}
-        {showPodcastModal && podcastData && (
-          <div className="modal-backdrop fade show" onClick={() => setShowPodcastModal(false)}>
-            <div className="modal fade show d-block" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Listen to Podcast</h5>
-                    <button type="button" className="btn-close" onClick={() => setShowPodcastModal(false)}></button>
+      <div className="content-area py-5 container-xl">
+        {/* Navigation Breadcrumb */}
+        <div className="mb-4">
+          <Link to="/podcasts" className="btn btn-script text-white">
+            &larr; Back to Podcasts
+          </Link>
+        </div>
+
+        {/* Podcast Card with Embedded Audio Player */}
+        <div className="card shadow-lg border-0 overflow-hidden rounded-4 bg-white">
+          <div className="row g-0">
+            {/* Podcast Featured Image */}
+            {image && (
+              <div className="col-12 col-md-5 col-lg-4">
+                <img
+                  src={image}
+                  alt={title}
+                  className="img-fluid w-100 h-100"
+                  style={{ objectFit: "cover", minHeight: "320px" }}
+                />
+              </div>
+            )}
+
+            {/* Content & Inline Audio Controls */}
+            <div
+              className={`col-12 ${
+                image ? "col-md-7 col-lg-8" : "col-12"
+              } p-4 p-md-5 d-flex flex-column justify-content-between`}
+            >
+              <div>
+                {/* Guest Badge */}
+                {Boolean(formattedGuests && String(formattedGuests).trim()) && (
+                  <div className="mb-3">
+                    <span className="badge bg-secondary px-3 py-2 fs-6">
+                      <i className="bi bi-person-fill me-1"></i> Guest:{" "}
+                      {formattedGuests}
+                    </span>
                   </div>
-                  <div className="modal-body text-center">
-                    <span className="badge bg-secondary mb-2">{podcastData.guest}</span>
-                    <h4 className="mb-4">{podcastData.title}</h4>
-                    <audio
-                      ref={audioRef}
-                      src={podcastData.audioUrl}
-                      onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-                      onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-                      onEnded={() => setIsPlaying(false)}
-                    />
-                    <button className="btn btn-primary rounded-circle mb-3 shadow" style={{ width: "64px", height: "64px" }} onClick={togglePlayPause}>
-                      {isPlaying ? <i className="bi bi-pause-fill fs-2"></i> : <i className="bi bi-play-fill fs-2"></i>}
-                    </button>
-                    <input type="range" className="form-range" min={0} max={duration || 0} value={currentTime} onChange={(e) => {
+                )}
+
+                <h1 className="mb-3 text-dark fw-bold">{title}</h1>
+
+                {description && (
+                  <p
+                    className="text-muted fs-5 mb-4"
+                    style={{ whiteSpace: "pre-line" }}
+                  >
+                    {description}
+                  </p>
+                )}
+              </div>
+
+              {/* In-Page Audio Player Section */}
+              <div className="p-4 bg-light rounded-3 border mt-3">
+                <audio
+                  ref={audioRef}
+                  src={audioSrc}
+                  onLoadedMetadata={(e) => {
+                    setDuration(e.currentTarget.duration);
+                    e.currentTarget.volume = isMuted ? 0 : volume;
+                  }}
+                  onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+                  onEnded={() => setIsPlaying(false)}
+                />
+
+                <div className="d-flex align-items-center gap-3 mb-3">
+                  {/* Play / Pause Toggle Button */}
+                  <button
+                    type="button"
+                    className="btn text-white rounded-circle shadow-sm border-0 d-flex align-items-center justify-content-center flex-shrink-0"
+                    style={{
+                      width: "56px",
+                      height: "56px",
+                      backgroundColor: "var(--color-script-main, #1e293b)",
+                    }}
+                    onClick={togglePlayPause}
+                  >
+                    {isPlaying ? (
+                      <i className="bi bi-pause-fill fs-2"></i>
+                    ) : (
+                      <i className="bi bi-play-fill fs-2 ms-1"></i>
+                    )}
+                  </button>
+
+                  <div className="flex-grow-1">
+                    {/* Scrub Bar */}
+                    <input
+                      type="range"
+                      className="form-range podcast-range"
+                      min={0}
+                      max={duration || 0}
+                      value={currentTime}
+                      onChange={(e) => {
                         const time = Number(e.target.value);
                         if (audioRef.current) audioRef.current.currentTime = time;
                         setCurrentTime(time);
-                    }} />
-                    <div className="d-flex justify-content-between mt-2 small text-muted">
+                      }}
+                    />
+
+                    {/* Progress Timers */}
+                    <div className="d-flex justify-content-between small text-muted mt-1">
                       <span>{formatTime(currentTime)}</span>
                       <span>{formatTime(duration)}</span>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        )}
 
-        {/* Game Modal */}
-        {showGameModal && gameData && (
-          <div className="modal-backdrop fade show" onClick={() => setShowGameModal(false)}>
-            <div className="modal fade show d-block modal-game-full" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Play Game: {gameData.title}</h5>
-                    <button type="button" className="btn-close" onClick={() => setShowGameModal(false)}></button>
-                  </div>
-                  <div className="modal-body text-center">
-                    <iframe src={gameData.urlFrame} style={{ width: "100%", height: "500px", border: "none" }} />
-                  </div>
+                {/* Inline Volume Control */}
+                <div className="d-flex align-items-center justify-content-end gap-2 border-top pt-2">
+                  <button
+                    type="button"
+                    className="btn btn-link text-secondary p-0 border-0"
+                    onClick={toggleMute}
+                    title={isMuted ? "Unmute" : "Mute"}
+                  >
+                    <i className={`bi ${getVolumeIcon()} fs-5`}></i>
+                  </button>
+
+                  <input
+                    type="range"
+                    className="form-range volume-range"
+                    style={{
+                      maxWidth: "120px",
+                      accentColor: "var(--color-script-accent, #2db8eb)",
+                    }}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={isMuted ? 0 : volume}
+                    onChange={handleVolumeChange}
+                  />
+
+                  <span className="small text-muted" style={{ minWidth: "35px" }}>
+                    {Math.round((isMuted ? 0 : volume) * 100)}%
+                  </span>
                 </div>
               </div>
+
             </div>
           </div>
-        )}
-
-        <div className="page-content-area position-relative text-center my-4">
-          <div className="d-flex justify-content-center gap-3">
-            {podcastData && (
-              <button className="btn pd-cast1 ogreen-fade mb-3" onClick={() => setShowPodcastModal(true)}>
-                Podcast <i className="bi bi-mic-fill"></i>
-              </button>
-            )}
-            {gameData && (
-              <button className="btn game-btn1 oblue-fade mb-3" onClick={() => setShowGameModal(true)}>
-                Play Game <i className="bi bi-controller"></i>
-              </button>
-            )}
-          </div>
-
-          <div className="d-flex justify-content-between align-items-center my-3">
-            <button className="btn btn-orange" onClick={handlePrev} disabled={activeIndex === 0}>
-              &larr; Previous
-            </button>
-            <span className="text-white fw-bold">Page {activeIndex + 1} / {allPages.length}</span>
-            <button className="btn btn-orange" onClick={handleNext} disabled={activeIndex === allPages.length - 1}>
-              Next &rarr;
-            </button>
-          </div>
-
-          {currentPage && currentPage.archetype === "image" && (
-            <div className="magazine-page-image mx-auto my-3" key={currentPage._id}>
-              <PageImageTemp
-                page={currentPage}
-                style={{ width: "100%", height: "auto", maxWidth: "800px" }}
-              />
-            </div>
-          )}
         </div>
       </div>
     </div>
