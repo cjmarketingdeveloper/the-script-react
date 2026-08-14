@@ -44,8 +44,6 @@ export default function SingleMagazine() {
   const [showGameModal, setShowGameModal] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
 
-  const gameType = "WO112SEAR";
-
   const updatePageUrl = (newIndex) => {
     const current = new URLSearchParams(Array.from(searchParams?.entries() || []));
     current.set("page", (newIndex + 1).toString());
@@ -63,6 +61,9 @@ export default function SingleMagazine() {
       setLoading(false);
       return;
     }
+
+    console.log(`Fetching magazine page for ID: ${id}, Page: ${activeIndex + 1}`);
+    if (!id) return;
 
     const fetchMagazinePage = async () => {
       setLoading(true);
@@ -120,6 +121,7 @@ export default function SingleMagazine() {
               );
 
               const payload = videoRes.data?.data || (Array.isArray(videoRes.data) ? videoRes.data[0] : videoRes.data);
+              console.log('Fetched video data:', payload);
               setVideoData(payload || null);
             } catch (err) {
               console.error('Error fetching video details:', err);
@@ -131,21 +133,29 @@ export default function SingleMagazine() {
             setVideoData(null);
           }
 
-          // 3. Handle Game Data
-          const game = pageData.game || pageData.formatType?.gameId;
-          if (typeof game === 'string' && game.trim() !== '') {
+          // 3. Handle Game Data (Fetching by Page ID)
+          const pageId = pageData._id || pageData.id || id;
+
+          if (pageId) {
             try {
+              console.log('Fetching game details using Page ID:', pageId);
               const gameRes = await axios.get(
-                `${CONSTANTS.API_URL}games/find/${game}`,
+                `${CONSTANTS.API_URL}settings/game/single-item/v1/${pageId}`,
                 { headers: { token: `Bearer ${token}` } }
               );
-              setGameData(gameRes.data);
+              
+              const gPayload = gameRes.data?.data || (Array.isArray(gameRes.data) ? gameRes.data[0] : gameRes.data);
+              
+              if (gPayload && typeof gPayload === 'object' && gPayload.show !== false) {
+                console.log('Fetched game data:', gPayload);
+                setGameData(gPayload);
+              } else {
+                setGameData(null);
+              }
             } catch (err) {
               console.error('Error fetching game details:', err);
               setGameData(null);
             }
-          } else if (typeof game === 'object' && game !== null) {
-            setGameData(game);
           } else {
             setGameData(null);
           }
@@ -255,10 +265,11 @@ export default function SingleMagazine() {
           videoData={videoData} 
         />
 
+        {/* Pass fetched gameCode dynamically as gameType */}
         <GameModal 
           show={showGameModal} 
           onClose={() => setShowGameModal(false)} 
-          gameType={gameType} 
+          gameType={gameData?.gameCode} 
           user={user} 
         />
 
@@ -275,9 +286,12 @@ export default function SingleMagazine() {
                 Watch Video <i className="bi bi-camera-video-fill"></i>
               </button>
             )}
-            <button className="btn btn-script btn-script-accent mb-3" onClick={() => setShowGameModal(true)}>
-              Play Game <i className="bi bi-controller"></i>
-            </button>
+            {/* Play Game Button rendered ONLY if a game exists for this page */}
+            {gameData && (
+              <button className="btn btn-script btn-script-accent mb-3" onClick={() => setShowGameModal(true)}>
+                {gameData.title ? `Play ${gameData.title}` : 'Play Game'} <i className="bi bi-controller ms-1"></i>
+              </button>
+            )}
           </div>
 
           <div className="d-flex align-items-center my-3 w-100">
