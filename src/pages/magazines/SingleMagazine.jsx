@@ -62,9 +62,6 @@ export default function SingleMagazine() {
       return;
     }
 
-    console.log(`Fetching magazine page for ID: ${id}, Page: ${activeIndex + 1}`);
-    if (!id) return;
-
     const fetchMagazinePage = async () => {
       setLoading(true);
       try {
@@ -121,7 +118,6 @@ export default function SingleMagazine() {
               );
 
               const payload = videoRes.data?.data || (Array.isArray(videoRes.data) ? videoRes.data[0] : videoRes.data);
-              console.log('Fetched video data:', payload);
               setVideoData(payload || null);
             } catch (err) {
               console.error('Error fetching video details:', err);
@@ -138,7 +134,6 @@ export default function SingleMagazine() {
 
           if (pageId) {
             try {
-              console.log('Fetching game details using Page ID:', pageId);
               const gameRes = await axios.get(
                 `${CONSTANTS.API_URL}settings/game/single-item/v1/${pageId}`,
                 { headers: { token: `Bearer ${token}` } }
@@ -147,7 +142,6 @@ export default function SingleMagazine() {
               const gPayload = gameRes.data?.data || (Array.isArray(gameRes.data) ? gameRes.data[0] : gameRes.data);
               
               if (gPayload && typeof gPayload === 'object' && gPayload.show !== false) {
-                console.log('Fetched game data:', gPayload);
                 setGameData(gPayload);
               } else {
                 setGameData(null);

@@ -12,12 +12,12 @@ export default function GameModal({ show, onClose, gameType, user }) {
 
   return (
     <>
-      <div className="modal-backdrop fade show" onClick={onClose} />
+      <div className="modal-backdrop fade show"/>
 
       <div 
         className="modal fade show d-block modal-game-full" 
         tabIndex="-1"
-        onClick={onClose}
+        // onClick={onClose}
       >
         <div 
           className="modal-dialog modal-dialog-centered" 

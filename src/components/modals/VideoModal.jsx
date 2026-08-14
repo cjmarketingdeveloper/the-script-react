@@ -27,12 +27,12 @@ export default function VideoModal({ show, onClose, videoData }) {
 
   return (
     <>
-      <div className="modal-backdrop fade show" onClick={handleClose} />
+      <div className="modal-backdrop fade show" />
 
       <div 
         className="modal fade show d-block" 
         tabIndex="-1"
-        onClick={handleClose}
+        // onClick={handleClose}
       >
         <div className="modal-dialog modal-dialog-centered modal-lg" onClick={(e) => e.stopPropagation()}>
           <div className="modal-content">
