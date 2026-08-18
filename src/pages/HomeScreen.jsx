@@ -3,8 +3,8 @@ import HeroCarousel from '../components/HeroCarousel'
 import MagazineSection from '../components/MagazineSection'
 import PodcastSection from '../components/PodcastSection'
 import AboutSection from '../components/AboutSection'
-import AnimatedMediaSection from '../components/AnimatedMediaSection'
 import SubscribeSection from '../components/SubscribeSection'
+import AnimatedPodcastSection from '../components/AnimatedPodcastSection';
 
 
 export default function HomeScreen() {
@@ -15,13 +15,14 @@ export default function HomeScreen() {
             <MagazineSection user={user}/>
             <PodcastSection user={user}/>
             <AboutSection />
+            <AnimatedPodcastSection />
             <SubscribeSection />
         {
             /*
             <HeroCarousel />
             {/* <PodcastSection /> * /}
             <AboutSection />
-            {/*<AnimatedMediaSection />* /}
+            {/** /}
             
             */
         }

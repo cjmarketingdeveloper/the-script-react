@@ -2,6 +2,7 @@ html,
 body {
   overflow-x: hidden;
   font-family: "Outfit", sans-serif; 
+  scroll-behavior: smooth;
 }
 
 
@@ -51,7 +52,7 @@ body {
   overflow: visible;
   position: relative;
   aspect-ratio: 456 / 620;
-  max-height: 500px;       /* limit vertical growth */
+  max-height: 600px;       /* limit vertical growth */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -961,4 +962,33 @@ section, .container-xl, .hero-swiper, .media-surround {
     transform: scale(1.08);
   }
 }
+.podcast-content {
+  padding: 12px;
+}
+.cover-overlay-pod {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    height: 100%;
+    width: 45%;
+}
+.guest-box-item {
+    background: #ffffffc9;
+    position: absolute;
+    right: 5px;
+    bottom: 10px;
+    border-radius: 3px;
+    color: #636262;
+    width: 50%;
+}
 
+.podcast-overlay {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+h3.podcast-title {
+    font-size: 18px;
+    color: #fff;
+    text-shadow: 1px 1px #00000038;
+}

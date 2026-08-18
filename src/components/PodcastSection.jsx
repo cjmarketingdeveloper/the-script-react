@@ -64,12 +64,12 @@ export default function PodcastSection({ user }) {
                 key={itemKey}
                 className={`col-12 col-md-4  ${index === 2 ? 'd-none d-md-block' : ''}`}
               >
-                <div className="podcast-card-wrapper" style={{ '--podcast-theme-color': themeColor }}>
+                <div className="podcast-card-wrapper" >
                 <CoverCard
                   image={pod.featuredImage}
                   href={`/podcasts/${itemKey}`}
                   cardClass="cover-podcast"
-                  style={{ '--podcast-theme-color': themeColor }}
+                  themeColor={themeColor}
                   overlay={
                     <div className="podcast-overlay">
                       <div className="podcast-content">
@@ -86,20 +86,22 @@ export default function PodcastSection({ user }) {
                             </button>
                           </div>
 
-                          <div className="col ">
-                            <div
-                              className="podcast-guests rounded-start px-2"
-                              style={{ backgroundColor: themeColor, opacity: 0.7 }}
-                            >
-                              <p className="fw-bold">Guests:</p>
-                              {pod.guest}
-                            </div>
-                          </div>
+                          
                         </div>
+                      
                       </div>
+                    
                     </div>
                   }
                 />
+                 <div className="guest-box-item ">
+                        <div
+                          className="podcast-guests rounded-start px-2"
+                        >
+                          <p className="fw-bold">Guests:</p>
+                          {pod.guest}
+                        </div>
+                  </div>
                 </div>
               </div>
             );

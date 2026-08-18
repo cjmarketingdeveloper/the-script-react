@@ -7,6 +7,7 @@ export default function CoverCard({
   footer,
   overlay,
   cardClass = "",
+  themeColor
 }) {
   return (
     <div className="cover-card-wrapper">
@@ -17,7 +18,7 @@ export default function CoverCard({
           className={`cover-card ${cardClass}`}
           style={{ backgroundImage: `url(${image})` }}
         />
-        {overlay && <div className="cover-overlay">{overlay}</div>}
+        {overlay && <div className="cover-overlay-pod" style={{backgroundColor: themeColor}}>{overlay}</div>}
       </Link>
 
       {footer && <div className="cover-footer">{footer}</div>}
