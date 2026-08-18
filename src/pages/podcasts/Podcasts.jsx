@@ -84,6 +84,7 @@ export default function Podcasts() {
             minHeight: '420px',
           }}
         >
+          <div className="hero-overlay"></div>
           <div className="container-xl text-white">
             <h1 className="mb-3">
               Reach the Heart of South Africa's Pharmacy Industry
