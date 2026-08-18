@@ -1,15 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
 
-export default function PodcastModal({ show, onClose, podcastData }) {
-  const audioRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+export default function PodcastModal({ show, onClose, podcastData, isLiked, CONSTANTS }) {
+
+  const audioRef                                    = useRef(null);
+  const [isPlaying, setIsPlaying]                   = useState(false);
+  const [currentTime, setCurrentTime]               = useState(0);
+  const [duration, setDuration]                     = useState(0);
 
   // Volume States (range 0 to 1)
-  const [volume, setVolume] = useState(1);
-  const [isMuted, setIsMuted] = useState(false);
-  const [prevVolume, setPrevVolume] = useState(1);
+  const [volume, setVolume]                         = useState(1);
+  const [isMuted, setIsMuted]                       = useState(false);
+  const [prevVolume, setPrevVolume]                 = useState(1);
+
+  const [sessionId, setSessionId]                   = useState(null);
 
   // Sync volume level to the <audio> element whenever it updates
   useEffect(() => {
@@ -25,8 +28,36 @@ export default function PodcastModal({ show, onClose, podcastData }) {
       audioRef.current.currentTime = 0;
       setIsPlaying(false);
       setCurrentTime(0);
+
+      startPodcastSession();
     }
-  }, [show]);
+  }, [show, podcastData]);
+
+  const startPodcastSession = async () => {
+    try {
+      const response = await fetch(CONSTANTS.API_URL + "pages/podcast/podcast-sessions/commernce/v1", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          podcastId: podcastData._id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create podcast session");
+      }
+
+      const data = await response.json();
+
+      setSessionId(data._id);
+
+      console.log("Podcast session started:", data);
+    } catch (error) {
+      console.error("Failed to start podcast session:", error);
+    }
+  }
 
   const handleClose = () => {
     if (audioRef.current) {
@@ -151,7 +182,13 @@ export default function PodcastModal({ show, onClose, podcastData }) {
                   style={{ maxHeight: "220px", width: "100%", objectFit: "cover" }}
                 />
               )}
-
+              <div className="like-space-ab-layer">
+                {isLiked ? (
+                  <i className="bi bi-heart-fill" style={{ color: 'red' }}></i>
+                ) : (
+                  <i className="bi bi-heart" style={{ color: 'gray' }}></i>
+                )}
+              </div>
               {/* Guests Badge */}
               {Boolean(
                 podcastGuests && 

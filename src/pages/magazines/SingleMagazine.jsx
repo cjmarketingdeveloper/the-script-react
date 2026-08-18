@@ -40,10 +40,13 @@ export default function SingleMagazine() {
   const [gameData, setGameData] = useState(null);
   const [videoData, setVideoData] = useState(null);
 
+  const [isLiked, setIsLiked]                    = useState(false);
+
   const [showPodcastModal, setShowPodcastModal] = useState(false);
   const [showGameModal, setShowGameModal] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
-
+  
+  const token = user?.accessToken;
   const updatePageUrl = (newIndex) => {
     const current = new URLSearchParams(Array.from(searchParams?.entries() || []));
     current.set("page", (newIndex + 1).toString());
@@ -54,11 +57,12 @@ export default function SingleMagazine() {
   useEffect(() => {
     if (!id) return;
 
-    const token = user?.accessToken || user?.token;
+    
 
     if (!token) {
-      console.warn("No authentication token found in user state.");
+      console.warn("No authentication token found in user state.");//toast authentication expired
       setLoading(false);
+      //Perform logout and return to login page.
       return;
     }
 
@@ -93,8 +97,7 @@ export default function SingleMagazine() {
           const podcast = pageData.podcast || pageData.formatType?.podcastId;
           if (typeof podcast === 'string' && podcast.trim() !== '') {
             try {
-              const podcastRes = await axios.get(
-                `${CONSTANTS.API_URL}settings/podcast/find-item/v1/${podcast}`,
+              const podcastRes = await axios.get(`${CONSTANTS.API_URL}settings/podcast/find-item/v1/${podcast}`,
                 { headers: { token: `Bearer ${token}` } }
               );
               setPodcastData(podcastRes.data);
@@ -113,9 +116,7 @@ export default function SingleMagazine() {
 
           if (typeof video === 'string' && video.trim() !== '') {
             try {
-              const videoRes = await axios.get(
-                `${CONSTANTS.API_URL}settings/video/single/v1/${video}`
-              );
+              const videoRes = await axios.get(`${CONSTANTS.API_URL}settings/video/single/v1/${video}`);
 
               const payload = videoRes.data?.data || (Array.isArray(videoRes.data) ? videoRes.data[0] : videoRes.data);
               setVideoData(payload || null);
@@ -206,6 +207,13 @@ export default function SingleMagazine() {
     };
   }, [activeIndex, currentPageData, magazine, id, totalPages]);
 
+  // --- We have a pocast check for like ---
+  useEffect(() => {
+    if(podcastData){
+      getPodcastLikeStatus()
+    }
+  },[podcastData])
+
   // --- HANDLERS ---
   const handleNext = () => {
     if (activeIndex < totalPages - 1) {
@@ -218,6 +226,29 @@ export default function SingleMagazine() {
       updatePageUrl(activeIndex - 1);
     }
   };
+
+  const getPodcastLikeStatus = async () => {
+    try{
+
+      const payload = {
+        "userId" : user._id,
+        "podcastId" : podcastData._id
+      }
+
+      const theStatus = await axios.put(
+            `${CONSTANTS.API_URL}pages/podcast/like-status/v1`,
+            payload,
+            { 
+              headers: { token: `Bearer ${token}` } 
+            }
+          );
+
+      console.log(theStatus.data);
+      setIsLiked(theStatus.data.isLiked);
+    }catch(err){
+      console.log(err);
+    }
+  }
 
   if (loading) {
     return (
@@ -251,6 +282,8 @@ export default function SingleMagazine() {
           show={showPodcastModal} 
           onClose={() => setShowPodcastModal(false)} 
           podcastData={podcastData} 
+          isLiked={isLiked}
+          CONSTANTS={CONSTANTS}
         />
 
         <VideoModal 

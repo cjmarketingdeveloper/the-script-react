@@ -77,20 +77,14 @@ export default function PodcastSection({ user }) {
 
                         <div className="row podcast-bottom">
                           <div className="col">
-                            <button
-                              type="button"
+                            <div                              
                               className="btn btn-script podcast-play"
-                              onClick={(e) => e.preventDefault()}
-                            >
+                              >
                               ▶ Play
-                            </button>
-                          </div>
-
-                          
-                        </div>
-                      
-                      </div>
-                    
+                            </div>
+                          </div>                          
+                        </div>                      
+                      </div>                    
                     </div>
                   }
                 />

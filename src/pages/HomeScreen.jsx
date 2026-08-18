@@ -17,15 +17,6 @@ export default function HomeScreen() {
             <AboutSection />
             <AnimatedPodcastSection />
             <SubscribeSection />
-        {
-            /*
-            <HeroCarousel />
-            {/* <PodcastSection /> * /}
-            <AboutSection />
-            {/** /}
-            
-            */
-        }
-    </>
+        </>
     )
 }
