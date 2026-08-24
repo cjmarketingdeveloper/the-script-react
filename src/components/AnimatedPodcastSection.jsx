@@ -128,12 +128,14 @@ export default function AnimatedPodcastSection() {
         }
       });
 
+      /*
        // Let React/browser finish layout before measuring ScrollTrigger
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           ScrollTrigger.refresh();
         });
       });
+      */
     },
     { scope: containerRef }
   );

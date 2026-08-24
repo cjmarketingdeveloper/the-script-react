@@ -2,7 +2,7 @@
 .ani-podcast-explainer-container {
   position: relative;
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   overflow: hidden;
   background: #fcfcfc;
   background: linear-gradient(10deg,rgba(252, 252, 252, 1) 0%, rgba(255, 247, 231, 0.89) 20%, rgba(255, 248, 233, 1) 100%, rgba(255, 255, 255, 1) 63%);
@@ -131,7 +131,9 @@
   margin: 0;
 }
 
-
+.podcast-guests {
+  font-size:12px;
+}
 @media only screen and (max-width: 480px) {
    .mic-img-pod {
       display: none;

@@ -15,7 +15,9 @@ export default function HomeScreen() {
             <MagazineSection user={user}/>
             <PodcastSection user={user}/>
             <AboutSection />
+            {/*
             <AnimatedPodcastSection />
+            */}
             <SubscribeSection />
         </>
     )

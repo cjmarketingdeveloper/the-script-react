@@ -93,7 +93,7 @@ export default function PodcastSection({ user }) {
                           className="podcast-guests rounded-start px-2"
                         >
                           <p className="fw-bold">Guests:</p>
-                          {pod.guest}
+                          {Array.isArray(pod.guest) ? pod.guest.join(', ') : pod.guest}
                         </div>
                   </div>
                 </div>
