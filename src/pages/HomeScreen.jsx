@@ -11,7 +11,9 @@ export default function HomeScreen() {
     const {user}                                    = useSelector((state) => state.auth);
     return (
         <>
+            {/*
             <HeroCarousel user={user}/>
+            */}
             <MagazineSection user={user}/>
             <PodcastSection user={user}/>
             <AboutSection />
