@@ -5,6 +5,7 @@ export const API_BASE         = "https://thescriptapiv1-632216c9063a.herokuapp.c
 export const SESSION_COOKIE   = "MEVENTWEBtimewaistengnewLXd5dkplaytheball";
 */
 
+console.log(process.env.REACT_APP_API_URL)
 export const API_URL          = process.env.REACT_APP_API_URL;
 export const API_BASE         = process.env.REACT_APP_API_BASE;
 export const SESSION_COOKIE   = process.env.REACT_APP_SESSION_COOKIE;

@@ -18,7 +18,8 @@ export default function HeroCarousel({user}) {
   
     const fetchListOfSliders = async () => {
       try {
-    
+        console.log("Fetching sliders with user:", user);
+        console.log(CONSTANTS.API_URL +"settings/slider/list/v1/");
         const response = await axios.get(CONSTANTS.API_URL +"settings/slider/list/v1/", {
                     headers: {
                         token: "Bearer "+ user.accessToken
