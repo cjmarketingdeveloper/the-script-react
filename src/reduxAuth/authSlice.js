@@ -32,10 +32,12 @@ export const register = createAsyncThunk('auth/register', async (userData, thunk
 // Login User
 export const login = createAsyncThunk('auth/login', async (userData, thunkAPI) => {
     try {
+        console.log(userData);
         const response = await axios.post(`${CONSTANTS.API_URL}auth/login`, userData);
         localStorage.setItem(CONSTANTS.SESSION_COOKIE, JSON.stringify(response.data));
         return response.data;
     } catch (error) {
+        console.log(error);
         const message = error.response?.data?.message || error.response?.data || error.message;
         return thunkAPI.rejectWithValue(message);
     }
