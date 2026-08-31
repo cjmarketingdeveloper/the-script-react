@@ -2,7 +2,12 @@
     img.navi-logo {
         width: 400px !important;
     }    
+    .sticky-button{
+        position: fixed;
+        z-index: 1;
+    }
 }
+
 @media (min-width: 992px) {
   .main-area-view {
     grid-template-columns: 1fr 1fr; /* Two equal 50% columns */
@@ -30,6 +35,9 @@
     {
         place-self: flex-start;
     }
+    /* .sticky-button{
+        position: static;
+    } */
 }
 
 @media screen and (max-width: 767px) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import ReactGA from "react-ga4";
 import Spinner from '../../components/global/Spinner';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import * as CONSTANTS from '../../CONSTANTS';
 import { useSelector } from 'react-redux';
 
 import PageImageTemp from "../../components/PageImageTemp";
+
 
 // Import extracted modals
 import PodcastModal from '../../components/modals/PodcastModal';
@@ -243,7 +244,6 @@ export default function SingleMagazine() {
             }
           );
 
-      console.log(theStatus.data);
       setIsLiked(theStatus.data.isLiked);
     }catch(err){
       console.log(err);
@@ -324,7 +324,7 @@ export default function SingleMagazine() {
           <div className="d-flex align-items-center my-3 w-100">
             {/* Left container */}
             <div className="d-flex justify-content-start flex-grow-1 flex-shrink-1 flex-basis-0">
-              <button className="btn btn-script" onClick={handlePrev} disabled={activeIndex === 0}>
+              <button className="btn btn-script sticky-button" onClick={handlePrev} disabled={activeIndex === 0}>
                 &larr; Previous
               </button>
             </div>
@@ -336,14 +336,14 @@ export default function SingleMagazine() {
 
             {/* Right container */}
             <div className="d-flex justify-content-end flex-grow-1 flex-shrink-1 flex-basis-0">
-              <button className="btn btn-script" onClick={handleNext} disabled={activeIndex >= totalPages - 1}>
+              <button className="btn btn-script sticky-button" onClick={handleNext} disabled={activeIndex >= totalPages - 1}>
                 Next &rarr;
               </button>
             </div>
           </div>
 
           {currentPageData && (
-            <div className="magazine-page-image mx-auto my-3" key={currentPageData._id || activeIndex}>
+            <div className="magazine-page-image mx-auto my-3" key={currentPageData._id || activeIndex} style={{ width: "100%", height: "auto", maxWidth: "800.44px", boxShadow: "3px 4px 13px rgba(0, 0, 0, 0.4)" }}>
               <PageImageTemp
                 page={currentPageData}
                 style={{ width: "100%", height: "auto", maxWidth: "800px", boxShadow: "3px 4px 13px rgba(0, 0, 0, 0.4)" }}
