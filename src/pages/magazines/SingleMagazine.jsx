@@ -352,6 +352,17 @@ export default function SingleMagazine() {
           )}
         </div>
       </div>
+      <div className="info-section-card">
+        <div className="info-sub-card-body">
+            <div className="info-box like-item">
+                {isLiked ? (
+                  <i className="bi bi-heart-fill" style={{ color: 'red' }}></i>
+                ) : (
+                  <i className="bi bi-heart" style={{ color: 'gray' }}></i>
+                )}
+            </div>
+        </div>
+      </div>
     </div>
   );
 }
