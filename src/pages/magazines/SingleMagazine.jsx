@@ -285,7 +285,7 @@ export default function SingleMagazine() {
           podcastData={podcastData} 
           isLiked={isLiked}
           CONSTANTS={CONSTANTS}
-          userId={user._id}
+          user={user}
         />
 
         <VideoModal 
