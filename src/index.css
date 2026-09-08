@@ -1007,6 +1007,22 @@ h3.podcast-title {
    transform: scale(1.5); 
 }
 /* .sticky-button{
-  position: fixed;
+      position: fixed;
 } */
- 
+/* PAGE LIKE */
+.info-section-card {
+    padding: 10px 12%;
+}
+.info-sub-card-body {
+    background: #ececec;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+} 
+.info-box.like-item {
+    display: block;
+    width: 35px;
+    text-align: center;
+    padding: 8px 7px 4px 6px;
+    border-radius: 50%;
+}
