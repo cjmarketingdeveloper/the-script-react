@@ -1012,6 +1012,7 @@ h3.podcast-title {
 /* PAGE LIKE */
 .info-section-card {
     padding: 10px 12%;
+    margin-bottom: 20px;
 }
 .info-sub-card-body {
     background: #ececec;
@@ -1025,4 +1026,8 @@ h3.podcast-title {
     text-align: center;
     padding: 8px 7px 4px 6px;
     border-radius: 50%;
+    cursor: pointer;
+}
+.like-item:hover {
+     font-weight: 800;
 }
