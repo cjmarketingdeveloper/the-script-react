@@ -132,30 +132,34 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, CONS
   const handleLikePost = async () => {
     console.log("User");
     console.log(user);
+    
     //console.log("Podcast");
     //console.log(podcastData);
     //console.log(isLiked);
+
     try{
+
       const payload = {
         userId: user._id,
         podcastId: podcastData._id
       }
       
       console.log(payload);
-      /*
+
+      
       const response = await fetch(CONSTANTS.API_URL + "pages/podcast/like-status/toggle-action/v1", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "token" : "Bearer " user.accesstoken
+          "token" : "Bearer " + user.accessToken
         },
         body: JSON.stringify({
           podcastId: podcastData._id,
         }),
       });
-      */
+      
     }catch(err){
-
+      console.log(err);
     }
   }
 
