@@ -999,11 +999,11 @@ h3.podcast-title {
     margin-right: 10px;
     margin-bottom: 5px;
 }
-.like-space-ab-layer i{
+.like-space-ab-layer i, .like-space-c{
    cursor: pointer;
    transition: transform 0.5s ease-in-out;
 }
-.like-space-ab-layer i:hover{
+.like-space-ab-layer i:hover, .like-space-c:hover{
    transform: scale(1.5); 
 }
 /* .sticky-button{

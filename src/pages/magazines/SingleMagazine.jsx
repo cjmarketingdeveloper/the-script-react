@@ -42,6 +42,7 @@ export default function SingleMagazine() {
   const [videoData, setVideoData] = useState(null);
 
   const [isLiked, setIsLiked]                    = useState(false);
+  const [pageIsLike, setPageIsLike]              = useState(false);
 
   const [showPodcastModal, setShowPodcastModal] = useState(false);
   const [showGameModal, setShowGameModal] = useState(false);
@@ -284,6 +285,7 @@ export default function SingleMagazine() {
           podcastData={podcastData} 
           isLiked={isLiked}
           CONSTANTS={CONSTANTS}
+          userId={user._id}
         />
 
         <VideoModal 
@@ -354,8 +356,8 @@ export default function SingleMagazine() {
       </div>
       <div className="info-section-card">
         <div className="info-sub-card-body">
-            <div className="info-box like-item">
-                {isLiked ? (
+            <div className="info-box like-item like-space-c">
+                {pageIsLike ? (
                   <i className="bi bi-heart-fill" style={{ color: 'red' }}></i>
                 ) : (
                   <i className="bi bi-heart" style={{ color: 'gray' }}></i>

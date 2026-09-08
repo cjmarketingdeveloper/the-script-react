@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 
-export default function PodcastModal({ show, onClose, podcastData, isLiked, CONSTANTS }) {
+export default function PodcastModal({ show, onClose, podcastData, isLiked, CONSTANTS, userId }) {
 
   const audioRef                                    = useRef(null);
   const [isPlaying, setIsPlaying]                   = useState(false);
@@ -129,6 +129,13 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, CONS
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
+  const handleLikePost = () => {
+    console.log(userId);
+    console.log("Podcast");
+    console.log(podcastData);
+    console.log(isLiked);
+  }
+
   if (!show || !podcastData) return null;
 
   const podcastTitle = podcastData?.title || podcastData?.name || "Podcast Episode";
@@ -182,7 +189,7 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, CONS
                   style={{ maxHeight: "220px", width: "100%", objectFit: "cover" }}
                 />
               )}
-              <div className="like-space-ab-layer">
+              <div className="like-space-ab-layer" onClick={handleLikePost}>
                 {isLiked ? (
                   <i className="bi bi-heart-fill" style={{ color: 'red' }}></i>
                 ) : (
