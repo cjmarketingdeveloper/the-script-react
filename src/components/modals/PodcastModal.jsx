@@ -145,7 +145,7 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, CONS
       }
       
       console.log(payload);
-
+      console.log(user.accessToken)
       
       const response = await fetch(CONSTANTS.API_URL + "pages/podcast/like-status/toggle-action/v1", {
         method: "POST",
@@ -153,9 +153,7 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, CONS
           "Content-Type": "application/json",
           "token" : "Bearer " + user.accessToken
         },
-        body: JSON.stringify({
-          podcastId: podcastData._id,
-        }),
+        body: JSON.stringify(payload),
       });
       console.log(response);
       
