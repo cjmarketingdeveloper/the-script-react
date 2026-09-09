@@ -91,7 +91,9 @@ export default function SingleMagazine() {
         if (Array.isArray(magData)) {
           magData = magData.find((m) => m._id === id) || magData[0];
         }
-
+        //Check if page is liked
+        console.log(pageData);
+        //Finish check if page is liked
         if (pageData) {
           setCurrentPageData(pageData);
 
