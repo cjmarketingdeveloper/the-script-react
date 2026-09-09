@@ -131,9 +131,8 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, setI
   };
 
   const handleLikePost = async () => {
-
+    
     try{
-
       const payload = {
         userId: user._id,
         podcastId: podcastData._id
@@ -151,7 +150,6 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, setI
       const data = await response.json();
       setIsLiked(data.isLiked);
       toast.success(data.message);
-      
     }catch(err){
       console.log(err);
     }

@@ -15,6 +15,7 @@ import PageImageTemp from "../../components/PageImageTemp";
 import PodcastModal from '../../components/modals/PodcastModal';
 import VideoModal from '../../components/modals/VideoModal';
 import GameModal from '../../components/modals/GameModal';
+import { toast } from 'react-toastify';
 
 export default function SingleMagazine() {
   const params = useParams();
@@ -92,7 +93,11 @@ export default function SingleMagazine() {
           magData = magData.find((m) => m._id === id) || magData[0];
         }
         //Check if page is liked
-        console.log(pageData);
+          const isLiked = pageData?.likes?.some(
+            (like) => like.likeId === user?._id
+          );
+
+          setPageIsLike(Boolean(isLiked));
         //Finish check if page is liked
         if (pageData) {
           setCurrentPageData(pageData);
@@ -253,6 +258,30 @@ export default function SingleMagazine() {
     }
   }
 
+  const handleLikePageToggle = async () => {
+    try{
+      console.log(currentPageData);
+      const payload = {
+        "pageId" : currentPageData._id,
+        "userId" : user._id
+      }
+      const response = await fetch(CONSTANTS.API_URL + "pages/like/item/toggle-action/v1", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "token" : "Bearer " + user.accessToken
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      setPageIsLike(data.isLiked);
+      toast.success(data.message);
+    }catch(err){
+      console.log(err);
+    }
+  }
+
   if (loading) {
     return (
       <div className="container p-5 d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
@@ -359,7 +388,7 @@ export default function SingleMagazine() {
       </div>
       <div className="info-section-card">
         <div className="info-sub-card-body">
-            <div className="info-box like-item like-space-c">
+            <div className="info-box like-item like-space-c" onClick={handleLikePageToggle}>
                 {pageIsLike ? (
                   <i className="bi bi-heart-fill" style={{ color: 'red' }}></i>
                 ) : (
