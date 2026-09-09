@@ -267,9 +267,6 @@ export default function SingleMagazine() {
         "userId" : user._id
       }
 
-      console.log(payload);
-      console.log(CONSTANTS.API_URL);
-
       const response = await fetch(CONSTANTS.API_URL + "pages/like/item/toggle-action/v1", {
         method: "PUT",
         headers: {
