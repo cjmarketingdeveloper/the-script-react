@@ -156,6 +156,7 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, CONS
         body: JSON.stringify(payload),
       });
       console.log(response);
+      console.log(response.data);
       
     }catch(err){
       console.log(err);
