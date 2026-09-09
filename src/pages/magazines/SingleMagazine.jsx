@@ -269,9 +269,9 @@ export default function SingleMagazine() {
 
       console.log(payload);
       console.log(CONSTANTS.API_URL);
-      
+
       const response = await fetch(CONSTANTS.API_URL + "pages/like/item/toggle-action/v1", {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "token" : "Bearer " + user.accessToken
