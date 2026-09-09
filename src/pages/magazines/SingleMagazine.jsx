@@ -260,11 +260,16 @@ export default function SingleMagazine() {
 
   const handleLikePageToggle = async () => {
     try{
-      console.log(currentPageData);
+      
+      setLoading(true);
       const payload = {
         "pageId" : currentPageData._id,
         "userId" : user._id
       }
+
+      console.log(payload);
+      console.log(CONSTANTS.API_URL);
+      
       const response = await fetch(CONSTANTS.API_URL + "pages/like/item/toggle-action/v1", {
         method: "POST",
         headers: {
@@ -277,8 +282,10 @@ export default function SingleMagazine() {
       const data = await response.json();
       setPageIsLike(data.isLiked);
       toast.success(data.message);
+      setLoading(false);
     }catch(err){
       console.log(err);
+      setLoading(false);
     }
   }
 
