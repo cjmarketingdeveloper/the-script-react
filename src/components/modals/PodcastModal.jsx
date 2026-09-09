@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 export default function PodcastModal({ show, onClose, podcastData, isLiked, setIsLiked, CONSTANTS, user }) {
 
@@ -146,8 +147,10 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, setI
         },
         body: JSON.stringify(payload),
       });
+      
       const data = await response.json();
       setIsLiked(data.isLiked);
+      toast.success(data.message);
       
     }catch(err){
       console.log(err);
