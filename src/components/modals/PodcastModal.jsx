@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 
-export default function PodcastModal({ show, onClose, podcastData, isLiked, CONSTANTS, user }) {
+export default function PodcastModal({ show, onClose, podcastData, isLiked, setIsLiked, CONSTANTS, user }) {
 
   const audioRef                                    = useRef(null);
   const [isPlaying, setIsPlaying]                   = useState(false);
@@ -130,12 +130,6 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, CONS
   };
 
   const handleLikePost = async () => {
-    console.log("User");
-    console.log(user);
-    
-    //console.log("Podcast");
-    //console.log(podcastData);
-    //console.log(isLiked);
 
     try{
 
@@ -143,9 +137,6 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, CONS
         userId: user._id,
         podcastId: podcastData._id
       }
-      
-      console.log(payload);
-      console.log(user.accessToken)
       
       const response = await fetch(CONSTANTS.API_URL + "pages/podcast/like-status/toggle-action/v1", {
         method: "POST",
@@ -155,8 +146,8 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, CONS
         },
         body: JSON.stringify(payload),
       });
-      console.log(response);
-      console.log(response.data);
+      const data = await response.json();
+      setIsLiked(data.isLiked);
       
     }catch(err){
       console.log(err);

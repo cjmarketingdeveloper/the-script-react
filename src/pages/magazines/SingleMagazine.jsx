@@ -284,6 +284,7 @@ export default function SingleMagazine() {
           onClose={() => setShowPodcastModal(false)} 
           podcastData={podcastData} 
           isLiked={isLiked}
+          setIsLiked={setIsLiked}
           CONSTANTS={CONSTANTS}
           user={user}
         />
