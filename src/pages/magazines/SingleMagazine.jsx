@@ -423,8 +423,7 @@ export default function SingleMagazine() {
                 <div className="magazine-template mx-auto my-3">
                     {templateData.contentType === "indexPage" && (
                       <IndexTemplate template={templateData} />
-                    )}
-                    
+                    )}                    
                     {templateData.contentType === "blogPage" && (
                       <BlogTemplate template={templateData} />
                     )}
