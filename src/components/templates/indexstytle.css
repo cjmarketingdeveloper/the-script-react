@@ -17,7 +17,7 @@
     font-size: 10px;
 }
 .page-content-area p {
-    margin-bottom: 2px;
+    margin-bottom: 2px !important;
 }
 .index_box-container {
     min-height: 80vh;
