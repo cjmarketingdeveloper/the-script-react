@@ -16,6 +16,8 @@ import PodcastModal from '../../components/modals/PodcastModal';
 import VideoModal from '../../components/modals/VideoModal';
 import GameModal from '../../components/modals/GameModal';
 import { toast } from 'react-toastify';
+import IndexTemplate from '../../components/templates/IndexTemplate';
+import BlogTemplate from '../../components/templates/BlogTemplate';
 
 export default function SingleMagazine() {
   const params = useParams();
@@ -239,7 +241,6 @@ export default function SingleMagazine() {
     if(templateId){
       getCurrentTemplate();
     }
-    console.log("Mogwantsi eyo")
   },[templateId])
   // --- HANDLERS ---
   const handleNext = () => {
@@ -307,20 +308,13 @@ export default function SingleMagazine() {
   const getCurrentTemplate = async () => {
     try{
 
-      console.log("getCurrentTemplate");
-      console.log(templateId);
-      console.log(user.accessToken);
-      console.log(CONSTANTS.API_URL + "pages/template/single/" + templateId)
       const response = await fetch(CONSTANTS.API_URL + "pages/template/single/" + templateId, {
         method: "GET",
         headers: {
           "token" : "Bearer " + user.accessToken
         }
       });
-      
-      console.log("))))0000000")
       const data = await response.json();
-
       console.log(data);
 
       setTemplateData(data);
@@ -424,14 +418,30 @@ export default function SingleMagazine() {
             </div>
           </div>
 
-          {currentPageData && (
-            <div className="magazine-page-image mx-auto my-3" key={currentPageData._id || activeIndex} style={{ width: "100%", height: "auto", maxWidth: "800.44px", boxShadow: "3px 4px 13px rgba(0, 0, 0, 0.4)" }}>
-              <PageImageTemp
-                page={currentPageData}
-                style={{ width: "100%", height: "auto", maxWidth: "800px", boxShadow: "3px 4px 13px rgba(0, 0, 0, 0.4)" }}
-              />
-            </div>
-          )}
+          {
+            templateData ?
+                <div className="magazine-template mx-auto my-3">
+                    {templateData.contentType === "indexPage" && (
+                      <IndexTemplate template={templateData} />
+                    )}
+                    
+                    {templateData.contentType === "blogPage" && (
+                      <BlogTemplate template={templateData} />
+                    )}
+                </div>
+              :
+                <>
+                   {currentPageData && (
+                    <div className="magazine-page-image mx-auto my-3" key={currentPageData._id || activeIndex} style={{ width: "100%", height: "auto", maxWidth: "800.44px", boxShadow: "3px 4px 13px rgba(0, 0, 0, 0.4)" }}>
+                      <PageImageTemp
+                        page={currentPageData}
+                        style={{ width: "100%", height: "auto", maxWidth: "800px", boxShadow: "3px 4px 13px rgba(0, 0, 0, 0.4)" }}
+                      />
+                    </div>
+                  )}
+                </>
+          }
+         
         </div>
       </div>
       <div className="info-section-card">
