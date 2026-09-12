@@ -28,3 +28,6 @@ h3.index-heading-title {
     font-weight: 800;
     font-size: 60px;
 }
+.magazine-template span.badge.bg-secondary.rounded-pill {
+    background: #f40c3d !important;
+}
