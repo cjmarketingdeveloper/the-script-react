@@ -1,0 +1,18 @@
+.indexer_bottom-left.side-foot {
+    overflow-wrap: break-word;
+    text-align: left;
+    background: #585858;
+    color: #fff !important;
+    padding: 10px;
+    border-radius: 10px;
+}
+.index-footer-section {
+    overflow-wrap: break-word;
+    text-align: left;
+}
+.ql-size-small {
+    font-size: 10px;
+}
+.page-content-area p {
+    margin-bottom: 2px;
+}
