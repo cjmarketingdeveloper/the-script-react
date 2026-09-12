@@ -309,7 +309,7 @@ export default function SingleMagazine() {
 
       console.log("getCurrentTemplate");
       console.log(templateId);
-
+      console.log(user.accessToken);
       const response = await fetch(CONSTANTS.API_URL + "pages/template/single/" + templateId, {
         method: "GET",
         headers: {
@@ -319,13 +319,15 @@ export default function SingleMagazine() {
         body: JSON.stringify(payload),
       });
       
+      console.log("))))0000000")
       const data = await response.json();
 
       console.log(data);
 
       setTemplateData(data);
     }catch(err){
-      console.log(err);
+      console.log("-----------------")
+      console.log(err);      
     }
   }
 
