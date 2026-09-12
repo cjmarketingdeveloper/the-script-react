@@ -100,6 +100,8 @@ export default function SingleMagazine() {
           setPageIsLike(Boolean(isLiked));
         //Finish check if page is liked
         if (pageData) {
+          console.log("pageData");
+          console.log(pageData);
           setCurrentPageData(pageData);
 
           // 1. Handle Podcast Data
