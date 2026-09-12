@@ -313,7 +313,6 @@ export default function SingleMagazine() {
       const response = await fetch(CONSTANTS.API_URL + "pages/template/single/" + templateId, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
           "token" : "Bearer " + user.accessToken
         },
         body: JSON.stringify(payload),
