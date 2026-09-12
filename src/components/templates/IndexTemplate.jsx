@@ -1,8 +1,11 @@
 import React from 'react'
 import './indexstytle.css';
+import { Parser } from 'html-to-react';
 
 function IndexTemplate({ template, pageId }) {
   const { indexPage } = template || {};
+
+  const htmlParser                                                   = new Parser();
 
   return (
     <div className="container-fluid p-0 border rounded overflow-hidden">
@@ -19,8 +22,7 @@ function IndexTemplate({ template, pageId }) {
           
           {/* Bottom Corner */}
           <div className="indexer_bottom-left side-foot text-muted small mt-auto">
-           
-              dangerouslySetInnerHTML={{ __html: indexPage?.sideFoot || '' }}
+                 {htmlParser.parse(indexPage?.sideFoot)}
           </div>
         </div>
 
@@ -48,8 +50,7 @@ function IndexTemplate({ template, pageId }) {
           {/* Bottom Section (25% height) */}
           <div className="index-footer-section p-4 border-top bg-light mt-auto">
             <p className="mb-0 text-secondary small">
-           
-                dangerouslySetInnerHTML={{ __html: indexPage?.footerSection || '' }}
+                {htmlParser.parse(indexPage?.footerSection)}
             </p>
           </div>
 
