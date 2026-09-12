@@ -6,7 +6,7 @@ function IndexTemplate({ template, pageId }) {
 
   return (
     <div className="container-fluid p-0 border rounded overflow-hidden">
-      <div className="row g-0 min-vh-50">
+      <div className="row g-0 min-vh-50 index_box-container">
         
         {/* Left Column (30%) */}
         <div 
