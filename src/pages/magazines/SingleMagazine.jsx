@@ -49,6 +49,9 @@ export default function SingleMagazine() {
   const [showGameModal, setShowGameModal] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
   
+  const [templateId, setTemplateId]               = useState("");
+  const [templateData, setTemplateData]           = useState(null);
+
   const token = user?.accessToken;
   const updatePageUrl = (newIndex) => {
     const current = new URLSearchParams(Array.from(searchParams?.entries() || []));
@@ -58,9 +61,7 @@ export default function SingleMagazine() {
 
   // --- FETCH MAGAZINE PAGE DATA AND METADATA FROM API ---
   useEffect(() => {
-    if (!id) return;
-
-    
+    if (!id) return;    
 
     if (!token) {
       console.warn("No authentication token found in user state.");//toast authentication expired
@@ -97,12 +98,21 @@ export default function SingleMagazine() {
             (like) => like.likeId === user?._id
           );
 
-          setPageIsLike(Boolean(isLiked));
+        setPageIsLike(Boolean(isLiked));
         //Finish check if page is liked
         if (pageData) {
           console.log("pageData");
           console.log(pageData);
           setCurrentPageData(pageData);
+          // Check if archetype is "template"
+          if (pageData.archetype === "template") {
+            const templateId = pageData.content?.templateId;
+
+            // Check if templateId exists, is a string, and is not empty after trimming
+            if (typeof templateId === "string" && templateId.trim() !== "") {
+              setTemplateId(templateId);
+            }
+          }
 
           // 1. Handle Podcast Data
           const podcast = pageData.podcast || pageData.formatType?.podcastId;
@@ -225,6 +235,11 @@ export default function SingleMagazine() {
     }
   },[podcastData])
 
+  useEffect(() => {
+    if(templateId){
+      getCurrentTemplate();
+    }
+  },[templateId])
   // --- HANDLERS ---
   const handleNext = () => {
     if (activeIndex < totalPages - 1) {
@@ -285,6 +300,28 @@ export default function SingleMagazine() {
     }catch(err){
       console.log(err);
       setLoading(false);
+    }
+  }
+
+  const getCurrentTemplate = async () => {
+    try{
+
+      const response = await fetch(CONSTANTS.API_URL + "pages/template/single/" + templateId, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "token" : "Bearer " + user.accessToken
+        },
+        body: JSON.stringify(payload),
+      });
+      
+      const data = await response.json();
+
+      console.log(data);
+
+      setTemplateData(data);
+    }catch(err){
+      console.log(err);
     }
   }
 
