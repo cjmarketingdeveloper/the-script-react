@@ -314,8 +314,7 @@ export default function SingleMagazine() {
         method: "GET",
         headers: {
           "token" : "Bearer " + user.accessToken
-        },
-        body: JSON.stringify(payload),
+        }
       });
       
       console.log("))))0000000")
