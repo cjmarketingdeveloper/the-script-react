@@ -16,3 +16,6 @@
 .page-content-area p {
     margin-bottom: 2px;
 }
+.index_box-container {
+    min-height: 80vh;
+}

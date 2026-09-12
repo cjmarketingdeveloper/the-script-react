@@ -31,6 +31,9 @@ function IndexTemplate({ template, pageId }) {
           
           {/* Top Section (75% height) */}
           <div className="index-list-section p-4 overflow-auto">
+            <div className="index-heading">
+                <h3 className="index-heading-title">Index</h3>
+            </div>
             <ul className="list-unstyled mb-0">
               {indexPage?.list?.map((item, index) => (
                 <li 
