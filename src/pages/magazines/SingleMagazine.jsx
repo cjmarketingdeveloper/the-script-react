@@ -239,6 +239,7 @@ export default function SingleMagazine() {
     if(templateId){
       getCurrentTemplate();
     }
+    console.log("Mogwantsi eyo")
   },[templateId])
   // --- HANDLERS ---
   const handleNext = () => {
@@ -305,6 +306,9 @@ export default function SingleMagazine() {
 
   const getCurrentTemplate = async () => {
     try{
+
+      console.log("getCurrentTemplate");
+      console.log(templateId);
 
       const response = await fetch(CONSTANTS.API_URL + "pages/template/single/" + templateId, {
         method: "GET",
