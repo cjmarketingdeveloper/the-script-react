@@ -1,7 +1,7 @@
 import React from 'react'
 import './indexstytle.css';
 
-function IndexTemplate({ template }) {
+function IndexTemplate({ template, pageId }) {
   const { indexPage } = template || {};
 
   return (
@@ -19,7 +19,8 @@ function IndexTemplate({ template }) {
           
           {/* Bottom Corner */}
           <div className="indexer_bottom-left side-foot text-muted small mt-auto">
-            {indexPage?.sideFoot}
+           
+              dangerouslySetInnerHTML={{ __html: indexPage?.sideFoot || '' }}
           </div>
         </div>
 
@@ -35,7 +36,10 @@ function IndexTemplate({ template }) {
                   className="d-flex justify-content-between align-items-baseline border-bottom py-2"
                 >
                   <span className="fw-medium text-dark">{item.title}</span>
-                  <span className="badge bg-secondary rounded-pill">{item.pageNumber}</span>
+                  <a href={`/magazines/${pageId}?page=${item.pageNumber}`}
+                    className="index-linker" >
+                    <span className="badge bg-secondary rounded-pill">{item.pageNumber}</span>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -44,7 +48,8 @@ function IndexTemplate({ template }) {
           {/* Bottom Section (25% height) */}
           <div className="index-footer-section p-4 border-top bg-light mt-auto">
             <p className="mb-0 text-secondary small">
-              {indexPage?.footerSection}
+           
+                dangerouslySetInnerHTML={{ __html: indexPage?.footerSection || '' }}
             </p>
           </div>
 

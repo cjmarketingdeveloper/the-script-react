@@ -103,8 +103,7 @@ export default function SingleMagazine() {
         setPageIsLike(Boolean(isLiked));
         //Finish check if page is liked
         if (pageData) {
-          console.log("pageData");
-          console.log(pageData);
+       
           setCurrentPageData(pageData);
           // Check if archetype is "template"
           if (pageData.archetype === "template") {
@@ -422,10 +421,10 @@ export default function SingleMagazine() {
             templateData ?
                 <div className="magazine-template mx-auto my-3">
                     {templateData.contentType === "indexPage" && (
-                      <IndexTemplate template={templateData} />
+                      <IndexTemplate template={templateData} pageId={id}/>
                     )}                    
                     {templateData.contentType === "blogPage" && (
-                      <BlogTemplate template={templateData} />
+                      <BlogTemplate template={templateData}  pageId={id}/>
                     )}
                 </div>
               :
