@@ -310,6 +310,7 @@ export default function SingleMagazine() {
       console.log("getCurrentTemplate");
       console.log(templateId);
       console.log(user.accessToken);
+      console.log(CONSTANTS.API_URL + "pages/template/single/" + templateId)
       const response = await fetch(CONSTANTS.API_URL + "pages/template/single/" + templateId, {
         method: "GET",
         headers: {
