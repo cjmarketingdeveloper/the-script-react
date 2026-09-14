@@ -244,12 +244,15 @@ export default function SingleMagazine() {
   // --- HANDLERS ---
   const handleNext = () => {
     if (activeIndex < totalPages - 1) {
+      setTemplateData(null);
       updatePageUrl(activeIndex + 1);
     }
   };
 
   const handlePrev = () => {
     if (activeIndex > 0) {
+      setTemplateData(null);
+      
       updatePageUrl(activeIndex - 1);
     }
   };
