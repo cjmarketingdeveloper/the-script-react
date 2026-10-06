@@ -86,9 +86,8 @@ export default function UserProfilePage() {
                 <p className="text-muted mb-0">Manage your personal details</p>
               </div>
               <span
-                className={`badge fs-6 px-3 py-2 rounded-pill ${
-                  isAdmin ? "bg-danger" : "bg-primary"
-                }`}
+                className={`badge fs-6 px-3 py-2 rounded-pill`}
+                style={{ backgroundColor: "#2BB8C9" }}
               >
                 {isAdmin ? "Admin Role" : "Member"}
               </span>
@@ -100,6 +99,7 @@ export default function UserProfilePage() {
               </div>
             )}
 
+            {/* Editable Details Form */}
             <form onSubmit={handleSubmit}>
               <div className="row g-3">
                 <div className="col-md-6">
@@ -111,7 +111,6 @@ export default function UserProfilePage() {
                     className={`form-control form-control-lg rounded-pill px-4 ${!isAdmin ? "bg-light text-muted" : ""}`}
                     value={formData.name}
                     onChange={handleChange}
-                    readOnly={!isAdmin}
                     required
                   />
                 </div>
@@ -125,7 +124,6 @@ export default function UserProfilePage() {
                     className={`form-control form-control-lg rounded-pill px-4 ${!isAdmin ? "bg-light text-muted" : ""}`}
                     value={formData.surname}
                     onChange={handleChange}
-                    readOnly={!isAdmin}
                     required
                   />
                 </div>
@@ -163,13 +161,57 @@ export default function UserProfilePage() {
               <div className="mt-4 pt-3 text-end">
                 <button
                   type="submit"
-                  className="btn btn-primary btn-lg px-5 rounded-pill shadow-sm"
+                  className="btn btn-script btn-lg px-5 rounded-pill shadow-sm"
                   disabled={loading}
                 >
                   {loading ? "Saving Changes..." : "Save Changes"}
                 </button>
               </div>
             </form>
+
+            {/* ================= UNEDITABLE ACCOUNT DETAILS ================= */}
+            <div className="mt-5 pt-4 border-top">
+              <div className="mb-3">
+                <p className="fw-bold mb-1">Account & Professional Details</p>
+                <p className="text-muted small">
+                  These verified credentials are locked and cannot be edited directly. Contact support if changes are needed.
+                </p>
+              </div>
+
+              <div className="row g-3">
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold text-muted">Email Address</label>
+                  <input
+                    type="email"
+                    className="form-control form-control-lg rounded-pill px-4 bg-light text-muted"
+                    value={currentUser?.email || "N/A"}
+                    disabled
+                  />
+                </div>
+
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold text-muted">Practice Number</label>
+                  <input
+                    type="text"
+                    className="form-control form-control-lg rounded-pill px-4 bg-light text-muted"
+                    value={currentUser?.practiceNumber || currentUser?.practiceNo || "N/A"}
+                    disabled
+                  />
+                </div>
+
+
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold text-muted">Account Role</label>
+                  <input
+                    type="text"
+                    className="form-control form-control-lg rounded-pill px-4 bg-light text-muted"
+                    value={currentUser?.role || (isAdmin ? "Administrator" : "Staff Member")}
+                    disabled
+                  />
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
