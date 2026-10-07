@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserProfile } from "../reduxAuth/authSlice"; // Adjust path if needed
+import { toast } from "react-toastify";
 
 export default function UserProfilePage() {
   const dispatch = useDispatch();
@@ -63,6 +64,7 @@ export default function UserProfilePage() {
 
     try {
       await dispatch(updateUserProfile(payload)).unwrap();
+      toast.success("Profile updated successfully!");
       setStatus({
         type: "success",
         text: "Personal details updated successfully!",
