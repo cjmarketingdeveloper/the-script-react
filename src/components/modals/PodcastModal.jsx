@@ -157,11 +157,7 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, setI
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
-              ...(user?.accessToken
-                ? {
-                    Authorization: `Bearer ${user.accessToken}`,
-                  }
-                : {}),
+              "token": "Bearer " + user.accessToken,
             },
             body: JSON.stringify({
               stoppedAtTimestamp: Math.floor(currentPosition),
