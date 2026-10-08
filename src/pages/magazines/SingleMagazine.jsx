@@ -448,15 +448,16 @@ export default function SingleMagazine() {
          
         </div>
       </div>
+
       <div className="fab-container">
-        <button className="btn btn-script" onClick={handleFabClick}>
-          <i className="bi bi-plus"></i>
-        </button>
-        <ul className="fab-menu-items">
+         <ul className="fab-menu-items">
           <li><div className="card-item-info">Item 1</div></li>
           <li><div className="card-item-info">Item 2</div></li>
           <li><div className="card-item-info">Item 3</div></li>
         </ul>
+        <button className="btn-fab" onClick={handleFabClick}>
+          <i className="bi bi-plus"></i>
+        </button>       
       </div>
       <div className="info-section-card">
         <div className="info-sub-card-body">

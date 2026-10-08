@@ -1033,3 +1033,24 @@ h3.podcast-title {
 .like-item:hover {
      font-weight: 800;
 }
+.btn-fab
+{
+    border-radius: 50%;
+    background-color: var(--color-script-main) !important;
+    width: 65px;
+    height: 65px;
+    font-size: 25px;
+    padding: 10px;
+    color: #ffff;
+}
+
+.fab-container {
+    position: fixed;
+    right: 10px;
+    bottom: 240px;
+}
+.fab-menu-items {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 10px;
+}
