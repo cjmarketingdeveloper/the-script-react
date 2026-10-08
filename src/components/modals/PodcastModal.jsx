@@ -15,6 +15,15 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, setI
 
   const [sessionId, setSessionId]                   = useState(null);
 
+  // --------------------------------------------------
+  // Podcast tracking refs
+  // --------------------------------------------------
+
+    const sessionIdRef = useRef(null);
+    const lastTrackedTimeRef = useRef(0);
+    const isSeekingRef = useRef(false);
+    const hasCompletedRef = useRef(false);
+
   // Sync volume level to the <audio> element whenever it updates
   useEffect(() => {
     if (audioRef.current) {
@@ -22,6 +31,25 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, setI
     }
   }, [volume, isMuted, show]);
 
+  useEffect(() => {
+      if (!show && audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+
+        setIsPlaying(false);
+        setCurrentTime(0);
+
+        // Reset local session state.
+        // The actual session should already have been
+        // closed by handleClose().
+        sessionIdRef.current = null;
+        setSessionId(null);
+
+        lastTrackedTimeRef.current = 0;
+        hasCompletedRef.current = false;
+      }
+  }, [show]);
+  /*
   // Pause and reset audio when modal closes
   useEffect(() => {
     if (!show && audioRef.current) {
@@ -33,10 +61,12 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, setI
       startPodcastSession();
     }
   }, [show, podcastData]);
+  */
 
+  /*
   const startPodcastSession = async () => {
     try {
-      const response = await fetch(CONSTANTS.API_URL + "pages/podcast/podcast-sessions/commernce/v1", {
+      const response = await fetch(CONSTANTS.API_URL + "podcasts/commence/podcast-sessions/v1", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,6 +89,109 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, setI
       console.error("Failed to start podcast session:", error);
     }
   }
+  */
+
+  const startPodcastSession = async () => {
+      try {
+        const response = await fetch(CONSTANTS.API_URL + "podcasts/commence/podcast-sessions/v1",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "token": "Bearer " + user.accessToken,                
+            },
+            body: JSON.stringify({
+              podcastId: podcastData._id,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to create podcast session");
+        }
+
+        const data = await response.json();
+
+        sessionIdRef.current = data._id;
+        setSessionId(data._id);
+
+        // Start measuring from the current audio position
+        lastTrackedTimeRef.current = audioRef.current?.currentTime || 0;
+        hasCompletedRef.current = false;
+
+        console.log("Podcast session started:", data);
+
+        return data._id;
+      } catch (error) {
+        console.error("Failed to start podcast session:", error);
+        return null;
+      }
+  };
+  const updatePodcastSession = async ({
+      isPaused = false,
+      isClosed = false,
+      isCompleted = false,
+    } = {}) => {
+      const activeSessionId = sessionIdRef.current;
+
+      if (!activeSessionId || !audioRef.current) {
+        return;
+      }
+
+      const currentPosition = audioRef.current.currentTime;
+
+      let durationListenedDelta = 0;
+
+      // Don't count seeking as listening
+      if (!isSeekingRef.current) {
+        durationListenedDelta = Math.max(
+          0,
+          currentPosition - lastTrackedTimeRef.current
+        );
+      }
+
+      try {
+        const response = await fetch(
+          `${CONSTANTS.API_URL}podcasts/analyze/sessions/v1/${activeSessionId}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              ...(user?.accessToken
+                ? {
+                    Authorization: `Bearer ${user.accessToken}`,
+                  }
+                : {}),
+            },
+            body: JSON.stringify({
+              stoppedAtTimestamp: Math.floor(currentPosition),
+              durationListenedDelta: Math.floor(durationListenedDelta),
+              isPaused,
+              isClosed,
+              isCompleted,
+            }),
+          }
+        );
+
+        if (!response.ok && response.status !== 204) {
+          throw new Error("Failed to update podcast session");
+        }
+
+        // Move our tracking point forward
+        lastTrackedTimeRef.current = currentPosition;
+
+        console.log("Podcast session updated:", {
+          sessionId: activeSessionId,
+          stoppedAtTimestamp: currentPosition,
+          durationListenedDelta,
+          isPaused,
+          isClosed,
+          isCompleted,
+        });
+      } catch (error) {
+        console.error("Failed to update podcast session:", error);
+      }
+  };
 
   const handleClose = () => {
     if (audioRef.current) {
@@ -76,11 +209,37 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, setI
     try {
       if (isPlaying) {
         audioRef.current.pause();
+        
+        await updatePodcastSession({
+          isPaused: true,
+        });
+
         setIsPlaying(false);
-      } else {
-        await audioRef.current.play();
-        setIsPlaying(true);
+        return;
       }
+
+      // ---------------------------------------------
+      // PLAY
+      // ---------------------------------------------
+
+      // First play = create the session
+      if (!sessionIdRef.current) {
+        const newSessionId = await startPodcastSession();
+
+        if (!newSessionId) {
+          return;
+        }
+      } else {
+        // Resuming an existing session.
+        // Reset tracking point so the time from here
+        // is counted correctly.
+        lastTrackedTimeRef.current =
+          audioRef.current.currentTime;
+      }
+
+      await audioRef.current.play();
+
+      setIsPlaying(true);
     } catch (error) {
       if (error.name !== "AbortError") {
         console.error("Audio playback error:", error);
