@@ -1056,3 +1056,13 @@ h3.podcast-title {
   padding: 0;
   margin-bottom: 10px;
 }
+.card-item-info{
+  margin-top: 17px;
+}
+.card-item-info .round-item {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ececec;
+    box-shadow: 1px 3px 5px 0 #00000059, 0 2px 3px 0 #0000000a;
+}

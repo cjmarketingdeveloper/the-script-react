@@ -454,13 +454,16 @@ export default function SingleMagazine() {
           <li><div className="card-item-info">Item 1</div></li>
           <li><div className="card-item-info">Item 2</div></li>
           <li><div className="card-item-info">
-                <div className="info-box like-item like-space-c" onClick={handleLikePageToggle}>
-                    {pageIsLike ? (
-                      <i className="bi bi-heart-fill" style={{ color: 'red' }}></i>
-                    ) : (
-                      <i className="bi bi-heart" style={{ color: 'gray' }}></i>
-                    )}
-                </div>
+               <div className="round-item">
+                  <div className="info-box like-item like-space-c" onClick={handleLikePageToggle}>
+                      {pageIsLike ? (
+                        <i className="bi bi-heart-fill" style={{ color: 'red' }}></i>
+                      ) : (
+                        <i className="bi bi-heart" style={{ color: 'gray' }}></i>
+                      )}
+                  </div>
+               </div>
+               <div className="content-extra-info"></div> 
               </div>
           </li>
         </ul>
