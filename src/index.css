@@ -1026,7 +1026,6 @@ h3.podcast-title {
     display: block;
     width: 33px;
     text-align: center;
-    padding: 8px 7px 4px 6px;
     border-radius: 50%;
     cursor: pointer;
 }
@@ -1059,6 +1058,7 @@ h3.podcast-title {
 .card-item-info{
   margin-top: 17px;
   display: flex;
+  position: relative;
 }
 .card-item-info .round-item {
     height: 50px;
@@ -1067,4 +1067,15 @@ h3.podcast-title {
     border-radius: 50%;
     background: #ececec;    
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding-top: 15px;
+}
+.content-extra-info {
+    font-size: 11px;
+    position: absolute;
+    right: 70px;
+    width: 110px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
