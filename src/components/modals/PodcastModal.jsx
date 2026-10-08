@@ -138,7 +138,7 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, setI
         podcastId: podcastData._id
       }
       
-      const response = await fetch(CONSTANTS.API_URL + "pages/podcast/like-status/toggle-action/v1", {
+      const response = await fetch(CONSTANTS.API_URL + "podcasts/apply/like-status/toggle-action/v1", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

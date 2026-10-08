@@ -267,8 +267,7 @@ export default function SingleMagazine() {
         "podcastId" : podcastData._id
       }
 
-      const theStatus = await axios.put(
-            `${CONSTANTS.API_URL}pages/podcast/like-status/v1`,
+      const theStatus = await axios.put(`${CONSTANTS.API_URL}podcasts/apply/like-status/v1`,
             payload,
             { 
               headers: { token: `Bearer ${token}` } 
