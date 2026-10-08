@@ -1068,6 +1068,7 @@ h3.podcast-title {
     background: #ececec;    
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding-top: 15px;
+    text-align: center;
 }
 .content-extra-info {
     font-size: 11px;

@@ -450,7 +450,9 @@ export default function SingleMagazine() {
       </div>
 
       <div className="fab-container">
-         <ul className="fab-menu-items">
+         
+        {
+          fabVisible && (<ul className="fab-menu-items">
           <li><div className="card-item-info">Item 1</div></li>
           <li><div className="card-item-info">
                 <div className="content-extra-info">
@@ -477,7 +479,8 @@ export default function SingleMagazine() {
               
               </div>
           </li>
-        </ul>
+        </ul>)
+        }
         <button className="btn-fab" onClick={handleFabClick}>
           <i className="bi bi-plus"></i>
         </button>       
