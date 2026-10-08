@@ -193,13 +193,27 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, setI
       }
   };
 
-  const handleClose = () => {
+  const handleClose = async () => {
     if (audioRef.current) {
+      // Final tracking update before resetting currentTime
+      if (sessionIdRef.current && !hasCompletedRef.current) {
+        await updatePodcastSession({
+          isClosed: true,
+        });
+      }
+
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
     setIsPlaying(false);
     setCurrentTime(0);
+
+    sessionIdRef.current = null;
+    setSessionId(null);
+
+    lastTrackedTimeRef.current = 0;
+    hasCompletedRef.current = false;
+
     onClose();
   };
 
@@ -396,7 +410,17 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, setI
                   e.currentTarget.volume = isMuted ? 0 : volume;
                 }}
                 onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-                onEnded={() => setIsPlaying(false)}
+                onEnded={async () => {
+                  if (sessionIdRef.current && !hasCompletedRef.current) {
+                    hasCompletedRef.current = true;
+
+                    await updatePodcastSession({
+                      isCompleted: true,
+                    });
+                  }
+
+                  setIsPlaying(false);
+                }}
               />
 
               {/* Play/Pause Button */}
