@@ -1058,6 +1058,7 @@ h3.podcast-title {
 }
 .card-item-info{
   margin-top: 17px;
+  display: flex;
 }
 .card-item-info .round-item {
     width: 40px;
