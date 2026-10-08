@@ -342,9 +342,6 @@ export default function SingleMagazine() {
     <div
       className="page-body"
       style={{
-        backgroundImage: `url('/assets/background/1.jpg')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
         minHeight: "100vh",
       }}
     >
