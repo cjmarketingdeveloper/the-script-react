@@ -453,7 +453,12 @@ export default function SingleMagazine() {
          
         {
           fabVisible && (<ul className="fab-menu-items">
-          <li><div className="card-item-info">Item 1</div></li>
+          <li><div className="card-item-info">
+              <div className="content-extra-info"></div>
+              <div className="round-item">
+                <i class="bi bi-tree-fill"></i>
+              </div>
+            </div></li>
           <li><div className="card-item-info">
                 <div className="content-extra-info">
                   Enter competition?
