@@ -293,7 +293,7 @@ export default function PodcastModal({ show, onClose, podcastData, isLiked, setI
                 <input 
                   type="range" 
                   className="form-range volume-range" 
-                  style={{ maxWidth: "140px", accentColor: "var(--color-script-accent, #2db8eb)" }}
+                  style={{ maxWidth: "140px", accentColor: "var(--color-script-accent, #eb2dcbff)" }}
                   min={0} 
                   max={1} 
                   step={0.01} 

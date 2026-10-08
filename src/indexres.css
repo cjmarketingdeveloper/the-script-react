@@ -55,6 +55,10 @@
     margin-top: 200px;
   }
 
+  .fab-container {
+    bottom: 5%;
+  }
+  
 }
 
 @media only screen and (max-width: 480px) {
@@ -108,6 +112,9 @@
     }
     .about-content {
         width: 100%;
+    }
+    .fab-container {
+        bottom: 5%;
     }
 }
 @media only screen and (max-width: 390px) {
