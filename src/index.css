@@ -1043,6 +1043,7 @@ h3.podcast-title {
     color: #ffff;
     border: 0px;
     box-shadow: 1px 3px 5px 0 #00000059, 0 2px 3px 0 #0000000a;
+    transition: all .25s ease-in-out;
 }
 .btn-fab:hover {
     background-color: #e07400 !important;
