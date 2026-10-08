@@ -1042,12 +1042,14 @@ h3.podcast-title {
     font-size: 25px;
     padding: 10px;
     color: #ffff;
+    border: 0px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .fab-container {
     position: fixed;
     right: 10px;
-    bottom: 240px;
+    bottom: 34%;
 }
 .fab-menu-items {
   list-style: none;

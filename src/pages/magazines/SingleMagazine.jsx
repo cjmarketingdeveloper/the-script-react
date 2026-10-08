@@ -453,7 +453,16 @@ export default function SingleMagazine() {
          <ul className="fab-menu-items">
           <li><div className="card-item-info">Item 1</div></li>
           <li><div className="card-item-info">Item 2</div></li>
-          <li><div className="card-item-info">Item 3</div></li>
+          <li><div className="card-item-info">
+                <div className="info-box like-item like-space-c" onClick={handleLikePageToggle}>
+                    {pageIsLike ? (
+                      <i className="bi bi-heart-fill" style={{ color: 'red' }}></i>
+                    ) : (
+                      <i className="bi bi-heart" style={{ color: 'gray' }}></i>
+                    )}
+                </div>
+              </div>
+          </li>
         </ul>
         <button className="btn-fab" onClick={handleFabClick}>
           <i className="bi bi-plus"></i>
@@ -461,13 +470,7 @@ export default function SingleMagazine() {
       </div>
       <div className="info-section-card">
         <div className="info-sub-card-body">
-            <div className="info-box like-item like-space-c" onClick={handleLikePageToggle}>
-                {pageIsLike ? (
-                  <i className="bi bi-heart-fill" style={{ color: 'red' }}></i>
-                ) : (
-                  <i className="bi bi-heart" style={{ color: 'gray' }}></i>
-                )}
-            </div>
+           
         </div>
       </div>
     </div>
