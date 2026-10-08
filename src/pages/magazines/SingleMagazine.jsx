@@ -28,6 +28,8 @@ export default function SingleMagazine() {
   const pathname = location.pathname;
   const [searchParams] = useSearchParams();
 
+  const [fabVisible, setFabVisible] = useState(false);
+
   // Retrieve user token safely from Redux auth state
   const user = useSelector((state) => state.auth?.user);
 
@@ -338,6 +340,10 @@ export default function SingleMagazine() {
     return <div className="container p-5 text-white">Magazine content not found.</div>;
   }
 
+  const handleFabClick = () => {
+      setFabVisible(!fabVisible);
+  }
+
   return (
     <div
       className="page-body"
@@ -441,6 +447,16 @@ export default function SingleMagazine() {
           }
          
         </div>
+      </div>
+      <div className="fab-container">
+        <button className="btn btn-script" onClick={handleFabClick}>
+          <i className="bi bi-plus"></i>
+        </button>
+        <ul className="fab-menu-items">
+          <li><div className="card-item-info">Item 1</div></li>
+          <li><div className="card-item-info">Item 2</div></li>
+          <li><div className="card-item-info">Item 3</div></li>
+        </ul>
       </div>
       <div className="info-section-card">
         <div className="info-sub-card-body">
