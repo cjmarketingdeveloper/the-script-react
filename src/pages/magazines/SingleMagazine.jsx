@@ -452,18 +452,29 @@ export default function SingleMagazine() {
       <div className="fab-container">
          <ul className="fab-menu-items">
           <li><div className="card-item-info">Item 1</div></li>
-          <li><div className="card-item-info">Item 2</div></li>
           <li><div className="card-item-info">
+                <div className="content-extra-info">
+                  Enter competition?
+                </div> 
+                 <div className="round-item">
+                   <i class="bi bi-trophy-fill"></i>
+                 </div>
+              </div>
+          </li>
+          <li><div className="card-item-info">
+               <div className="content-extra-info">
+                  Like the page? 
+                </div> 
                <div className="round-item">
-                  <div className="info-box like-item like-space-c" onClick={handleLikePageToggle}>
-                      {pageIsLike ? (
-                        <i className="bi bi-heart-fill" style={{ color: 'red' }}></i>
-                      ) : (
-                        <i className="bi bi-heart" style={{ color: 'gray' }}></i>
-                      )}
-                  </div>
-               </div>
-               <div className="content-extra-info"></div> 
+                    <div className="info-box like-item like-space-c" onClick={handleLikePageToggle}>
+                        {pageIsLike ? (
+                          <i className="bi bi-heart-fill" style={{ color: 'red' }}></i>
+                        ) : (
+                          <i className="bi bi-heart" style={{ color: 'gray' }}></i>
+                        )}
+                    </div>
+                </div>
+              
               </div>
           </li>
         </ul>
