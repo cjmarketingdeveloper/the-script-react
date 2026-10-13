@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 export default function UserProfilePage() {
   const dispatch = useDispatch();
 
-  // 🟢 Safe selector with default fallback
+  // Safe selector with default fallback
   const authState = useSelector((state) => state.auth || {});
   const user = authState.user;
   const loading = authState.isLoading || false;

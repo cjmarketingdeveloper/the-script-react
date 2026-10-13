@@ -66,10 +66,10 @@ export const updateUserProfile = createAsyncThunk(
       }
 
       const authHeader = rawToken.startsWith("Bearer ") ? rawToken : `Bearer ${rawToken}`;
-      // 🟢 Send { data } so req.body has a .data property for your backend's req.body.data
+      //  Send { data } so req.body has a .data property for your backend's req.body.data
       const res = await axios.put(
         `${CONSTANTS.API_URL}users/update/personal-details/v2/`,
-        {id, data }, // 👈 Wrap in { data } to match req.body.data
+        {id, data }, //  Wrap in { data } to match req.body.data
         {
           headers: {
             token: authHeader,
